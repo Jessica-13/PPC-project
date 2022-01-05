@@ -102,27 +102,27 @@ import random
 
 
 
-    # Définition méthode pour déterminer le plus grand nombre de cartes identiques
+# Définition méthode pour déterminer le plus grand nombre de cartes identiques
 
-    class return_values_nbCartesEg:
-        def __init__(self, a, b):
-        self.a=a
-        self.b=b
+class return_values_nbCartesEg:
+    def __init__(self, a, b):
+    self.a=a
+    self.b=b
 
-    def nbCartesEg(a):
-        max = 0
-        indice = -1     # pour pouvoir retrouver aussi le cas 0
-        for j in range (i.cartes[]):
-            counted = i.cartes[].count(i.cartes[j])
-            if (max < counted) and (i.cartes[indice].nom != i.cartes[j].nom) :
-                max = counted
+def nbCartesEg(a):
+    max = 0
+    indice = -1     # pour pouvoir retrouver aussi le cas 0
+    for j in range (i.cartes[]):
+        counted = i.cartes[].count(i.cartes[j])
+        if (max < counted) and (i.cartes[indice].nom != i.cartes[j].nom) :
+            max = counted
+            indice = j
+        elif (compte == max)
+            if (i.cartes[j].points > i.cartes[indice].points):
                 indice = j
-            elif (compte == max)
-                if (i.cartes[j].points > i.cartes[indice].points):
-                    indice = j
 
-        t=return_values_nbCartesEg(max, indice)
-        return t
+    t=return_values_nbCartesEg(max, indice)
+    return t
 
 
 
