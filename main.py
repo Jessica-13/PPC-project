@@ -223,15 +223,20 @@ if __name__ == "__main__":
     f.close()   # pour fermer le fichier
 
 
-
     # Définition du nombre maximal de offres qu’on peut avoir au même temps     
     # car si tous les joueurs font une offre au même temps ils doivent attendre que leurs offres soient acceptées par quelqu’un, cela étant impossible, le jeu bloquerait
     
-    int nbPropMTemps : 
-        if(nbJoueurs est paire)
-            nbPropMTemps = nbJoueurs/2
-        else
-            nbPropMTemps = (nbJoueurs-1)/2
+    nbPropMTemps = 0
+
+    if nbJoueurs % 2 == 0 :
+        nbPropMTemps = nbJoueurs/2
+    else :
+        nbPropMTemps = (nbJoueurs-1)/2
+
+
+
+
+
 
     # Création de (nbPropMTemps) listes, initialisés null, pour définir le “tableau de jeu” (imaginé comme des espaces pour positionner les offres)
 
