@@ -204,6 +204,9 @@ def joueur(i) :
 
 # --- *** global *** --- #
 
+# Prendre en input le nombre de joueur :
+nbJoueurs = input('Entrez le nombre de joueurs: ')
+
 nbPropMTemps = 1    # TRY ***
 # nbPropMTemps = input("nbPropMTemps : ")     # TRY ***
 
@@ -218,9 +221,9 @@ cloche = False # Quand c'est vrai le jeu s'arrête
 compteurNbPropMTemps = 0
 
 # Initialisation du tableau d'états des joueurs
+etatEnAttente = []
 for x in range(nbJoueurs):
     etatEnAttente[x] = True
-
 
 paquet=[]   # Définition paquet
 tas=[]      # Définition tas
@@ -241,9 +244,7 @@ if __name__ == "__main__":
     g = np.genfromtxt(fname='transports.txt')    # pour prendre les valeurs
 
 
-    # Prendre en input le nombre de joueur :
-    nbJoueurs = input('Entrez le nombre de joueurs: ')
-
+    # test nbJoueurs
     while ( nbJoueurs  < 2)     # pas assez pour jouer
         nbJoueurs = input("Entrez le nombre de joueurs: ")
         if nbJoueurs == 0 : 
