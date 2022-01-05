@@ -136,17 +136,12 @@ def priorités(i) :
     ## partie pour déterminer les cartes restantes identiques
     ## création et remplissage liste avec les cartes à donner
 
-<<<<<<< HEAD
 # Définition méthode exchange :
 def echange(offrei, offrem) :
         print(offrei, " est échangé avec ", offrem)
         # enlever les cartes à offrir dans la liste des cartes du joueur
         
         # ajouter les cartes acceptées dans la liste des cartes du joueur
-=======
-    # Définition méthode exchange :
-
->>>>>>> efb39d28becf5caf0d06d58c1768b0e5e8718f69
 
 
 
@@ -192,7 +187,7 @@ def joueur(i) :
                 offre[i] = priorites(i)
                 offre[i].acquire()
         
-                for(m in nbJoueurs):
+                for m in (nbJoueurs):
                     if(m==i):
                         pass
 
