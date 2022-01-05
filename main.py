@@ -184,9 +184,6 @@ import random
 
 
 
-
-
-
 if __name__ == "__main__":
     # Initialisation du jeu : charger le fichier avec les moyens de transport
 
