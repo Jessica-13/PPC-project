@@ -155,17 +155,17 @@ def priorités(i) :
 # Initialisations des 3 états :
     ## En attente d’offres : 
     def enAttente(i) :      # i étant l’indice du joueur
-        etatEnAttente = True
+        etatEnAttente[i] = True
         print("Le joueur ", joueur(i), " est en attente.")
 
     ## En phase de proposition d’offre : 
     def propositionOffre(i):
-        etatEnAttente = False
+        etatEnAttente[i] = False
         print("Le joueur ", joueur(i), " est en train de faire une proposition.")
 
     ## En train de regarder quel offre accepter : 
     def examinationOffre(i):
-        etatEnAttente = False
+        etatEnAttente[i] = False
         print("Le joueur", joueur(i), "est en train d’examiner les offres disponibles.")
 
 
@@ -240,7 +240,9 @@ def joueur(i) :
 
     compteurNbPropMTemps = 0
 
-    etatEnAttente = False   # Vérifiez si le joueur est en attente
+    # Initialisation du tableau d'états des joueurs
+    for x in range(nbJoueurs):
+        etatEnAttente[x] = True
 
 
 
