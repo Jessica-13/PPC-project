@@ -97,18 +97,18 @@ def priorités(i) :
 
 
 
-
+'''
 
 # --- *** Joueur *** --- #
 
 def joueur(i) : 
-    while(cloche==False)
+    while(cloche == False)
         if (compteurNbPropMTemps < nbPropMTemps && etatEnAttente)
         # on détermine qui doit faire un offre et qui l’accepter :
-            if( random(0,1) == 1)(entre le nbJoueurs pour voir qui tire le dé)
-                -> si le joueur a eu 1 -> commence à jouer 
-                -> il est mis dans l’état propositionOffre() 
-                -> appelle à la méthode priorites() 
+            if(random(0,1) == 1) #entre le nbJoueurs pour voir qui tire le dé
+                # si le joueur a eu 1 -> commence à jouer
+                propositionOffre(i)
+                priorites(i)
                 -> on obtient offre[i] 
                 -> compteurNbPropMTemps += 1
             else
@@ -144,7 +144,7 @@ def joueur(i) :
 
 
 
-
+'''
 
 
 # --- *** global *** --- #
