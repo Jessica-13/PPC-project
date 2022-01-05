@@ -176,6 +176,8 @@ Choisir éventuellement l’offre qu’on veut prendre
 
 
 import numpy as np
+import multiprocessing
+# import random
 
 
 
@@ -234,13 +236,9 @@ if __name__ == "__main__":
         nbPropMTemps = (nbJoueurs-1)/2
 
 
-
-
-
-
     # Création de (nbPropMTemps) listes, initialisés null, pour définir le “tableau de jeu” (imaginé comme des espaces pour positionner les offres)
 
-    -> Initialiser les joueurs : -> appel en Multiprocessus à player 
+    # Initialiser les joueurs : -> appel en Multiprocessus à player 
     
     players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)]
 
