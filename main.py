@@ -5,33 +5,6 @@
 # --- Structure du programme --- #
 
 '''
-# Définition méthode pour déterminer le plus grand nombre de cartes identiques
-
-class return_values_nbCartesEg:
-    def __init__(self, a, b):
-    self.a=a
-    self.b=b
-
-def nbCartesEg(a):
-    max = 0
-    indice = -1     # pour pouvoir retrouver aussi le cas 0
-    for j in range (i.cartes[]):
-        counted = i.cartes[].count(i.cartes[j])
-        if (max < counted) && (i.cartes[indice].nom != i.cartes[j].nom) :
-            max = counted
-            indice = j
-        elif (compte == max)
-            if (i.cartes[j].points > i.cartes[indice].points):
-            indice = j
-
-    t=return_values (max, indice)
-    return t
-
-
-# Définition méthode pour trouver les priorités choix offre : 
-
-def priorités(i) :
-
 ## compter le nombre de cartes identiques
     x =nbCartesEg(i)    # appel à nbCartesEg()
 
@@ -69,15 +42,6 @@ def priorités(i) :
         -> offre[i] ***échangé avec*** offre[m]
         -> enlever les cartes à offrir dans la liste des cartes du joueur
         -> ajouter les cartes acceptées dans la liste des cartes du joueur
-
-
-# Définition structure d’une carte : 
-    structure cartes(nom + points)  
-
-
-
-
-
 
 
 
@@ -122,6 +86,61 @@ def philosopher(i):
 import numpy as np
 import multiprocessing
 import random
+
+
+
+
+
+
+
+    # Définition structure d’une carte : 
+        structure cartes(nom + points)
+
+
+
+
+
+
+
+    # Définition méthode pour déterminer le plus grand nombre de cartes identiques
+
+    class return_values_nbCartesEg:
+        def __init__(self, a, b):
+        self.a=a
+        self.b=b
+
+    def nbCartesEg(a):
+        max = 0
+        indice = -1     # pour pouvoir retrouver aussi le cas 0
+        for j in range (i.cartes[]):
+            counted = i.cartes[].count(i.cartes[j])
+            if (max < counted) && (i.cartes[indice].nom != i.cartes[j].nom) :
+                max = counted
+                indice = j
+            elif (compte == max)
+                if (i.cartes[j].points > i.cartes[indice].points):
+                    indice = j
+
+        t=return_values (max, indice)
+        return t
+
+
+
+
+
+
+
+
+# Définition méthode pour trouver les priorités choix offre : 
+
+def priorités(i) :
+    
+    ## compter le nombre de cartes identiques
+    ### Il faudrait considérer les cas où il y a plusieurs joueurs qui gagnent au même moment (c’est-à-dire plusieurs joueurs qui ont déjà 5 cartes égales au début du jeu / deux joueurs qui échangent leurs cartes et ils complètent leur famille)
+    ## partie pour déterminer les cartes restantes identiques
+    ## création et remplissage liste avec les cartes à donner
+    
+    # Définition méthode exchange :
 
 
 
