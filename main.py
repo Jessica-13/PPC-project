@@ -161,69 +161,6 @@ boolean etatEnAttente = False
 
 
 
-
-
-
-
-
-# --- *** main *** --- #
-
-    # Initialisation du jeu : 
-
-    -> Charger le fichier avec les moyens de transport
-
-    # Prendre en input le nombre de joueur :
-
-    input : int nbJoueurs 
-    while ( nbJoueurs  < 2)     # pas assez pour jouer 
-        if(nb = 0) 
-            -> c’est pas bon car on peut pas jouer s’il n’y a pas de joueurs (à afficher sur la forme d’un message)
-        if(nb = 1) 
-            -> c’est pas bon car le joueur étant seul à déjà gagné avant de commencer le jeu (à afficher sur la forme d’un message)
-    
-    # on retour à l’input du nbJoueurs 
-
-
-    # Créer la liste avec toutes les cartes :
-    
-    -> On prend le fichier txt (liste de tous les moyens de transport) :
-    
-    # Définition-paquet (création d’une liste avec les cartes du jeu) :
-    
-    for (nbJoueurs)
-        -> on prend dans la suite un moyen de transport (en random) et on l'écrit dans la liste 5 fois (car 5 cartes par famille)
-
-    # Définition du nombre maximal de offres qu’on peut avoir au même temps     
-    # car si tous les joueurs font une offre au même temps ils doivent attendre que leurs offres soient acceptées par quelqu’un, cela étant impossible, le jeu bloquerait
-    
-    int nbPropMTemps : 
-        if(nbJoueurs est paire)
-            nbPropMTemps = nbJoueurs/2
-        else
-            nbPropMTemps = (nbJoueurs-1)/2
-
-    # Création de (nbPropMTemps) listes, initialisés null, pour définir le “tableau de jeu” (imaginé comme des espaces pour positionner les offres)
-
-    -> Initialiser les joueurs : -> appel en Multiprocessus à player 
-    
-    players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)]
-
-    # Initialisation des tas de cartes de chaque joueur : 
-    
-    for k in range(nbJoueurs)
-    
-        -> l(k)=liste avec 5 cartes ajoutées depuis le ficher de manière aléatoire / on enlève la carte une fois qu’elle a été prise
-
-    -> Initialiser les joueurs à l’état enAttente()
-
-
-
-
-
-
-
-
-
 """
 ++ partie interaction user (propositions)
 
