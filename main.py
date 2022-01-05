@@ -133,17 +133,17 @@ import random
     ## En attente d’offres : 
     def enAttente(i) :      # i étant l’indice du joueur
         etatEnAttente = True
-        print("Le joueur ", player(i), " est en attente.")
+        print("Le joueur ", joueur(i), " est en attente.")
 
     ## En phase de proposition d’offre : 
     def propositionOffre(i):
         etatEnAttente = False
-        print("Le joueur ", player(i), " est en train de faire une proposition.")
+        print("Le joueur ", joueur(i), " est en train de faire une proposition.")
 
     ## En train de regarder quel offre accepter : 
     def examinationOffre(i):
         etatEnAttente = False
-        print("Le joueur", player(i), "est en train d’examiner les offres disponibles.")
+        print("Le joueur", joueur(i), "est en train d’examiner les offres disponibles.")
 
 
 
