@@ -93,8 +93,8 @@ import random
 
 
 
-    # Définition structure d’une carte : 
-        structure cartes(nom + points)
+# Définition structure d’une carte : 
+structure cartes(nom + points)
 
 
 
@@ -106,18 +106,18 @@ import random
 
 class return_values_nbCartesEg:
     def __init__(self, a, b):
-    self.a=a
-    self.b=b
+        self.a=a
+        self.b=b
 
 def nbCartesEg(a):
     max = 0
     indice = -1     # pour pouvoir retrouver aussi le cas 0
     for j in range (i.cartes[]):
         counted = i.cartes[].count(i.cartes[j])
-        if (max < counted) and (i.cartes[indice].nom != i.cartes[j].nom) :
+        if (max < counted) and (i.cartes[indice].nom != i.cartes[j].nom):
             max = counted
             indice = j
-        elif (compte == max)
+        elif (compte == max):
             if (i.cartes[j].points > i.cartes[indice].points):
                 indice = j
 
@@ -134,13 +134,15 @@ def nbCartesEg(a):
 # Définition méthode pour trouver les priorités choix offre : 
 
 def priorités(i) :
-    
-    ## compter le nombre de cartes identiques
-    ### Il faudrait considérer les cas où il y a plusieurs joueurs qui gagnent au même moment (c’est-à-dire plusieurs joueurs qui ont déjà 5 cartes égales au début du jeu / deux joueurs qui échangent leurs cartes et ils complètent leur famille)
-    ## partie pour déterminer les cartes restantes identiques
-    ## création et remplissage liste avec les cartes à donner
-    
-    # Définition méthode exchange :
+
+
+# À FAIRE :
+## compter le nombre de cartes identiques
+### Il faudrait considérer les cas où il y a plusieurs joueurs qui gagnent au même moment (c’est-à-dire plusieurs joueurs qui ont déjà 5 cartes égales au début du jeu / deux joueurs qui échangent leurs cartes et ils complètent leur famille)
+## partie pour déterminer les cartes restantes identiques
+## création et remplissage liste avec les cartes à donner
+
+# Définition méthode exchange :
 
 
 
@@ -149,20 +151,20 @@ def priorités(i) :
 
 
 # Initialisations des 3 états :
-    ## En attente d’offres : 
-    def enAttente(i) :      # i étant l’indice du joueur
-        etatEnAttente = True
-        print("Le joueur ", joueur(i), " est en attente.")
+## En attente d’offres : 
+def enAttente(i):      # i étant l’indice du joueur
+    etatEnAttente = True
+    print("Le joueur ", joueur(i), " est en attente.")
 
-    ## En phase de proposition d’offre : 
-    def propositionOffre(i):
-        etatEnAttente = False
-        print("Le joueur ", joueur(i), " est en train de faire une proposition.")
+## En phase de proposition d’offre : 
+def propositionOffre(i):
+    etatEnAttente = False
+    print("Le joueur ", joueur(i), " est en train de faire une proposition.")
 
-    ## En train de regarder quel offre accepter : 
-    def examinationOffre(i):
-        etatEnAttente = False
-        print("Le joueur", joueur(i), "est en train d’examiner les offres disponibles.")
+## En train de regarder quel offre accepter : 
+def examinationOffre(i):
+    etatEnAttente = False
+    print("Le joueur", joueur(i), "est en train d’examiner les offres disponibles.")
 
 
 
@@ -173,42 +175,42 @@ def priorités(i) :
 # --- *** Joueur *** --- #
 
 def joueur(i) : 
-    while(cloche == False)
-        if (compteurNbPropMTemps < nbPropMTemps && etatEnAttente)
-        # on détermine qui doit faire un offre et qui l’accepter :
-            if(random(0,1) == 1) #entre le nbJoueurs pour voir qui tire le dé
-                # si le joueur a eu 1 -> commence à jouer
-                propositionOffre(i)
-                priorites(i)
-                -> on obtient offre[i] 
-                -> compteurNbPropMTemps += 1
-            else
-                -> si player a eu 0 -> il peut faire un offre 
-                -> il est mis dans l’état examinationOffre() 
-                -> appelle à la méthode priorites() 
-                -> on obtient offre[i] 
-                -> offre[i].acquire()
-        
-            for(m in nbJoueurs) :
-                if(m==i) 
-                    pass
+while(cloche == False)
+    if (compteurNbPropMTemps < nbPropMTemps && etatEnAttente)
+    # on détermine qui doit faire un offre et qui l’accepter :
+        if(random(0,1) == 1) #entre le nbJoueurs pour voir qui tire le dé
+            # si le joueur a eu 1 -> commence à jouer
+            propositionOffre(i)
+            priorites(i)
+            -> on obtient offre[i] 
+            -> compteurNbPropMTemps += 1
+        else
+            -> si player a eu 0 -> il peut faire un offre 
+            -> il est mis dans l’état examinationOffre() 
+            -> appelle à la méthode priorites() 
+            -> on obtient offre[i] 
+            -> offre[i].acquire()
+    
+        for(m in nbJoueurs) :
+            if(m==i) 
+                pass
 
-                offre[m].acquire()  # pour dire que le joueur bloque l’offre car il est en train de choisir s’il l’accepte ou pas
-                if(length(offre[i]) == length(offre[m]))
-                    -> appelle à la méthode echange(offre[i],offre[m]) 
-                    -> compteurNbPropMTemps -= 1
-                    -> Print (“Le joueur player(i) a accepté l’offre du joueur player(m). Ils ont echangés length(offre[i]) cartes.”)
-                    enAttente(i)
-                    enAttente(m)
-                    set offre[i] == null
-                    set offre[m] == null
-                    break
-                else 
-                    offre[m].release() # si le joueur(m) n’accepte pas l’offre
+            offre[m].acquire()  # pour dire que le joueur bloque l’offre car il est en train de choisir s’il l’accepte ou pas
+            if(length(offre[i]) == length(offre[m]))
+                -> appelle à la méthode echange(offre[i],offre[m]) 
+                -> compteurNbPropMTemps -= 1
+                -> Print (“Le joueur player(i) a accepté l’offre du joueur player(m). Ils ont echangés length(offre[i]) cartes.”)
+                enAttente(i)
+                enAttente(m)
+                set offre[i] == null
+                set offre[m] == null
+                break
+            else 
+                offre[m].release() # si le joueur(m) n’accepte pas l’offre
 
-            enAttente(i)            # si le joueur(m) a accepté l’offre, alors le joueur(i) peut retourner à joueur aussi  
-            offre[i].release()      # pour libérer la place
-            offre[m].release()      # pour libérer la place
+        enAttente(i)            # si le joueur(m) a accepté l’offre, alors le joueur(i) peut retourner à joueur aussi  
+        offre[i].release()      # pour libérer la place
+        offre[m].release()      # pour libérer la place
 
 
 
@@ -218,19 +220,19 @@ def joueur(i) :
 
 # --- *** global *** --- #
 
-    nbPropMTemps = input("nbPropMTemps : ")
+nbPropMTemps = input("nbPropMTemps : ")
 
-    offre = [multiprocessing.Lock() for i in range (nbPropMTemps)]  # on définit le lock
+offre = [multiprocessing.Lock() for i in range (nbPropMTemps)]  # on définit le lock
 
-    # Initialisation global cloche : type booléen
+# Initialisation global cloche : type booléen
 
-    cloche = False # Quand c'est vrai le jeu s'arrête
+cloche = False # Quand c'est vrai le jeu s'arrête
 
-    # Initialisation d’un compteur pour avoir trace du nombre de offre qui on été faites jusqu’à ce moment:
+# Initialisation d’un compteur pour avoir trace du nombre de offre qui on été faites jusqu’à ce moment:
 
-    compteurNbPropMTemps = 0
+compteurNbPropMTemps = 0
 
-    etatEnAttente = False   # Vérifiez si le joueur est en attente
+etatEnAttente = False   # Vérifiez si le joueur est en attente
 
 
 
@@ -241,79 +243,79 @@ def joueur(i) :
 # --- *** main *** --- #
 
 if __name__ == "__main__":
-    # Initialisation du jeu : charger le fichier avec les moyens de transport
+# Initialisation du jeu : charger le fichier avec les moyens de transport
 
-    f = open('transports.txt', 'r')  # pour ouvrir le fichier
+f = open('transports.txt', 'r')  # pour ouvrir le fichier
 
-    # Créer la liste avec toutes les cartes : on prend le fichier txt (liste de tous les moyens de transport) :
+# Créer la liste avec toutes les cartes : on prend le fichier txt (liste de tous les moyens de transport) :
 
-    g = np.genfromtxt(fname='transports.txt')    # pour prendre les valeurs
-
-
-    # Prendre en input le nombre de joueur :
-
-    nbJoueurs = input('Entrez le nombre de joueurs: ')
-
-    while ( nbJoueurs  < 2)     # pas assez pour jouer
-        nbJoueurs = input("Entrez le nombre de joueurs: ")
-        if nbJoueurs == 0 : 
-            print("Valeur pas bonne car on peut pas jouer s’il n’y a pas de joueurs.")
-            # on retour donc à l’input du nbJoueurs
-        if nbJoueurs == 1 : 
-            print("Valeur pas bonne, car le joueur étant seul à déjà gagné avant de commencer le jeu")
-            # on retour donc à l’input du nbJoueurs 
-
-    # Définition-paquet (création d’une liste avec les cartes du jeu) :
-
-    paquet=[]
-    print("Paquet vide.",paquet)   # test création
-
-    for i in nbJoueurs:
-        take_ligne = f.readline() # lire une seule ligne
-        if f == "":  # si la ligne est vide elle sort de la boucle
-            break
-        elif f[0].isdigit():  #    -> on prend dans la suite un moyen de transport (en random)
-            name_moyen_transport = f.split(" ")[0]  # le mot est en première position
-            
-            #  On l'écrit dans la liste 5 fois (car 5 cartes par famille)
-            for x in range(5):
-                paquet.append(name_moyen_transport)
-            print("Paquet avec cartes.",paquet)    # test append
-
-    f.close()   # pour fermer le fichier
-
-    # Mélangez les cartes dans le paquet
-    random.shuffle(paquet)
-    print("Paquet mixte.", paquet)    # test append
+g = np.genfromtxt(fname='transports.txt')    # pour prendre les valeurs
 
 
-    # Définition du nombre maximal de offres qu’on peut avoir au même temps     
-    # car si tous les joueurs font une offre au même temps ils doivent attendre que leurs offres soient acceptées par quelqu’un, cela étant impossible, le jeu bloquerait
-    
-    nbPropMTemps = 0
+# Prendre en input le nombre de joueur :
 
-    if nbJoueurs % 2 == 0 :
-        nbPropMTemps = nbJoueurs/2
-    else :
-        nbPropMTemps = (nbJoueurs-1)/2
+nbJoueurs = input('Entrez le nombre de joueurs: ')
 
+while ( nbJoueurs  < 2)     # pas assez pour jouer
+    nbJoueurs = input("Entrez le nombre de joueurs: ")
+    if nbJoueurs == 0 : 
+        print("Valeur pas bonne car on peut pas jouer s’il n’y a pas de joueurs.")
+        # on retour donc à l’input du nbJoueurs
+    if nbJoueurs == 1 : 
+        print("Valeur pas bonne, car le joueur étant seul à déjà gagné avant de commencer le jeu")
+        # on retour donc à l’input du nbJoueurs 
 
-    # Création de (nbPropMTemps) listes, initialisés null, pour définir le “tableau de jeu” (imaginé comme des espaces pour positionner les offres)
+# Définition-paquet (création d’une liste avec les cartes du jeu) :
 
-    # Initialiser les joueurs : -> appel en Multiprocessus à player 
-    
-    players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)] # On définit le processus principale
+paquet=[]
+print("Paquet vide.",paquet)   # test création
 
-    # Initialisation des tas de cartes de chaque joueur : 
-    tas=[]
-    
-    for k in range (nbJoueurs) :
-        tas.append([])
+for i in nbJoueurs:
+    take_ligne = f.readline() # lire une seule ligne
+    if f == "":  # si la ligne est vide elle sort de la boucle
+        break
+    elif f[0].isdigit():  #    -> on prend dans la suite un moyen de transport (en random)
+        name_moyen_transport = f.split(" ")[0]  # le mot est en première position
+        
+        #  On l'écrit dans la liste 5 fois (car 5 cartes par famille)
         for x in range(5):
-            tas.append(paquet[x])   # 5 cartes ajoutées depuis le ficher
-        for x in range(5):  # On enlève la carte une fois qu’elle a été prise 
-            del paquet[x]
-            
+            paquet.append(name_moyen_transport)
+        print("Paquet avec cartes.",paquet)    # test append
+
+f.close()   # pour fermer le fichier
+
+# Mélangez les cartes dans le paquet
+random.shuffle(paquet)
+print("Paquet mixte.", paquet)    # test append
 
 
-    # Initialiser les joueurs à l’état enAttente()
+# Définition du nombre maximal de offres qu’on peut avoir au même temps     
+# car si tous les joueurs font une offre au même temps ils doivent attendre que leurs offres soient acceptées par quelqu’un, cela étant impossible, le jeu bloquerait
+
+nbPropMTemps = 0
+
+if nbJoueurs % 2 == 0 :
+    nbPropMTemps = nbJoueurs/2
+else :
+    nbPropMTemps = (nbJoueurs-1)/2
+
+
+# Création de (nbPropMTemps) listes, initialisés null, pour définir le “tableau de jeu” (imaginé comme des espaces pour positionner les offres)
+
+# Initialiser les joueurs : -> appel en Multiprocessus à player 
+
+players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)] # On définit le processus principale
+
+# Initialisation des tas de cartes de chaque joueur : 
+tas=[]
+
+for k in range (nbJoueurs) :
+    tas.append([])
+    for x in range(5):
+        tas.append(paquet[x])   # 5 cartes ajoutées depuis le ficher
+    for x in range(5):  # On enlève la carte une fois qu’elle a été prise 
+        del paquet[x]
+        
+
+
+# Initialiser les joueurs à l’état enAttente()
