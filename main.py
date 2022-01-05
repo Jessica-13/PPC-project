@@ -98,7 +98,7 @@ import random
 
 
 # Définition structure d’une carte : 
-structure cartes(nom + points)
+    structure cartes(nom + points)
 
 
 
@@ -179,8 +179,8 @@ def examinationOffre(i):
 # --- *** Joueur *** --- #
 
 def joueur(i) :
-    while(cloche == False)
-        if ((compteurNbPropMTemps < nbPropMTemps) && etatEnAttente[i]):
+    while(cloche == False):
+        if ((compteurNbPropMTemps < nbPropMTemps) and etatEnAttente[i]):
         # on détermine qui doit faire un offre et qui l’accepter :
             if(random(0,1) == 1):
                 # si le joueur a eu 1 -> commence à jouer
@@ -193,7 +193,7 @@ def joueur(i) :
                 offre[i] = priorites(i)
                 offre[i].acquire()
         
-                for(m in nbJoueurs) :
+                for(m in nbJoueurs):
                     if(m==i):
                         pass
 
@@ -230,7 +230,8 @@ def joueur(i) :
 
 # --- *** global *** --- #
 
-nbPropMTemps = input("nbPropMTemps : ")
+nbPropMTemps = 1    # TRY ***
+# nbPropMTemps = input("nbPropMTemps : ")     # TRY ***
 
 offre = [multiprocessing.Lock() for i in range (nbPropMTemps)]  # on définit le lock
 
@@ -247,6 +248,10 @@ for x in range(nbJoueurs):
     etatEnAttente[x] = True
 
 
+paquet=[]   # Définition paquet
+tas=[]      # Définition tas
+
+
 
 
 
@@ -256,16 +261,13 @@ for x in range(nbJoueurs):
 
 if __name__ == "__main__":
     # Initialisation du jeu : charger le fichier avec les moyens de transport
-
     f = open('transports.txt', 'r')  # pour ouvrir le fichier
 
     # Créer la liste avec toutes les cartes : on prend le fichier txt (liste de tous les moyens de transport) :
-
     g = np.genfromtxt(fname='transports.txt')    # pour prendre les valeurs
 
 
     # Prendre en input le nombre de joueur :
-
     nbJoueurs = input('Entrez le nombre de joueurs: ')
 
     while ( nbJoueurs  < 2)     # pas assez pour jouer
@@ -279,8 +281,7 @@ if __name__ == "__main__":
 
     # Définition-paquet (création d’une liste avec les cartes du jeu) :
 
-    paquet=[]
-    print("Paquet vide.",paquet)   # test création
+    print("Paquet vide.",paquet)   # TRY *** test création
 
     for i in nbJoueurs:
         take_ligne = f.readline() # lire une seule ligne
@@ -292,19 +293,17 @@ if __name__ == "__main__":
             #  On l'écrit dans la liste 5 fois (car 5 cartes par famille)
             for x in range(5):
                 paquet.append(name_moyen_transport)
-            print("Paquet avec cartes.",paquet)    # test append
+            print("Paquet avec cartes.",paquet)    # TRY *** test append
 
     f.close()   # pour fermer le fichier
 
     # Mélangez les cartes dans le paquet
     random.shuffle(paquet)
-    print("Paquet mixte.", paquet)    # test append
+    print("Paquet mixte.", paquet)    # TRY *** test append
 
 
     # Définition du nombre maximal de offres qu’on peut avoir au même temps     
     # car si tous les joueurs font une offre au même temps ils doivent attendre que leurs offres soient acceptées par quelqu’un, cela étant impossible, le jeu bloquerait
-
-    nbPropMTemps = 0
 
     if nbJoueurs % 2 == 0 :
         nbPropMTemps = nbJoueurs/2
@@ -319,8 +318,7 @@ if __name__ == "__main__":
     players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)] # On définit le processus principale
 
     # Initialisation des tas de cartes de chaque joueur : 
-    tas=[]
-
+    
     for k in range (nbJoueurs) :
         tas.append([])
         for x in range(5):
@@ -330,7 +328,3 @@ if __name__ == "__main__":
             
 
 
-<<<<<<< HEAD
-    # Initialiser les joueurs à l’état enAttente()
-=======
->>>>>>> 8971c6d0eb5b945e7396f330fa77f220940034af
