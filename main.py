@@ -192,19 +192,16 @@ if __name__ == "__main__":
 
     # Prendre en input le nombre de joueur :
 
-    nbJoueurs = 0
     nbJoueurs = input('Entrez le nombre de joueurs: ')
 
-    input : int nbJoueurs 
-    while ( nbJoueurs  < 2)     # pas assez pour jouer 
-        if(nb = 0) 
-            -> c’est pas bon car on peut pas jouer s’il n’y a pas de joueurs (à afficher sur la forme d’un message)
-        if(nb = 1) 
-            -> c’est pas bon car le joueur étant seul à déjà gagné avant de commencer le jeu (à afficher sur la forme d’un message)
-    
-    # on retour à l’input du nbJoueurs 
-
-
+    while ( nbJoueurs  < 2)     # pas assez pour jouer
+        nbJoueurs = input("Entrez le nombre de joueurs: ")
+        if nbJoueurs == 0 : 
+            print("Valeur pas bonne car on peut pas jouer s’il n’y a pas de joueurs.")
+            # on retour donc à l’input du nbJoueurs
+        if nbJoueurs == 1 : 
+            print("Valeur pas bonne, car le joueur étant seul à déjà gagné avant de commencer le jeu")
+            # on retour donc à l’input du nbJoueurs 
 
     # Définition-paquet (création d’une liste avec les cartes du jeu) :
 
