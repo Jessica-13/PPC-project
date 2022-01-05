@@ -144,23 +144,6 @@ def joueur(i) :
 
 
 
-
-
-
-# --- *** global *** --- #
-
-offre = [multiprocessing.Lock() for i in range (nbPropMTemps)]
-
--> Initialisation global cloche : type booléen
-
-# Initialisation d’un compteur pour avoir trace du nombre de offre qui on été faites jusqu’à ce moment:
-
-compteurNbPropMTemps = 0
-boolean etatEnAttente = False
-
-
-
-
 """
 ++ partie interaction user (propositions)
 
@@ -178,6 +161,26 @@ Choisir éventuellement l’offre qu’on veut prendre
 import numpy as np
 import multiprocessing
 import random
+
+
+
+
+
+# --- *** global *** --- #
+
+    offre = [multiprocessing.Lock() for i in range (nbPropMTemps)]  # on définit le lock
+
+    # Initialisation global cloche : type booléen
+
+    cloche = False # Quand c'est vrai le jeu s'arrête
+
+    # Initialisation d’un compteur pour avoir trace du nombre de offre qui on été faites jusqu’à ce moment:
+
+    compteurNbPropMTemps = 0
+
+    etatEnAttente = False   # Vérifiez si le joueur est en attente
+
+
 
 
 
@@ -244,7 +247,7 @@ if __name__ == "__main__":
 
     # Initialiser les joueurs : -> appel en Multiprocessus à player 
     
-    players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)]
+    players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)] # On définit le processus principale
 
     # Initialisation des tas de cartes de chaque joueur : 
     tas=[]
