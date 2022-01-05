@@ -183,11 +183,11 @@ import numpy as np
 if __name__ == "__main__":
     # Initialisation du jeu : charger le fichier avec les moyens de transport
 
-    f = open('file1.txt', 'r')  # pour ouvrir le fichier
+    f = open('transports.txt', 'r')  # pour ouvrir le fichier
 
     # Créer la liste avec toutes les cartes : on prend le fichier txt (liste de tous les moyens de transport) :
 
-    g = np.genfromtxt(fname='file1.txt')    # pour prendre les valeurs
+    g = np.genfromtxt(fname='transports.txt')    # pour prendre les valeurs
 
 
     # Prendre en input le nombre de joueur :
