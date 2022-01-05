@@ -168,6 +168,8 @@ import random
 
 # --- *** global *** --- #
 
+    nbPropMTemps = input("nbPropMTemps : ")
+
     offre = [multiprocessing.Lock() for i in range (nbPropMTemps)]  # on définit le lock
 
     # Initialisation global cloche : type booléen
