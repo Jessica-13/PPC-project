@@ -183,6 +183,7 @@ import random
     etatEnAttente = False   # Vérifiez si le joueur est en attente
 
 
+# --- *** main *** --- #
 
 if __name__ == "__main__":
     # Initialisation du jeu : charger le fichier avec les moyens de transport
