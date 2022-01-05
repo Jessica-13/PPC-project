@@ -7,9 +7,7 @@
 '''
 ## compter le nombre de cartes identiques
     x =nbCartesEg(i)    # appel à nbCartesEg()
-
 ### Il faudrait considérer les cas où il y a plusieurs joueurs qui gagnent au même moment (c’est-à-dire plusieurs joueurs qui ont déjà 5 cartes égales au début du jeu / deux joueurs qui échangent leurs cartes et ils complètent leur famille)
-
     # cas où il y a les 5 cartes identiques
     if x.a == 5 :
         i.points = i.cartes[x.b].points
@@ -17,7 +15,6 @@
         cloche = True 
         -> option: envoyer un signal qui kill le programme
         -> ajouter un Print avec le numéro du joueur qui a gagné, la famille qu’il a complétée et les points qu’il a fait.
-
 ## partie pour déterminer les cartes restantes identiques
     maxOffre = 0
     indiceOffre = -1
@@ -29,51 +26,34 @@
             indiceOffre = m
         if (compte == maxOffre)&&(i.cartes[m].points < i.cartes[indiceOffre].points):
             indiceOffre = m
-
 ## création et remplissage liste avec les cartes à donner
     offre [] -> liste
     for a in range(maxOffre):
         offre[a] <- i.cartes[indiceOffre] // [b|<-] [b|<-] [b|None]
         return offre[]
-
-
-
-
-
 """
 ++ partie interaction user (propositions)
-
 Afficher cartes du joueur actuel
 Afficher les offres disponibles (nb de cartes) (elles doivent évoluer en direct en fonction des autres joueurs qui jouent)
 Choisir propositionOffre() ou examinationOffre()?
 Choisir manuellement les cartes qu’on peut donner
 Choisir éventuellement l’offre qu’on veut prendre
 """
-
-
-
-
 # TD 6
-
 def philosopher(i):
   while True:
       think(i)
       left_stick = i
       right_stick = (i + 1) % N
-
       if random.randint(0,1) == 0: # pour choisir s'il mange
           chopstick[left_stick].acquire()
-
           eat(i)
           chopstick[left_stick].release() # après avoir mangé il release le chopstick
-
       else :
           chopstick[right_stick].acquire()
-
           eat(i)
           chopstick[right_stick].release()
           
-
 '''
 
 
@@ -187,7 +167,7 @@ def joueur(i) :
                 offre[i] = priorites(i)
                 offre[i].acquire()
         
-                for(m in nbJoueurs):
+                for m in (nbJoueurs):
                     if(m==i):
                         pass
 
@@ -319,6 +299,3 @@ if __name__ == "__main__":
             tas.append(paquet[x])   # 5 cartes ajoutées depuis le ficher
         for x in range(5):  # On enlève la carte une fois qu’elle a été prise 
             del paquet[x]
-            
-
-
