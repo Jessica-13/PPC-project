@@ -33,8 +33,12 @@
 ## création et remplissage liste avec les cartes à donner
     offre [] -> liste
     for a in range(maxOffre):
-        offre[a] <- i.cartes[indiceOffre] // [b|<-] [b|<-] [b|null]
+        offre[a] <- i.cartes[indiceOffre] // [b|<-] [b|<-] [b|None]
         return offre[]
+
+
+
+
 
 
 # Définition méthode exchange : 
@@ -174,43 +178,49 @@ def examinationOffre(i):
 
 # --- *** Joueur *** --- #
 
-def joueur(i) : 
-while(cloche == False)
-    if (compteurNbPropMTemps < nbPropMTemps && etatEnAttente)
-    # on détermine qui doit faire un offre et qui l’accepter :
-        if(random(0,1) == 1) #entre le nbJoueurs pour voir qui tire le dé
-            # si le joueur a eu 1 -> commence à jouer
-            propositionOffre(i)
-            priorites(i)
-            -> on obtient offre[i] 
-            -> compteurNbPropMTemps += 1
-        else
-            -> si player a eu 0 -> il peut faire un offre 
-            -> il est mis dans l’état examinationOffre() 
-            -> appelle à la méthode priorites() 
-            -> on obtient offre[i] 
-            -> offre[i].acquire()
-    
-        for(m in nbJoueurs) :
-            if(m==i) 
-                pass
+def joueur(i) :
+    while(cloche == False)
+        if ((compteurNbPropMTemps < nbPropMTemps) && etatEnAttente[i]):
+        # on détermine qui doit faire un offre et qui l’accepter :
+            if(random(0,1) == 1):
+                # si le joueur a eu 1 -> commence à jouer
+                propositionOffre(i)
+                offre[i] = priorites(i)
+                compteurNbPropMTemps += 1
+            else:
+                # si player a eu 0 -> il peut examine un offre 
+                examinationOffre(i)
+                offre[i] = priorites(i)
+                offre[i].acquire()
+        
+                for(m in nbJoueurs) :
+                    if(m==i):
+                        pass
 
-            offre[m].acquire()  # pour dire que le joueur bloque l’offre car il est en train de choisir s’il l’accepte ou pas
-            if(length(offre[i]) == length(offre[m]))
-                -> appelle à la méthode echange(offre[i],offre[m]) 
-                -> compteurNbPropMTemps -= 1
-                -> Print (“Le joueur player(i) a accepté l’offre du joueur player(m). Ils ont echangés length(offre[i]) cartes.”)
+                    # le joueur bloque l’offre car il est en train de choisir s’il l’accepte ou pas
+                    offre[m].acquire()
+                    
+                    if(length(offre[i]) == length(offre[m])):
+                        echange(offre[i],offre[m])
+                        compteurNbPropMTemps -= 1
+                        print ("Le joueur player(i) a accepté l’offre du joueur", player(m),". Ils ont echangés", length(offre[i]), "cartes.")
+
+                        # on met les 2 joueurs qui viennent de jouer en attente
+                        enAttente(i)
+                        enAttente(m)
+                        set offre[i] == None
+                        set offre[m] == None
+                    else:
+                        # si le joueur(m) n’accepte pas l’offre
+                        offre[m].release()
+                    break
+                    
+            # si le joueur(m) a accepté l’offre, alors le joueur(i) peut retourner en attente aussi 
+            if (offre[i] == None):
                 enAttente(i)
-                enAttente(m)
-                set offre[i] == null
-                set offre[m] == null
-                break
-            else 
-                offre[m].release() # si le joueur(m) n’accepte pas l’offre
-
-        enAttente(i)            # si le joueur(m) a accepté l’offre, alors le joueur(i) peut retourner à joueur aussi  
-        offre[i].release()      # pour libérer la place
-        offre[m].release()      # pour libérer la place
+            # on libère les offre[i] et offre[m] pour qu'ils soient visibles au prochain tour
+            offre[i].release()
+            offre[m].release()
 
 
 
