@@ -104,7 +104,6 @@ def nbCartesEg(a):
 
 
 
-
 # Définition méthode pour trouver les priorités choix offre : 
 
 def priorités(i) :
@@ -119,9 +118,15 @@ def priorités(i) :
 # Définition méthode exchange :
 def echange(offrei, offrem) :
         print(offrei, " est échangé avec ", offrem)
-        # enlever les cartes à offrir dans la liste des cartes du joueur
+        # enlever les cartes à offrir dans la liste des cartes du joueur i
+        for a in (len(tas[i])): #fixer i et bouger a? list[2:5] par exemple
+            if 
+        # ajouter les cartes acceptées dans la liste des cartes du joueur i
         
-        # ajouter les cartes acceptées dans la liste des cartes du joueur
+        # enlever les cartes à offrir dans la liste des cartes du joueur m
+
+        # ajouter les cartes acceptées dans la liste des cartes du joueur m
+
 
 
 
