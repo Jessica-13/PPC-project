@@ -118,8 +118,8 @@ class return_values_nbCartesEg:
 def nbCartesEg(i):  # pourquoi def nbCartesEg(a):?
     max = 0
     indice = -1     # pour pouvoir retrouver aussi le cas 0
-    for j in range (paquet[i].tas[]):
-        counted = paquet[i].tas[].count(paquet[i].tas[j]) 
+    for j in range (paquet[i]):
+        counted = paquet[i].count(paquet[i][j]) 
 
 
         if (max < counted) and (i.cartes[indice].nom != i.cartes[j].nom):
