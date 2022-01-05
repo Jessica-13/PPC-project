@@ -67,6 +67,38 @@ import random
 
 
 
+# --- *** global *** --- #
+
+# Prendre en input le nombre de joueur :
+nbJoueurs = input('Entrez le nombre de joueurs: ')
+
+nbPropMTemps = 1    # TRY ***
+# nbPropMTemps = input("nbPropMTemps : ")     # TRY ***
+
+offre = [multiprocessing.Lock() for i in range (nbPropMTemps)]  # on définit le lock
+
+# Initialisation global cloche : type booléen
+
+cloche = False # Quand c'est vrai le jeu s'arrête
+
+# Initialisation d’un compteur pour avoir trace du nombre de offre qui on été faites jusqu’à ce moment:
+
+compteurNbPropMTemps = 0
+
+# Initialisation du tableau d'états des joueurs
+etatEnAttente = []
+for x in range(nbJoueurs):
+    etatEnAttente[x] = True
+
+paquet=[]   # Définition paquet
+tas=[]      # Définition tas
+
+
+
+
+
+
+
 # Définition structure d’une carte : 
     structure cartes(nom + points)
 
@@ -83,11 +115,13 @@ class return_values_nbCartesEg:
         self.a=a
         self.b=b
 
-def nbCartesEg(a):
+def nbCartesEg(i):  # pourquoi def nbCartesEg(a):?
     max = 0
     indice = -1     # pour pouvoir retrouver aussi le cas 0
-    for j in range (i.cartes[]):
-        counted = i.cartes[].count(i.cartes[j])
+    for j in range (paquet[i].tas[]):
+        counted = paquet[i].tas[].count(paquet[i].tas[j]) 
+
+
         if (max < counted) and (i.cartes[indice].nom != i.cartes[j].nom):
             max = counted
             indice = j
@@ -207,35 +241,6 @@ def joueur(i) :
 
 
 
-# --- *** global *** --- #
-
-nbPropMTemps = 1    # TRY ***
-# nbPropMTemps = input("nbPropMTemps : ")     # TRY ***
-
-offre = [multiprocessing.Lock() for i in range (nbPropMTemps)]  # on définit le lock
-
-# Initialisation global cloche : type booléen
-
-cloche = False # Quand c'est vrai le jeu s'arrête
-
-# Initialisation d’un compteur pour avoir trace du nombre de offre qui on été faites jusqu’à ce moment:
-
-compteurNbPropMTemps = 0
-
-# Initialisation du tableau d'états des joueurs
-for x in range(nbJoueurs):
-    etatEnAttente[x] = True
-
-
-paquet=[]   # Définition paquet
-tas=[]      # Définition tas
-
-
-
-
-
-
-
 # --- *** main *** --- #
 
 if __name__ == "__main__":
@@ -246,9 +251,7 @@ if __name__ == "__main__":
     g = np.genfromtxt(fname='transports.txt')    # pour prendre les valeurs
 
 
-    # Prendre en input le nombre de joueur :
-    nbJoueurs = input('Entrez le nombre de joueurs: ')
-
+    # test nbJoueurs
     while ( nbJoueurs  < 2)     # pas assez pour jouer
         nbJoueurs = input("Entrez le nombre de joueurs: ")
         if nbJoueurs == 0 : 
