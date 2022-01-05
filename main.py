@@ -71,23 +71,6 @@ def priorités(i) :
         -> ajouter les cartes acceptées dans la liste des cartes du joueur
 
 
-# Initialisations des 3 états :
-    ## En attente d’offres : 
-    def enAttente(i) :     // i étant l’indice du joueur
-        etatEnAttente = True
-        Print ( Le joueur player(i) est en attente)
-
-    ## En phase de proposition d’offre : 
-    def propositionOffre(i):
-        etatEnAttente = False
-        Print ( Le joueur player(i) est en train de faire une proposition)
-
-    ## En train de regarder quel offre accepter : 
-    def examinationOffre(i):
-        etatEnAttente = False
-        Print ( Le joueur player(i) est en train d’examiner les offres disponibles)
-
-
 # Définition structure d’une carte : 
     structure cartes(nom + points)  
 
@@ -97,7 +80,76 @@ def priorités(i) :
 
 
 
+
+
+"""
+++ partie interaction user (propositions)
+
+Afficher cartes du joueur actuel
+Afficher les offres disponibles (nb de cartes) (elles doivent évoluer en direct en fonction des autres joueurs qui jouent)
+Choisir propositionOffre() ou examinationOffre()?
+Choisir manuellement les cartes qu’on peut donner
+Choisir éventuellement l’offre qu’on veut prendre
+"""
+
+
+
+
+# TD 6
+
+def philosopher(i):
+  while True:
+      think(i)
+      left_stick = i
+      right_stick = (i + 1) % N
+
+      if random.randint(0,1) == 0: # pour choisir s'il mange
+          chopstick[left_stick].acquire()
+
+          eat(i)
+          chopstick[left_stick].release() # après avoir mangé il release le chopstick
+
+      else :
+          chopstick[right_stick].acquire()
+
+          eat(i)
+          chopstick[right_stick].release()
+          
+
 '''
+
+
+import numpy as np
+import multiprocessing
+import random
+
+
+
+
+
+
+
+# Initialisations des 3 états :
+    ## En attente d’offres : 
+    def enAttente(i) :      # i étant l’indice du joueur
+        etatEnAttente = True
+        print("Le joueur ", player(i), " est en attente.")
+
+    ## En phase de proposition d’offre : 
+    def propositionOffre(i):
+        etatEnAttente = False
+        print("Le joueur ", player(i), " est en train de faire une proposition.")
+
+    ## En train de regarder quel offre accepter : 
+    def examinationOffre(i):
+        etatEnAttente = False
+        print("Le joueur", player(i), "est en train d’examiner les offres disponibles.")
+
+
+
+
+
+
 
 # --- *** Joueur *** --- #
 
@@ -144,41 +196,30 @@ def joueur(i) :
 
 
 
-'''
-
 
 # --- *** global *** --- #
 
-offre = [multiprocessing.Lock() for i in range (nbPropMTemps)]
+    nbPropMTemps = input("nbPropMTemps : ")
 
--> Initialisation global cloche : type booléen
+    offre = [multiprocessing.Lock() for i in range (nbPropMTemps)]  # on définit le lock
 
-# Initialisation d’un compteur pour avoir trace du nombre de offre qui on été faites jusqu’à ce moment:
+    # Initialisation global cloche : type booléen
 
-compteurNbPropMTemps = 0
-boolean etatEnAttente = False
+    cloche = False # Quand c'est vrai le jeu s'arrête
 
+    # Initialisation d’un compteur pour avoir trace du nombre de offre qui on été faites jusqu’à ce moment:
 
+    compteurNbPropMTemps = 0
 
-
-"""
-++ partie interaction user (propositions)
-
-Afficher cartes du joueur actuel
-Afficher les offres disponibles (nb de cartes) (elles doivent évoluer en direct en fonction des autres joueurs qui jouent)
-Choisir propositionOffre() ou examinationOffre()?
-Choisir manuellement les cartes qu’on peut donner
-Choisir éventuellement l’offre qu’on veut prendre
-"""
-
-
-'''
-
-
-import numpy as np
+    etatEnAttente = False   # Vérifiez si le joueur est en attente
 
 
 
+
+
+
+
+# --- *** main *** --- #
 
 if __name__ == "__main__":
     # Initialisation du jeu : charger le fichier avec les moyens de transport
@@ -192,24 +233,21 @@ if __name__ == "__main__":
 
     # Prendre en input le nombre de joueur :
 
-    nbJoueurs = 0
     nbJoueurs = input('Entrez le nombre de joueurs: ')
 
-    input : int nbJoueurs 
-    while ( nbJoueurs  < 2)     # pas assez pour jouer 
-        if(nb = 0) 
-            -> c’est pas bon car on peut pas jouer s’il n’y a pas de joueurs (à afficher sur la forme d’un message)
-        if(nb = 1) 
-            -> c’est pas bon car le joueur étant seul à déjà gagné avant de commencer le jeu (à afficher sur la forme d’un message)
-    
-    # on retour à l’input du nbJoueurs 
-
-
+    while ( nbJoueurs  < 2)     # pas assez pour jouer
+        nbJoueurs = input("Entrez le nombre de joueurs: ")
+        if nbJoueurs == 0 : 
+            print("Valeur pas bonne car on peut pas jouer s’il n’y a pas de joueurs.")
+            # on retour donc à l’input du nbJoueurs
+        if nbJoueurs == 1 : 
+            print("Valeur pas bonne, car le joueur étant seul à déjà gagné avant de commencer le jeu")
+            # on retour donc à l’input du nbJoueurs 
 
     # Définition-paquet (création d’une liste avec les cartes du jeu) :
 
     paquet=[]
-    print(paquet)   # test création
+    print("Paquet vide.",paquet)   # test création
 
     for i in nbJoueurs:
         take_ligne = f.readline() # lire une seule ligne
@@ -221,31 +259,42 @@ if __name__ == "__main__":
             #  On l'écrit dans la liste 5 fois (car 5 cartes par famille)
             for x in range(5):
                 paquet.append(name_moyen_transport)
-            print(paquet)    # test append
+            print("Paquet avec cartes.",paquet)    # test append
 
     f.close()   # pour fermer le fichier
 
+    # Mélangez les cartes dans le paquet
+    random.shuffle(paquet)
+    print("Paquet mixte.", paquet)    # test append
 
 
     # Définition du nombre maximal de offres qu’on peut avoir au même temps     
     # car si tous les joueurs font une offre au même temps ils doivent attendre que leurs offres soient acceptées par quelqu’un, cela étant impossible, le jeu bloquerait
     
-    int nbPropMTemps : 
-        if(nbJoueurs est paire)
-            nbPropMTemps = nbJoueurs/2
-        else
-            nbPropMTemps = (nbJoueurs-1)/2
+    nbPropMTemps = 0
+
+    if nbJoueurs % 2 == 0 :
+        nbPropMTemps = nbJoueurs/2
+    else :
+        nbPropMTemps = (nbJoueurs-1)/2
+
 
     # Création de (nbPropMTemps) listes, initialisés null, pour définir le “tableau de jeu” (imaginé comme des espaces pour positionner les offres)
 
-    -> Initialiser les joueurs : -> appel en Multiprocessus à player 
+    # Initialiser les joueurs : -> appel en Multiprocessus à player 
     
-    players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)]
+    players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)] # On définit le processus principale
 
     # Initialisation des tas de cartes de chaque joueur : 
+    tas=[]
     
-    for k in range(nbJoueurs)
-    
-        -> l(k)=liste avec 5 cartes ajoutées depuis le ficher de manière aléatoire / on enlève la carte une fois qu’elle a été prise
+    for k in range (nbJoueurs) :
+        tas.append([])
+        for x in range(5):
+            tas.append(paquet[x])   # 5 cartes ajoutées depuis le ficher
+        for x in range(5):  # On enlève la carte une fois qu’elle a été prise 
+            del paquet[x]
+            
 
-    -> Initialiser les joueurs à l’état enAttente()
+
+    # Initialiser les joueurs à l’état enAttente()
