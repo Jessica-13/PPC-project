@@ -71,23 +71,6 @@ def priorités(i) :
         -> ajouter les cartes acceptées dans la liste des cartes du joueur
 
 
-# Initialisations des 3 états :
-    ## En attente d’offres : 
-    def enAttente(i) :     // i étant l’indice du joueur
-        etatEnAttente = True
-        Print ( Le joueur player(i) est en attente)
-
-    ## En phase de proposition d’offre : 
-    def propositionOffre(i):
-        etatEnAttente = False
-        Print ( Le joueur player(i) est en train de faire une proposition)
-
-    ## En train de regarder quel offre accepter : 
-    def examinationOffre(i):
-        etatEnAttente = False
-        Print ( Le joueur player(i) est en train d’examiner les offres disponibles)
-
-
 # Définition structure d’une carte : 
     structure cartes(nom + points)  
 
@@ -155,12 +138,60 @@ Choisir éventuellement l’offre qu’on veut prendre
 """
 
 
+
+
+
+# TD 6
+
+def philosopher(i):
+  while True:
+      think(i)
+      left_stick = i
+      right_stick = (i + 1) % N
+
+      if random.randint(0,1) == 0: # pour choisir s'il mange
+          chopstick[left_stick].acquire()
+
+          eat(i)
+          chopstick[left_stick].release() # après avoir mangé il release le chopstick
+
+      else :
+          chopstick[right_stick].acquire()
+
+          eat(i)
+          chopstick[right_stick].release()
+          
+
 '''
 
 
 import numpy as np
 import multiprocessing
 import random
+
+
+
+
+
+
+
+# Initialisations des 3 états :
+    ## En attente d’offres : 
+    def enAttente(i) :      # i étant l’indice du joueur
+        etatEnAttente = True
+        print("Le joueur ", player(i), " est en attente.")
+
+    ## En phase de proposition d’offre : 
+    def propositionOffre(i):
+        etatEnAttente = False
+        print("Le joueur ", player(i), " est en train de faire une proposition.")
+
+    ## En train de regarder quel offre accepter : 
+    def examinationOffre(i):
+        etatEnAttente = False
+        print("Le joueur", player(i), "est en train d’examiner les offres disponibles.")
+
+
 
 
 
@@ -181,6 +212,11 @@ import random
     compteurNbPropMTemps = 0
 
     etatEnAttente = False   # Vérifiez si le joueur est en attente
+
+
+
+
+
 
 
 # --- *** main *** --- #
