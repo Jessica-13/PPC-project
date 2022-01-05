@@ -4,6 +4,7 @@
 
 # --- Structure du programme --- #
 
+'''
 # Définition méthode pour déterminer le plus grand nombre de cartes identiques
 
 class return_values_nbCartesEg:
@@ -13,7 +14,7 @@ class return_values_nbCartesEg:
 
 def nbCartesEg(a):
     max = 0
-    indice = -1     // pour pouvoir retrouver aussi le cas 0
+    indice = -1     # pour pouvoir retrouver aussi le cas 0
     for j in range (i.cartes[]):
         counted = i.cartes[].count(i.cartes[j])
         if (max < counted) && (i.cartes[indice].nom != i.cartes[j].nom) :
@@ -232,3 +233,82 @@ Choisir propositionOffre() ou examinationOffre()?
 Choisir manuellement les cartes qu’on peut donner
 Choisir éventuellement l’offre qu’on veut prendre
 """
+
+
+'''
+
+
+import numpy as np
+
+
+
+
+if __name__ == "__main__":
+    # Initialisation du jeu : charger le fichier avec les moyens de transport
+
+    f = open('file1.txt', 'r')  # pour ouvrir le fichier
+
+    # Créer la liste avec toutes les cartes : on prend le fichier txt (liste de tous les moyens de transport) :
+
+    g = np.genfromtxt(fname='file1.txt')    # pour prendre les valeurs
+
+
+    # Prendre en input le nombre de joueur :
+
+    nbJoueurs = 0
+    nbJoueurs = input('Entrez le nombre de joueurs: ')
+
+    input : int nbJoueurs 
+    while ( nbJoueurs  < 2)     # pas assez pour jouer 
+        if(nb = 0) 
+            -> c’est pas bon car on peut pas jouer s’il n’y a pas de joueurs (à afficher sur la forme d’un message)
+        if(nb = 1) 
+            -> c’est pas bon car le joueur étant seul à déjà gagné avant de commencer le jeu (à afficher sur la forme d’un message)
+    
+    # on retour à l’input du nbJoueurs 
+
+
+
+    # Définition-paquet (création d’une liste avec les cartes du jeu) :
+
+    paquet=[]
+    print(paquet)   # test création
+
+    for i in nbJoueurs:
+        take_ligne = f.readline() # lire une seule ligne
+        if f == "":  # si la ligne est vide elle sort de la boucle
+            break
+        elif f[0].isdigit():  #    -> on prend dans la suite un moyen de transport (en random)
+            name_moyen_transport = f.split(" ")[0]  # le mot est en première position
+            
+            #  On l'écrit dans la liste 5 fois (car 5 cartes par famille)
+            for x in range(5):
+                paquet.append(name_moyen_transport)
+            print(paquet)    # test append
+
+    f.close()   # pour fermer le fichier
+
+
+
+    # Définition du nombre maximal de offres qu’on peut avoir au même temps     
+    # car si tous les joueurs font une offre au même temps ils doivent attendre que leurs offres soient acceptées par quelqu’un, cela étant impossible, le jeu bloquerait
+    
+    int nbPropMTemps : 
+        if(nbJoueurs est paire)
+            nbPropMTemps = nbJoueurs/2
+        else
+            nbPropMTemps = (nbJoueurs-1)/2
+
+    # Création de (nbPropMTemps) listes, initialisés null, pour définir le “tableau de jeu” (imaginé comme des espaces pour positionner les offres)
+
+    -> Initialiser les joueurs : -> appel en Multiprocessus à player 
+    
+    players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)]
+
+    # Initialisation des tas de cartes de chaque joueur : 
+    
+    for k in range(nbJoueurs)
+    
+        -> l(k)=liste avec 5 cartes ajoutées depuis le ficher de manière aléatoire / on enlève la carte une fois qu’elle a été prise
+
+    -> Initialiser les joueurs à l’état enAttente()
