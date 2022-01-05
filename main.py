@@ -177,7 +177,7 @@ Choisir éventuellement l’offre qu’on veut prendre
 
 import numpy as np
 import multiprocessing
-# import random
+import random
 
 
 
@@ -208,7 +208,7 @@ if __name__ == "__main__":
     # Définition-paquet (création d’une liste avec les cartes du jeu) :
 
     paquet=[]
-    print(paquet)   # test création
+    print("Paquet vide.",paquet)   # test création
 
     for i in nbJoueurs:
         take_ligne = f.readline() # lire une seule ligne
@@ -220,9 +220,13 @@ if __name__ == "__main__":
             #  On l'écrit dans la liste 5 fois (car 5 cartes par famille)
             for x in range(5):
                 paquet.append(name_moyen_transport)
-            print(paquet)    # test append
+            print("Paquet avec cartes.",paquet)    # test append
 
     f.close()   # pour fermer le fichier
+
+    # Mélangez les cartes dans le paquet
+    random.shuffle(paquet)
+    print("Paquet mixte.", paquet)    # test append
 
 
     # Définition du nombre maximal de offres qu’on peut avoir au même temps     
@@ -243,9 +247,15 @@ if __name__ == "__main__":
     players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)]
 
     # Initialisation des tas de cartes de chaque joueur : 
+    tas=[]
     
-    for k in range(nbJoueurs)
-    
-        -> l(k)=liste avec 5 cartes ajoutées depuis le ficher de manière aléatoire / on enlève la carte une fois qu’elle a été prise
+    for k in range (nbJoueurs) :
+        tas.append([])
+        for x in range(5):
+            tas.append(paquet[x])   # 5 cartes ajoutées depuis le ficher
+        for x in range(5):  # On enlève la carte une fois qu’elle a été prise 
+            del paquet[x]
+            
 
-    -> Initialiser les joueurs à l’état enAttente()
+
+    # Initialiser les joueurs à l’état enAttente()
