@@ -160,7 +160,7 @@ def enAttente(i):      # i étant l’indice du joueur
     etatEnAttente[i] = True
     print("Le joueur ", joueur(i), " est en attente.")
 
-## En phase de proposition d’offre : 
+## En phase de proposition d’offre :
 def propositionOffre(i):
     etatEnAttente[i] = False
     print("Le joueur ", joueur(i), " est en train de faire une proposition.")
@@ -330,4 +330,3 @@ for k in range (nbJoueurs) :
         
 
 
-# Initialiser les joueurs à l’état enAttente()
