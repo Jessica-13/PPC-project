@@ -114,14 +114,14 @@ import random
         indice = -1     # pour pouvoir retrouver aussi le cas 0
         for j in range (i.cartes[]):
             counted = i.cartes[].count(i.cartes[j])
-            if (max < counted) && (i.cartes[indice].nom != i.cartes[j].nom) :
+            if (max < counted) and (i.cartes[indice].nom != i.cartes[j].nom) :
                 max = counted
                 indice = j
             elif (compte == max)
                 if (i.cartes[j].points > i.cartes[indice].points):
                     indice = j
 
-        t=return_values (max, indice)
+        t=return_values_nbCartesEg(max, indice)
         return t
 
 
