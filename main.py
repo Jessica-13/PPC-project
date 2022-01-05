@@ -40,16 +40,6 @@
 
 
 
-
-# Définition méthode exchange : 
-    def echange(offrei, offrem) :
-        -> offre[i] ***échangé avec*** offre[m]
-        -> enlever les cartes à offrir dans la liste des cartes du joueur
-        -> ajouter les cartes acceptées dans la liste des cartes du joueur
-
-
-
-
 """
 ++ partie interaction user (propositions)
 
@@ -147,7 +137,11 @@ def priorités(i) :
 ## création et remplissage liste avec les cartes à donner
 
 # Définition méthode exchange :
-
+def echange(offrei, offrem) :
+        print(offrei, " est échangé avec ", offrem)
+        # enlever les cartes à offrir dans la liste des cartes du joueur
+        
+        # ajouter les cartes acceptées dans la liste des cartes du joueur
 
 
 
