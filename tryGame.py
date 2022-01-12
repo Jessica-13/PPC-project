@@ -18,12 +18,15 @@ nbJoueurs = 10
 
 # définition famille des cartes
 noms_couleurs = []
+noms_valeurs = []
 
 class Card:
     # Représente une carte à jouer standard
-    def __init__(self, couleur, valeur):
+    def __init__(self, couleur, valeur, noms_couleurs, noms_valeurs):
         self.couleur = couleur
         self.valeur = valeur
+        self.noms_couleurs = noms_couleurs
+        self.noms_valeurs = noms_valeurs
         
     # Initialisation du jeu : création du fichier avec les autant de moyens de transport que de joueurs
     with open("transports.txt", "r") as fichier1, open("transportsJEU.txt", "w") as fichier2:
@@ -41,8 +44,11 @@ class Card:
             noms_couleurs.append(ligne)
 
     # définition points des cartes
-    noms_valeurs = [None, 'as', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'valet', 'dame', 'roi']
-
+    numPoint = 1
+    for indexI in range(nbJoueurs):
+        for indexJ in range(5):
+            noms_valeurs.append(numPoint)
+        numPoint+= 2
 
 
     # Comparer des cartes :
@@ -64,8 +70,8 @@ class Card:
     
     # affichage carte
     def __str__(self):
-        return '%s de %s' % (Card.noms_valeurs[self.valeur], noms_couleurs[self.couleur])
-    
+        return "La famille :%s - avec les points :%s" % (self.couleur, self.valeur)
+
 
 
 class Paquet:
@@ -74,19 +80,9 @@ class Paquet:
         self.cartes = []
 
         for c in noms_couleurs:            # nombre de familles
-            for valeur in range(1, 14):     # points de chaque familles
-                carte = Card(c, valeur)
-                self.cartes.append(carte)        
-        
-    
-    # Afficher le paquet : 
-    def __str__(self):
-        res = []
-        for carte in self.cartes:
-            res.append(str(carte))
-        return '\n'.join(res)
-    
-
+            for valeur in noms_valeurs:     # points de chaque familles
+                carte = Card(c, valeur,noms_couleurs, noms_valeurs)
+                self.cartes.append(carte)     
 
 
 
@@ -97,4 +93,10 @@ class Paquet:
 if __name__ == '__main__':
     
     paquet = Paquet()
-    print(paquet)
+    print(paquet)           # TEST PAQUET
+
+    # TEST CARD
+    carte = Card('Autobus', 1, noms_couleurs, noms_valeurs)
+    print(carte)
+
+    
