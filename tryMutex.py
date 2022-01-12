@@ -5,7 +5,8 @@
 
 import time        
 from multiprocessing import Process, Lock, Array, Value
-           
+
+
           
 def task(index, result): 
     result[index.value] = index.value ** 2
@@ -13,9 +14,7 @@ def task(index, result):
 def run(n):   
           
     mutex = Lock()
-    
     start = time.time()  
-          
     result = Array('i', range(n), lock=mutex)
            
     for k in range(n):  
