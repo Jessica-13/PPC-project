@@ -13,6 +13,7 @@ import sys
 '''
 
 import numpy as np
+import random
 
 nbJoueurs = 10
 
@@ -70,7 +71,7 @@ class Card:
     
     # affichage carte
     def __str__(self):
-        return "La famille :%s - avec les points :%s" % (self.couleur, self.valeur)
+        return "La famille :%s- avec les points :%d" % (self.couleur, self.valeur)
 
 
 
@@ -83,9 +84,32 @@ class Paquet:
             for valeur in noms_valeurs:     # points de chaque familles
                 carte = Card(c, valeur,noms_couleurs, noms_valeurs)
                 self.cartes.append(carte)     
+        
+    
+    # Mélanger le paquet de cartes
+    def battre(self):
+        np.random.shuffle(self.cartes)
+    
+    # Distribuer des cartes
+    '''
+    Comme pop retire la dernière carte dans la liste, 
+    nous distribuons les cartes à partir de la fin du paquet.
+    '''
+    def pop_carte(self):
+        return self.cartes.pop()
 
+    # Ajouter une carte au paquet
 
+    def ajouter_carte(self, carte):
+        self.cartes.append(carte)
 
+# *****************************************************************************
+
+class Main(Paquet):
+    """Représente une main au jeu de cartes."""
+    def __init__(self, etiquette = ''):
+            self.cartes = []
+            self.etiquette = etiquette
 
 
 
@@ -98,5 +122,32 @@ if __name__ == '__main__':
     # TEST CARD
     carte = Card('Autobus', 1, noms_couleurs, noms_valeurs)
     print(carte)
+
+    # TEST priorité cards
+    carte1 = Card('Avion', 2, noms_couleurs, noms_valeurs)
+    carte2 = Card('Barque', 3, noms_couleurs, noms_valeurs)
+    print(carte1<carte2)
+
+
+
+    # TEST MAIN
+    main = Main('Tas 1')    # Changer l'etiquette du main
+    print("Joueur :%s" % (main.etiquette))             # numero du joueur 
+    paquet.battre()
+    for indexTryPaquet in range(5*nbJoueurs):
+        print("Carte :%s" % (paquet.cartes[indexTryPaquet]))
+
+
+    ## tas = Paquet()
+    for indexTas in range(5): 
+        carteMain = paquet.pop_carte()
+        main.ajouter_carte(carteMain)
+        # print("try :%s" % (carteMain)) 
+    for indexTas in range(5): 
+        print("Carte :%s" % (main.cartes[indexTas]))              # Cartes de ce main
+
+
+    for indexTry in range(len(noms_valeurs)):
+        print(noms_valeurs[indexTry])
 
     
