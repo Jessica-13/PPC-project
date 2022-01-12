@@ -141,11 +141,33 @@ def nbCartesEg(i):  # pourquoi def nbCartesEg(a):?
 # Définition méthode pour trouver les priorités choix offre : 
 
 def priorités(i) :
+    ## compter le nombre x=(max,indice) de cartes identiques
+    x = nbCartesEg(i)
+
+    ## quand il y a 5 cartes identiques
+    
+
+    ## déterminer les cartes restantes identiquess
+    maxOffre = 0
+    indiceOffre = -1
+    for m in range (cartes[]) :
+        if (i.cartes[m].nom != i.cartes[x.b].nom) :
+            compte = i.cartes[].count(i.cartes[m])
+        if ( compte > maxOffre):
+            maxOffre = compte
+            indiceOffre = m
+        if (compte == maxOffre)&&(i.cartes[m].points < i.cartes[indiceOffre].points):
+            indiceOffre = m
+
+    ## créer liste des cartes à offrir
+
 
 
     # À FAIRE :
-    ## compter le nombre de cartes identiques
-    ### Il faudrait considérer les cas où il y a plusieurs joueurs qui gagnent au même moment (c’est-à-dire plusieurs joueurs qui ont déjà 5 cartes égales au début du jeu / deux joueurs qui échangent leurs cartes et ils complètent leur famille)
+    ### Il faudrait considérer les cas où il y a plusieurs joueurs qui gagnent
+    ### au même moment (c’est-à-dire plusieurs joueurs qui ont déjà 5 cartes
+    ### égales au début du jeu / deux joueurs qui échangent leurs cartes et ils
+    #### complètent leur famille)
     ## partie pour déterminer les cartes restantes identiques
     ## création et remplissage liste avec les cartes à donner
 
