@@ -100,8 +100,10 @@ tas=[]      # Définition tas
 
 
 # Définition structure d’une carte : 
-    structure cartes(nom + points)
-
+class Carte:
+	def __init__(self, val, couleur):
+		self.couleur=couleur    # type famille
+		self.valeur = val       # points famille
 
 
 
