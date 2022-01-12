@@ -70,19 +70,21 @@ import random
 # --- *** global *** --- #
 
 # Prendre en input le nombre de joueur :
-nbJoueurs = input('Entrez le nombre de joueurs: ')
+nbJoueurs = int(input('Entrez le nombre de joueurs: '))
 
-nbPropMTemps = 1    # TRY ***
+nbPropMTemps = 1
+# TRY ***
 # nbPropMTemps = input("nbPropMTemps : ")     # TRY ***
 
-offre = [multiprocessing.Lock() for i in range (nbPropMTemps)]  # on définit le lock
+offre = [multiprocessing.Lock() for i in range (nbPropMTemps)]
+# on définit le lock
 
 # Initialisation global cloche : type booléen
 
-cloche = False # Quand c'est vrai le jeu s'arrête
+cloche = False
+# Quand c'est vrai le jeu s'arrête
 
 # Initialisation d’un compteur pour avoir trace du nombre de offre qui on été faites jusqu’à ce moment:
-
 compteurNbPropMTemps = 0
 
 # Initialisation du tableau d'états des joueurs
@@ -90,8 +92,15 @@ etatEnAttente = []
 for x in range(nbJoueurs):
     etatEnAttente[x] = True
 
-paquet=[]   # Définition paquet
-tas=[]      # Définition tas
+# Définition paquet: contenant tous les véhicules 5 fois
+paquet=[]
+# Définition tas: contenant la distribution des cartes (chaque joueur a son espace allant de 0 à 4 pour le joueur 1 par exemple)
+tas=[]
+
+# Tableau des points de chaque joueur
+points = []
+for x in range(nbJoueurs+1):
+    points[x] = 0
 
 
 
@@ -147,9 +156,15 @@ def priorités(i) :
     x = nbCartesEg(i)
 
     ## quand il y a 5 cartes identiques
-    
+    if x.a == 5:
+        points[i] = tas[i][x.b].valeur
+        famille = tas[i][x.b].couleur
+        cloche = True
+        ### vérifier si d'autres joueurs ont gagné aussi
+        ### + arrêter le jeu
+        print("Le joueur ", i, " a gagné avec ", points[i], " points. Bravo !")
 
-    ## déterminer les cartes restantes identiquess
+    ## déterminer les cartes restantes identiques
     maxOffre = 0
     indiceOffre = -1
     for m in range (cartes[]) :
@@ -172,6 +187,12 @@ def priorités(i) :
     #### complètent leur famille)
     ## partie pour déterminer les cartes restantes identiques
     ## création et remplissage liste avec les cartes à donner
+
+
+
+
+
+
 
 # Définition méthode exchange :
 def echange(offrei, offrem) :
@@ -289,7 +310,7 @@ if __name__ == "__main__":
 
     print("Paquet vide.",paquet)   # TRY *** test création
 
-    for i in nbJoueurs:
+    for i in range(nbJoueurs):
         take_ligne = f.readline() # lire une seule ligne
         if f == "":  # si la ligne est vide elle sort de la boucle
             break
@@ -324,10 +345,12 @@ if __name__ == "__main__":
     players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)] # On définit le processus principale
 
     # Initialisation des tas de cartes de chaque joueur : 
-    
+    for j in range(5): # pour qu'on n'ait pas besoin de faire tas[i-1] à chaque fois dans le code
+        tas[0][j] = 0
     for k in range (nbJoueurs) :
         tas.append([])
         for x in range(5):
             tas.append(paquet[x])   # 5 cartes ajoutées depuis le ficher
         for x in range(5):  # On enlève la carte une fois qu’elle a été prise 
             del paquet[x]
+
