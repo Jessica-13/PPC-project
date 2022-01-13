@@ -16,3 +16,14 @@ https://forum.ubuntu-fr.org/viewtopic.php?id=845221
 
 
 Mélangez un jeu de cartes : https://fr.acervolima.com/melangez-un-jeu-de-cartes-avec-oops-en-python/
+
+
+Tutoriel : Interface graphique Pygame pour Python : https://pub.phyks.me/sdz/sdz/interface-graphique-pygame-pour-python.html
+
+multitimer 0.3  : https://pypi.org/project/multitimer/
+
+
+DECK : https://thecleverprogrammer.com/2020/10/04/card-game-with-python/
+
+
+Pour moi : https://github.com/robotane/CardIoPlay
