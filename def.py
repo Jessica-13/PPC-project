@@ -9,7 +9,7 @@ import threading
 from threading import Thread,Timer
 import pygame
 from pygame.locals import *
-import random
+from random import *
 import multitimer
 import sys 
 import os
@@ -25,12 +25,11 @@ mutexAffichage = multiprocessing.Lock()		# Affichage main
 
 white = (255, 255, 255) 
 black= (0, 0,0) 
-#X=1920
-#Y=1080
 X=1380
 Y=868
  
-
+lRandom = [] 		# Pour random
+okTest = True
 
 pygame.init() 	# Initialisation fenêtre de jeu
 mixer.init()	# Initialisation musique
@@ -52,15 +51,15 @@ mixer.music.play(loops=-1)
 
 
 
-# Clé
-key =int(random.random()*1000)
+# Clés
+key =int(random()*1000)
 cle = key +1 
 # Message queue
 mq = sysv_ipc.MessageQueue(key, sysv_ipc.IPC_CREAT)
 aff = sysv_ipc.MessageQueue(cle, sysv_ipc.IPC_CREAT)
 
 
-
+# Définition du joueur 
 class Joueur:
 	def __init__(self, identifiant, l):
 		self.identifiant=identifiant
@@ -68,6 +67,7 @@ class Joueur:
 	def ajouterCarte (self,carte):
 		self.main.append(carte)
 
+# Définition de l'objet "carte"
 class Carte:
 	def __init__(self, val, couleur):
 		self.couleur=couleur
@@ -75,17 +75,26 @@ class Carte:
 
 
 
-# Définition des cartes que les joueurs ont au début du jeu
-# Assigner les cartes aux joueurs
+# Définition des cartes que les joueurs ont au début du jeu : assigner les cartes aux joueurs
 def piocher(j): # Permet à un joueur de piocher une carte
+	okTest = True
 	mutexPioche.acquire()						# on block le paquet pour prendre les cartes 
 	#son.play() # quand on prend les cartes/pas necessarie
-	a = int(random.random() * (len(pioche)))		# on prend une carte random
+	a = int(randrange(len(pioche)))		# on prend une carte random
+	# À VERIFIER ***
+	while okTest:
+		if a not in lRandom:
+			lRandom.append(a)
+			okTest = False
+		else :
+			a = int(randrange(len(pioche)))
+	print(a)
+	print("len : ", len(pioche))
+	# a = int(random.random() * (len(pioche)))
 	j.ajouterCarte(pioche[a])					# main 
 	del pioche[a]								# on enleve cette carte
 	mutexPioche.release()						# on release le paquet
 	# afficherMain(j)
-	faireOffre(j)
 	
 
 
@@ -174,8 +183,9 @@ def jouer(j) :
 # DEFINIR L'ECHANGE 
 # def is_valid(): 
 
-# ===> DEFNIR SI QUELQU'UN À GAGNÉ 
+# ===> SI QUELQU'UN À GAGNÉ 
 # envoyer le signal pour arreter le jeu
+# faire donc sonner la cloche (musique + changer l'image avec clocheSonne.jpg)
 
 
 # MODIFIER !!!!!!!!!!!!!!!!!!!!!!!!!!!
