@@ -1,17 +1,32 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.10
 
 from multiprocessing import Process, Manager
 from random import *
 
 
+# Definition of player 
+class Joueur:
+    def __init__(self, identifiant, l):
+        self.identifiant=identifiant
+        self.main= l
 
-# Définition de l'objet "carte"
+    def __str__(self):
+        return "Player %s cards : %s" % (self.identifiant, self.main)
+
+    def ajouterCarte (self,carte):
+        self.main.append(carte)
+
+
+# Definition of the "Carte" object
 class Carte:
-	def __init__(self, val, couleur):
-		self.couleur = couleur
-		self.valeur = val
+    def __init__(self, val, couleur):
+        self.couleur = couleur
+        self.valeur = val
+        
+    def __str__(self):
+        return "%s : %s" % (self.couleur, self.valeur)
 
-# # Définition de l'objet "carte" pour le paquet
+# # Definition of the "Carte" object for the Deck
 class Cards:
 	global suites, values 
 	suites = ['Velo', 'Autobus', 'Voiture', 'Tracteur']
@@ -20,14 +35,14 @@ class Cards:
 	def __init__(self): 
 		pass
 
-# Définir le paquet
+# Definition of the Deck
 class Deck(Cards): 
 	def __init__(self): 
 		Cards.__init__(self) 
 		self.mycardset = []
 		
-		for i in range(5): 		# 4 joueurs
-			for j in range(4): 	    # 5 cartes par famille
+		for i in range(5): 		# 4 players
+			for j in range(4): 	    # 5 cards for every family
 				self.mycardset.append(values[j] + " " + suites[j])
 	
 	def popCard(self): 
@@ -38,7 +53,7 @@ class Deck(Cards):
 			print("Card removed is", cardpopped) 
 
 
-# Mixer le paquet
+# Shuffle the deck of cards
 class ShuffleCards(Deck): 
     def __init__(self): 
         Deck.__init__(self) 
@@ -58,10 +73,35 @@ class ShuffleCards(Deck):
             return (cardpopped) 
 
 
-
-
-
-
+# Heap definition for each player
+def giveCards(identity):
+    match identity:
+        case 1:
+            print("Player ", identity, " cards")
+            for i in range(5):	
+                j1.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
+                print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
+            print(" ")
+        case 2:
+            print("Player ", identity, " cards")
+            for i in range(5,10):	
+                j2.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
+                print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
+            print(" ")
+        case 3:
+            print("Player ", identity, " cards")
+            for i in range(10,15):	
+                j3.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
+                print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
+            print(" ")
+        case 4:
+            print("Player ", identity, " cards")
+            for i in range(15,20):	
+                j4.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
+                print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
+            print(" ")
+        case _:
+            print("ERROR : problem with player index")
 
 
 def jeu(identifiant, points, offre):
@@ -69,13 +109,14 @@ def jeu(identifiant, points, offre):
     offre.append(2)
     offre.append(3)
     points.reverse()
-    print("identifiant : ", identifiant)
+    print("Identifiant : ", identifiant)
+    print("Try out: ", j1.main)
 
-class MathsClass:
+'''class MathsClass:
     def add(self, x, y):
         return x + y
     def mul(self, x, y):
-        return x * y
+        return x * y'''
 
 
 if __name__ == '__main__':
@@ -96,36 +137,55 @@ if __name__ == '__main__':
     # ***********************************
     
     
-    pioche = manager.list()    # Création d'une liste partagée représentant la pioche, pour que ça soit commune à tous les joueurs
+    # pioche = manager.list()    # Creation of a shared list representing the Deck -> common to all players
 
     for i in range(19):
         deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
         deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
     
-    for i in range(19):
-        pioche.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))	
-        print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
-        
-
-
-
-
-
-
-
-
-
-
-
-    identifiant = 1
-    points = manager.list(range(10))
-
-    offre = manager.list()
+    
     
 
-    p = Process(target=jeu, args=(identifiant, points, offre))
-    p.start()
-    p.join()
 
+    j1= Joueur(1,[])
+    j2= Joueur(2,[])
+    j3= Joueur(3,[])
+    j4= Joueur(4,[])
+    giveCards(j1.identifiant)
+    giveCards(j2.identifiant)
+    giveCards(j3.identifiant)
+    giveCards(j4.identifiant)
+
+    points = manager.list(range(10))
+
+
+    for i in range(19):     # To see the shuffled Deck
+        print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
+
+    
+
+
+
+    offre = manager.list()  # Offer made
+    
+
+    p1 = Process(target=jeu, args=(j1, points, offre))
+    p2 = Process(target=jeu, args=(j2, points, offre))
+    p3 = Process(target=jeu, args=(j3, points, offre))
+    p4 = Process(target=jeu, args=(j4, points, offre))
+    p1.start()
+    p1.join()
+
+    p2.start()
+    p2.join()
+
+    p3.start()
+    p3.join()
+
+    p4.start()
+    p4.join()
+
+
+    # TEST
     print(points)
     print(offre)

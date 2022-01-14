@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.10
 
 
 import threading
 import time
-import random *
-
+from random import randint
+import sys
 
 # Definition of the lock
 threadLock = threading.Lock()
@@ -46,9 +46,10 @@ if __name__ == '__main__':
     thread2.join()
     thread3.join()
 
-
+    
     # End of script
     print("Fine")
+    print(sys.version)
 
 
 
