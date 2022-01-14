@@ -1,28 +1,22 @@
 #!/usr/bin/env python3
 
-# Def.
+# CODE MAIN
 
 import sysv_ipc
 from multiprocessing import Process, Manager, Value
 import multiprocessing
-import threading
 from threading import Thread,Timer
 import pygame
 from pygame.locals import *
-# import pygame_gui
-# from pygame_gui.core import ObjectID
-# from pygame_gui.elements import UIButton
 from random import *
-import multitimer
 import sys 
-import os
 from pygame import mixer
 
 
 
 
 mutexPioche = multiprocessing.Lock()		# si on prend une carte elle n'est plus accessible
-# mutexQueue = multiprocessing.Lock()
+mutexQueue = multiprocessing.Lock()
 mutexAffichage = multiprocessing.Lock()		# Affichage main
 
 
@@ -46,8 +40,6 @@ smallfont = pygame.font.SysFont('Corbel',35)	## defining a font
 
 
 fenetre = pygame.display.set_mode((X, Y), RESIZABLE)
-# fond = pygame.image.load("fond.png").convert()
-# fenetre.blit(fond,(0,0))
 
 # fills the screen with a color
 fenetre.fill((60,25,60))
@@ -57,7 +49,6 @@ fenetre.fill((60,25,60))
 # son = pygame.mixer.Sound("son.wav")
 mixer.music.load("musique.mp3")
 mixer.music.play(loops=-1)
-
 
 
 
@@ -77,13 +68,13 @@ class Joueur:
 	def ajouterCarte (self,carte):
 		self.main.append(carte)
 
-# Définition de l'objet "carte" !!!!!!!!!!!!!!!!!!!
+# Définition de l'objet "carte"
 class Carte:
 	def __init__(self, val, couleur):
 		self.couleur = couleur
 		self.valeur = val
 
-# # Définition de l'objet "carte"
+# # Définition de l'objet "carte" pour le paquet
 class Cards:
 	global suites, values 
 	suites = ['Velo', 'Autobus', 'Voiture', 'Tracteur']
@@ -99,7 +90,7 @@ class Deck(Cards):
 		self.mycardset = []
 		
 		for i in range(5): 		# 4 joueurs
-			for j in range(4): 	# 5 cartes par famille
+			for j in range(4): 	    # 5 cartes par famille
 				self.mycardset.append(values[j] + " " + suites[j])
 	
 	def popCard(self): 
@@ -129,28 +120,6 @@ class ShuffleCards(Deck):
             cardpopped = self.mycardset.pop() 
             return (cardpopped) 
 
-'''
-def piocher(j): # Permet à un joueur de piocher une carte
-	okTest = True
-	mutexPioche.acquire()						# on block le paquet pour prendre les cartes 
-	#son.play() # quand on prend les cartes/pas necessarie
-	a = int(randrange(len(pioche)))		# on prend une carte random
-	# À VERIFIER ***
-	while okTest:
-		if a not in lRandom:
-			lRandom.append(a)
-			okTest = False
-		else :
-			a = int(randrange(len(pioche)))
-	print(a)
-	print("len : ", len(pioche))
-	# a = int(random.random() * (len(pioche)))
-	j.ajouterCarte(pioche[a])					# main 
-	del pioche[a]								# on enleve cette carte
-	mutexPioche.release()						# on release le paquet
-	# afficherMain(j)
-'''
-
 
 # Définition des cartes que les joueurs ont au début du jeu : assigner les cartes aux joueurs
 
@@ -160,109 +129,189 @@ def piocher(j): # Permet à un joueur de piocher une carte
 
 
 # Offre
-'''
-def faireOffre(j):
-	mutexPioche.acquire() 
 
-	a=int(random.random() * (len(pioche)))
-	j.ajouterCarte(pioche[a])
-	del pioche[a]
-	mutexPioche.release()
-	# afficherMain(j)
-'''
-
-''' TRY
-def faireOffre(j):
-	print("Main :%s" % (j.main))
-	print("Valeur : ", carte=j.main[1])
-'''
 
 
 def entreeClavier() : 
-	a=1
 	#Cette fonction vérifie les différentes entrées du clavier et envoie un signal aux process joueur concernés, indiquant quelle carte il devra jouer
 	#Par exemple une touche correspondra a une carte d'un joueur, cette finction sera multithreadé
-	while a ==1:
-		for event in pygame.event.get():   
-			if event.type == KEYDOWN and event.key == K_3:
-				message="3"					# verifier signification message
-				message=message.encode()
-				mq.send(message, type=5)	# verifier type?
-			if event.type == KEYDOWN and event.key == K_5:
-				message="5"					#
-				message=message.encode()
-				mq.send(message, type=5)	#
-			if event.type == KEYDOWN and event.key == K_7:
-				message="7"					#
-				message=message.encode()
-				mq.send(message, type=5)	#
-			if event.type == KEYDOWN and event.key == K_9:
-				message="9"					#
-				message=message.encode()
-				mq.send(message, type=5)	#
-			if event.type == KEYDOWN and event.key == K_0:
-				message="0"					#
-				message=message.encode()
-				mq.send(message, type=5)	#
-			if event.type == QUIT :
-				a=0							#
-				pygame.quit()
-				sys.exit()
-
-
+    a=1
+    while a == 1:
+        for event in pygame.event.get():   
+            if event.type == KEYDOWN and event.key == K_3:
+                message="3"					# quelle carte
+                message=message.encode()
+                mq.send(message, type=5)	# joueur 1 / type 5
+            if event.type == KEYDOWN and event.key == K_5:
+                message="5"					
+                message=message.encode()
+                mq.send(message, type=5)	
+            if event.type == KEYDOWN and event.key == K_7:
+                message="7"					
+                message=message.encode()
+                mq.send(message, type=5)	
+            if event.type == KEYDOWN and event.key == K_9:
+                message="9"					
+                message=message.encode()
+                mq.send(message, type=5)	
+            if event.type == KEYDOWN and event.key == K_0:
+                message="0"					# aucune
+                message=message.encode()
+                mq.send(message, type=5)	
+            # **************************************************
+            if event.type == KEYDOWN and event.key == K_3:
+                message="3"					
+                message=message.encode()
+                mq.send(message, type=6)	# joueur 2 / type 6
+            if event.type == KEYDOWN and event.key == K_5:
+                message="5"					
+                message=message.encode()
+                mq.send(message, type=6)	
+            if event.type == KEYDOWN and event.key == K_7:
+                message="7"					
+                message=message.encode()
+                mq.send(message, type=6)	
+            if event.type == KEYDOWN and event.key == K_9:
+                message="9"					
+                message=message.encode()
+                mq.send(message, type=6)	
+            if event.type == KEYDOWN and event.key == K_0:
+                message="0"					
+                message=message.encode()
+                mq.send(message, type=6)	
+            # **************************************************
+            if event.type == KEYDOWN and event.key == K_3:
+                message="3"					
+                message=message.encode()
+                mq.send(message, type=7)	# joueur 3 / type 7
+            if event.type == KEYDOWN and event.key == K_5:
+                message="5"					
+                message=message.encode()
+                mq.send(message, type=7)	
+            if event.type == KEYDOWN and event.key == K_7:
+                message="7"					
+                message=message.encode()
+                mq.send(message, type=7)	
+            if event.type == KEYDOWN and event.key == K_9:
+                message="9"					
+                message=message.encode()
+                mq.send(message, type=7)	
+            if event.type == KEYDOWN and event.key == K_0:
+                message="0"					
+                message=message.encode()
+                mq.send(message, type=7)	
+            # **************************************************
+            if event.type == KEYDOWN and event.key == K_3:
+                message="3"					
+                message=message.encode()
+                mq.send(message, type=8)	# joueur 3 / type 8
+            if event.type == KEYDOWN and event.key == K_5:
+                message="5"					
+                message=message.encode()
+                mq.send(message, type=8)	
+            if event.type == KEYDOWN and event.key == K_7:
+                message="7"					
+                message=message.encode()
+                mq.send(message, type=8)	
+            if event.type == KEYDOWN and event.key == K_9:
+                message="9"					
+                message=message.encode()
+                mq.send(message, type=8)	
+            if event.type == KEYDOWN and event.key == K_0:
+                message="0"					
+                message=message.encode()
+                mq.send(message, type=8)	
+            # **************************************************
+            if event.type == KEYDOWN and event.key == K_3:
+                message="3"					
+                message=message.encode()
+                mq.send(message, type=9)	# joueur 4 / type 9
+            if event.type == KEYDOWN and event.key == K_5:
+                message="5"					
+                message=message.encode()
+                mq.send(message, type=9)	
+            if event.type == KEYDOWN and event.key == K_7:
+                message="7"					
+                message=message.encode()
+                mq.send(message, type=9)	
+            if event.type == KEYDOWN and event.key == K_9:
+                message="9"					
+                message=message.encode()
+                mq.send(message, type=9)	
+            if event.type == KEYDOWN and event.key == K_0:
+                message="0"					
+                message=message.encode()
+                mq.send(message, type=9)	
+            # **************************************************
+            if event.type == QUIT :
+                a = 0							# Pour arreter le while 
+                pygame.quit()
+                sys.exit()
 
 
 
 def jouer(j) : 	
-	# timer pour chaque tour
-	# z= multitimer.MultiTimer(interval =10, function=piocher, kwargs = {"j":j}, runonstart=False)
-	# z.start()
-
-	m, t = mq.receive(type = 4 + j.identifiant)		# verifier type ?
-	
-	'''
-	numero = int(m.decode())
-	if numero<len(j.main):
-		# z.stop()
-		carte=j.main[numero]
-		message = str(j.identifiant) + ":" + str(carte.valeur) + ":" + carte.couleur
-		msg= str(message).encode()
+    # objShuffleCards.popCard()    # Removing a card from the deck
+	m, t = mq.receive(type = 4 + j.identifiant)
+	numero = int(m.decode())    # quelle carte il faut prendre <- touche appuyée
+	if numero<len(j.main):      # si on a bien encore des cartes
+		carte = j.main[numero]  # on prend donc la carte
+		message = str(j.identifiant) + ":" + str(carte.valeur) + ":" + carte.couleur    # message avec les info
+		msg = str(message).encode()
 		mutexQueue.acquire()
-		mq.send(msg, type=1)
-		m, t =mq.receive(type= 1+j.identifiant)
+		mq.send(msg, type = 1)      # message envoyé
+		m, t = mq.receive(type= 1 + j.identifiant)  # ?
 		mutexQueue.release()
 		b = int(m.decode())
 		if b==1:
-			j.main.remove(carte)
-		else : 
-			piocher(j)
-	if (len(j.main)==0):
+			j.main.remove(carte)    # ! on enleve la carte car c'est bon (cela quand on accepte l'offre)
+		# else : 
+			# pass
+            # il faut passer le tour
+	if (len(j.main)==0):        # si on n'a plus de cartes
 			msg = str(j.identifiant)
-			msg=msg.encode()
-			mq.send(msg, type=4)
-	'''
-	# afficherMain(j)
+			msg = msg.encode()
+			mq.send(msg, type = 4)      # on a gagné
+	afficherMain(j)
+
 
 # DEFINIR L'ECHANGE 
-# def is_valid(): 
+def is_valid(): 
+    a = 1
+    mutexPioche.acquire()
+    b = int(random.random() * (len(pioche)))
+    carteActu=pioche[b]
+    del pioche[b]
+    mutexPioche.release()
+	
+    while a == 1:
+        mutexAffichage.acquire()
+        x = str(carteActu.valeur)
+        image = x + ":" + carteActu.couleur + ":" + "8"
+        image = image.encode()
+        aff.send(image, type=3)
+        mutexAffichage.release()
+        resultat  =0
+        m, t = mq.receive(type = 1)
+        message = m.decode()
+        message = message.split(":")
+        identifiant = int(message[0])
+        carte = Carte(int(message[1]), message[2])
+        if (carte.couleur == carteActu.couleur and carte.valeur%10==(carteActu.valeur+1)%10) or (carte.couleur == carteActu.couleur and carte.valeur%10==(carteActu.valeur-1)%10) or (carte.valeur==carteActu.valeur):
+            resultat = 1
+            carteActu=Carte(carte.valeur, carte.couleur)
+            
+        msg = str(resultat).encode()
+        mq.send(msg, type = identifiant+1)
+
 
 # ===> SI QUELQU'UN À GAGNÉ 
 # envoyer le signal pour arreter le jeu
 # faire donc sonner la cloche (musique + changer l'image avec clocheSonne.jpg)
 
 
-# MODIFIER !!!!!!!!!!!!!!!!!!!!!!!!!!!
-def afficherMain(j):
-	message = " "
-	message = message.encode()
-	aff.send(message, type = 3 + j.identifiant)
-	for i in range(len(j.main)):
-		message = str(j.main[i].valeur) + ":" + str(j.main[i].couleur) + ":"+ str(i)
-		message = message.encode()
-		mutexAffichage.acquire()
-		aff.send(message, type = j.identifiant)
-		mutexAffichage.release()
-# Par rapport à la touche 1/2/3/4/5
+# def afficherMain(j):
+
 
 # MODIFIER !!!!!!!!!!!!!!!!!!!!!!!!!!!
 def afficher():
@@ -303,29 +352,7 @@ def afficher():
 
 		# A CHOISIR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		# Ajouter la partie avec l'offre
-		'''
-		if t==5 : 	# CAS PARTICULIER : 4
-			image = "fondnoirbas.jpg"
-			uno = pygame.image.load(image).convert()
-			fenetre.blit(uno,(0,0))
-			pygame.display.update()
-		if t==6:  	# CAS PARTICULIER : 5
-			image = "fondnoirbas.jpg"
-			uno = pygame.image.load(image).convert()
-			fenetre.blit(uno,(0,880))
-			pygame.display.update()
-		if t==7: 	# CAS PARTICULIER : 6
-			a=0
-		if t==8: 	# CAS PARTICULIER : 7
-			a=0
-			msg=""
-			msg=msg.encode()
-			mq.send(msg, type=10)
-			mq.send(msg, type=11)
-		'''
 	     
-
-
 
 
 # 
@@ -347,7 +374,7 @@ def fgamer(j):
 		except sysv_ipc.BusyError:
 			print("")
 		'''
-		jouer(j)
+		# jouer(j)
 
 
 
@@ -363,8 +390,6 @@ def finPartie():
 		aff.send(msg, type = 6)		# ASSIGNER !!!
 		mq.send(msg, type = 10)		# ASSIGNER !!!
 		mq.send(msg, type = 11)		# ASSIGNER !!!
-	# if n == 3:
-	#	message = "Partie terminée! Ex-aequo !"
 	else:
 		message = "Le joueur " + m + " a gagné ! "
 	text = font.render(message, True, white, black)		# Format du texte
@@ -389,17 +414,14 @@ if __name__ == '__main__':
 		objDeck = Deck() 
 		
 		deckOrigin = objDeck.mycardset 
-		print('\n Player 1 Cards: \n', deckOrigin) 
+		# print('\n Player 1 Cards: \n', deckOrigin) 
 		
 		objShuffleCards = ShuffleCards() 
 		
 		deckShuffled = objShuffleCards.shuffle() 
-		print('\n Player 2 Cards: \n', deckShuffled) 
-		
-		print('\n Removing a card from the deck:', objShuffleCards.popCard()) 
-		print('\n Removing another card from the deck:', objShuffleCards.popCard()) 
-		
-		# ***********************************
+		# print('\n Player 2 Cards: \n', deckShuffled) 
+        
+        # ***********************************
 		
 		
 		
@@ -469,32 +491,26 @@ if __name__ == '__main__':
 		
 		# ***
 		t = Thread(target=afficher, args=())
-		# t2 = Thread(target=finPartie, args=())
 
 		t3=Thread(target=entreeClavier,args=())
-		# t4= Thread(target=is_valid, args=())
 		
 		
 		p1.start()
 
 		t.start()
-		# t2.start()
 
 		p2.start()
 
 		t3.start()
-		# t4.start()
+
 
 		p3.start()
 		p4.start()
 
-
-
 		t3.join()
 		t.join()
-		# t2.join()
+
 		p1.join()	# joueur 1
 		p2.join()	# joueur 2
 		p3.join()	# joueur 3
 		p4.join()	# joueur 4
-		# t4.join()
