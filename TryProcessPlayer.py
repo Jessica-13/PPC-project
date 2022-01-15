@@ -7,34 +7,30 @@ from random import *
 import sysv_ipc
 
 key = 128
-mq = sysv_ipc.MessageQueue(key, sysv_ipc.IPC_CREAT)
+mq = sysv_ipc.MessageQueue(key)
 
 
 
 # Game block
-def gameBlock():
+def playerBlock():
     while True:
-        try:
-            value = int(input())
-        except:
-            print("Input error, try again!")
-        message = str(value).encode()
-        mq.send(message)
-
-
-        message2, t = mq.receive()
-        value2 = message2.decode()
-        value2 = int(value2)
+        message, t = mq.receive()
+        value = message.decode()
+        value = int(value)
         
-        if value2:
-            print("received:", value2)
+        if value:
+            print("received:", value)
         else:
             print("exiting.")   # value = 0 -> exit
             break
-
-    mq.remove()
-
-
+        
+        
+        try:
+            value2 = int(input())
+        except:
+            print("Input error, try again!")
+        message2 = str(value2).encode()
+        mq.send(message2)
 
 
 
@@ -228,4 +224,4 @@ if __name__ == '__main__':
 
 
     # Keyboard input
-    gameBlock()
+    playerBlock()
