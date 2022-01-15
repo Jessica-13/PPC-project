@@ -47,13 +47,19 @@ class Joueur(multiprocessing.Process):
     def run(self):
         print ("Process : " + self.name + " START")
         # *** ACTION ***
-        jeu(self.identifiant)
+        # jeu(self.identifiant)
 
     def __str__(self):
         return "Player %s cards : %s" % (self.identifiant, self.main)
 
     def ajouterCarte (self,carte):
         self.main.append(carte)
+    
+    def read():
+        print("Put input : ")
+        inFromUser = input()
+        print("Offre taked : ", inFromUser)
+        offre.append(inFromUser)
 
 
 # Definition of the "Carte" object
@@ -116,16 +122,16 @@ class ShuffleCards(Deck):
 def giveCards(identity):
     if (identity == 1):
         for i in range(5):	
-            j1.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
+            j.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
     if (identity == 2):
         for i in range(5,10):	
-            j2.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
+            j.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
     if (identity == 3):
         for i in range(10,15):	
-            j3.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
+            j.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
     if (identity == 4):
         for i in range(15,20):	
-            j4.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
+            j.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
 
 
 
@@ -221,21 +227,21 @@ offreMadeM = [multiprocessing.Lock() for i in range(nOffreMade)]
 
 
 def wait(joueurI):
-    print ("Je suis",joueurI, "et I'm waiting")
+    print ("Player ",joueurI, " is waiting")
     time.sleep(5)
-    print ("Je suis",joueurI, "et I'm not waiting anymore")
+    print ("Player ",joueurI, " is not waiting anymore")
 
 def madeOffer(joueurI, offreInputMade):
-    print ("Je suis",joueurI, "et I'm making an offer")
+    print ("Player ",joueurI, " is making an offer")
     time.sleep(3)
     print(offreInputMade)
-    print ("Je suis",joueurI, "et I'm not making an offer anymore")
+    print ("Player ",joueurI, " is not making an offer anymore")
 
 def takeOffer(joueurI, offreInputTake):
-    print ("Je suis",joueurI, "et I'm taking an offer")
+    print ("Player ",joueurI, " is taking an offer")
     time.sleep(3)
     print(offreInputTake)
-    print ("Je suis",joueurI, "et I'm not taking an offer anymore")
+    print ("Player ",joueurI, " is not taking an offer anymore")
 
 
 
@@ -257,6 +263,8 @@ def play(i):
             offreMadeM[offreInputMade].acquire()
             # Show players' cards
             takeInput(i)
+            Joueur.read()
+            print("Offre board : ", offre)
             madeOffer(i, offreInputMade)
             offreMadeM[offreInputMade].release()
         else :
