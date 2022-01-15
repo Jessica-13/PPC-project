@@ -3,11 +3,13 @@
 import multiprocessing
 from multiprocessing import Process, Manager
 from random import *
+import random
 
 # import threading
 from queue import Queue
 
 # import sysv_ipc
+import time
 
 
 
@@ -155,12 +157,12 @@ def showCards(identity):
         print(" ")
 
 
-
+'''
 def jeu(identifiant):
     showCards(identifiant)
     # Acquisition of the lock
     processLook.acquire()
-    reponse = int(input("Make or accept?(1/2)"))
+    reponse = int(input("Make or accept?(1/2)")) # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! verifier
     if(reponse == 1):   # make an offer
         # Start with offers
         makeOffreInput = input("Submit your offer :")
@@ -187,7 +189,7 @@ def jeu(identifiant):
         print ("Process : " + identifiant + " STOP")
         # Lock release
         processLook.release()
-
+'''
 
 
 def takeInput(valueInput):
@@ -210,6 +212,57 @@ def takeInput(valueInput):
         # Show player j4's cards
         showCards(valueInput)
         # Hide the other cards ***
+
+
+
+nOffreMade = 5
+offreMadeM = [multiprocessing.Lock() for i in range(nOffreMade)]
+
+
+
+def wait(joueurI):
+    print ("Je suis",joueurI, "et I'm waiting")
+    time.sleep(5)
+    print ("Je suis",joueurI, "et I'm not waiting anymore")
+
+def madeOffer(joueurI, offreInputMade):
+    print ("Je suis",joueurI, "et I'm making an offer")
+    time.sleep(3)
+    print(offreInputMade)
+    print ("Je suis",joueurI, "et I'm not making an offer anymore")
+
+def takeOffer(joueurI, offreInputTake):
+    print ("Je suis",joueurI, "et I'm taking an offer")
+    time.sleep(3)
+    print(offreInputTake)
+    print ("Je suis",joueurI, "et I'm not taking an offer anymore")
+
+
+
+
+def play(i):
+    while True:
+        wait(i)
+        offreInputMade = i
+        offreInputTake = (i + 1) % nOffreMade
+        '''# Who want to start
+        print("Want to make an offer?(y or n)")
+        try:
+            valueInput = input()
+            print(valueInput)
+        except EOFError as e:
+            print(e)'''
+        # queue.put(valueInput)
+        if random.randint(0,1) == 0:
+            offreMadeM[offreInputMade].acquire()
+            # Show players' cards
+            takeInput(i)
+            madeOffer(i, offreInputMade)
+            offreMadeM[offreInputMade].release()
+        else :
+            offreMadeM[offreInputTake].acquire()
+            takeOffer(i, offreInputTake)
+            offreMadeM[offreInputTake].release()
 
 
 
@@ -236,19 +289,26 @@ if __name__ == '__main__':
         deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
         deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
     
+
+    nb_players = 4
+    for i in range(nb_players):
+        # Player creation
+        j = Joueur(i,[])
+
+
+
+    # on définit le processus principale
+    players = [multiprocessing.Process(target=play, args = (i, ))for i in range (nb_players)]
     
-
-    # Player creation
-    j1 = Joueur(1,[])
-    j2 = Joueur(2,[])
-    j3 = Joueur(3,[])
-    j4 = Joueur(4,[])
-
-    # Card assignment
-    giveCards(j1.identifiant)
-    giveCards(j2.identifiant)
-    giveCards(j3.identifiant)
-    giveCards(j4.identifiant)
+    for p in players:
+        # Card assignment
+        giveCards(j)
+        p.start()
+    for p in players:
+        p.join()
+    
+    
+    
 
     # Creation of a list managed by the manager, to add points
     points = manager.list()
@@ -268,12 +328,12 @@ if __name__ == '__main__':
     queue = Queue()
     data_ready = multiprocessing.Event()
  
-    # Who want to start
+    '''# Who want to start
     valueInput = input("Who want to start?")
     queue.put(valueInput)
 
     # Show players' cards
-    takeInput(int(valueInput))
+    takeInput(int(valueInput))'''
 
 
     '''# Process initialization
@@ -295,7 +355,7 @@ if __name__ == '__main__':
     p4.start()
     p4.join()'''
 
-    j1.start()
+    '''j1.start()
     j2.start()
     j3.start()
     j4.start()
@@ -304,7 +364,7 @@ if __name__ == '__main__':
     j3.join()
     j2.join()
     j1.join()
-    j4.join()
+    j4.join()'''
 
 
     # TEST
