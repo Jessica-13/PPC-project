@@ -12,21 +12,25 @@ mq = sysv_ipc.MessageQueue(key)
 
 
 # Game block
-def playerBlock():
+def playerBlock(j, points, offre):
     while True:
         message, t = mq.receive()
         value = message.decode()
         value = int(value)
         
         if value:
-            print("received:", value)
+            print("Player : ", j, ", received:", value)
+            # jeu(value)
         else:
             print("exiting.")   # value = 0 -> exit
+            print("Player : ", j, ", made:", points, " points.")
             break
         
         
         try:
             value2 = int(input())
+            offre.append(value2)
+            # jeu(value)
         except:
             print("Input error, try again!")
         message2 = str(value2).encode()
@@ -130,8 +134,7 @@ def giveCards(identity):
             j4.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
             print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
         print(" ")
-    else :
-        print("ERROR : problem with player index")
+
 
 
 def jeu(identifiant, points, offre):
@@ -143,11 +146,6 @@ def jeu(identifiant, points, offre):
     print("Identifiant : ", identifiant)
     print("Try out: ", j1.main)
 
-'''class MathsClass:
-    def add(self, x, y):
-        return x + y
-    def mul(self, x, y):
-        return x * y'''
 
 
 if __name__ == '__main__':
@@ -167,43 +165,52 @@ if __name__ == '__main__':
     
     # ***********************************
     
-    
-    # pioche = manager.list()    # Creation of a shared list representing the Deck -> common to all players
 
-    for i in range(19):
+
+    for i in range(19):     # To have access to the two parts separately
         deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
         deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
     
-    
-    
 
-
+    
+    # Player creation
     j1= Joueur(1,[])
     j2= Joueur(2,[])
     j3= Joueur(3,[])
     j4= Joueur(4,[])
+
+    # Card assignment
     giveCards(j1.identifiant)
     giveCards(j2.identifiant)
     giveCards(j3.identifiant)
     giveCards(j4.identifiant)
 
+    # Creation of a list managed by the manager, to add points
     points = manager.list()
 
-
-    for i in range(19):     # To see the shuffled Deck
+    # TEST
+    for i in range(19):     # Just to see the shuffled Deck
         print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
 
     
 
 
-
-    offre = manager.list()  # Offer made
+    # Creation of a list managed by the manager to add the current offer
+    offre = manager.list()
     
-
-    p1 = Process(target=jeu, args=(j1, points, offre))
+    # Process initialization
+    '''p1 = Process(target=jeu, args=(j1, points, offre))
     p2 = Process(target=jeu, args=(j2, points, offre))
     p3 = Process(target=jeu, args=(j3, points, offre))
-    p4 = Process(target=jeu, args=(j4, points, offre))
+    p4 = Process(target=jeu, args=(j4, points, offre))'''
+
+    p1 = Process(target=playerBlock, args=(j1, points, offre))
+    p2 = Process(target=playerBlock, args=(j2, points, offre))
+    p3 = Process(target=playerBlock, args=(j3, points, offre))
+    p4 = Process(target=playerBlock, args=(j4, points, offre))
+
+
+    # Start + order of threads
     p1.start()
     p1.join()
 
@@ -224,4 +231,4 @@ if __name__ == '__main__':
 
 
     # Keyboard input
-    playerBlock()
+    # playerBlock()
