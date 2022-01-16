@@ -1,11 +1,14 @@
 #!/usr/bin/env python3
 
+import threading
+
 import multiprocessing
 from multiprocessing import Process, Manager
 from random import *
 import random
 
 # import threading
+import queue
 from queue import Queue
 
 # import sysv_ipc
@@ -21,19 +24,95 @@ import time
     print("Ending thread:", threading.current_thread().name)'''
  
 
-processLook = multiprocessing.Lock()
-
-
-
-
-
 
 # Game block
 # def gameBlock(j, points, offre):
 
+# queueQ = queue.Queue()
+
+
+# Circular Queue implementation in Python
+class CircularQueue():
+    def __init__(self, k):
+        self.k = k
+        self.queue = [None] * k
+        self.head = self.tail = -1
+
+    # Insert an element into the circular queue
+    def enqueue(self, data):
+
+        if ((self.tail + 1) % self.k == self.head):
+            print("The circular queue is full\n")
+
+        elif (self.head == -1):
+            self.head = 0
+            self.tail = 0
+            self.queue[self.tail] = data
+        else:
+            self.tail = (self.tail + 1) % self.k
+            self.queue[self.tail] = data
+
+    # Delete an element from the circular queue
+    def dequeue(self):
+        if (self.head == -1):
+            print("The circular queue is empty\n")
+
+        elif (self.head == self.tail):
+            temp = self.queue[self.head]
+            self.head = -1
+            self.tail = -1
+            return temp
+        else:
+            temp = self.queue[self.head]
+            self.head = (self.head + 1) % self.k
+            return temp
+
+    def printCQueue(self):
+        if(self.head == -1):
+            print("No element in the circular queue")
+
+        elif (self.tail >= self.head):
+            for i in range(self.head, self.tail + 1):
+                print(self.queue[i], end=" ")
+            print()
+        else:
+            for i in range(self.head, self.k):
+                print(self.queue[i], end=" ")
+            for i in range(0, self.tail + 1):
+                print(self.queue[i], end=" ")
+            print()
+
+queueQ = CircularQueue(8)
 
 
 
+class KeyboardThread(threading.Thread):
+
+    def __init__(self, input_cbk = None, name='keyboard-input-thread'):
+        self.input_cbk = input_cbk
+        super(KeyboardThread, self).__init__(name=name)
+        self.start()
+
+    def run(self):
+        while True:
+            self.input_cbk(input()) #waits to get input + Return
+
+
+# FOR INPUT 
+def my_callback(inp):
+    #evaluate the keyboard input
+    print('You Entered:', inp)
+    queueQ.enqueue(inp)
+    print("The queue ICI : ")
+    queueQ.printCQueue()    #
+
+
+
+# FOR LOCK 
+processLook = multiprocessing.Lock()
+
+#start the Keyboard thread
+kthread = KeyboardThread(my_callback)
 
 
 
@@ -55,11 +134,67 @@ class Joueur(multiprocessing.Process):
     def ajouterCarte (self,carte):
         self.main.append(carte)
     
-    def read():
-        print("Put input : ")
-        inFromUser = input()
-        print("Offre taked : ", inFromUser)
-        offre.append(inFromUser)
+    # Définition méthode pour déterminer le plus grand nombre de cartes identiques
+    def maxCardsEg(self):
+        # To get the number of occurrences of each item in a list
+        cardsEg = []
+        
+        cv = self.main.count("Velo")
+        ca = self.main.count("Autobus")
+        vv = self.main.count("Voiture")
+        ct = self.main.count("Tracteur")
+
+        cardsEg.append(cv)
+        cardsEg.append(ca)
+        cardsEg.append(vv)
+        cardsEg.append(ct)
+
+        maxCardsEg = max(cardsEg)
+        '''max = 0
+        indice = -1
+        for j in range(len(cardsEgSplit)):
+            if cardsEgSplit[j] > max:
+                max = cardsEgSplit[j]
+
+        
+        for j in range (i.main):
+            counted = i.main.count(i.main[i][j]) 
+            if (max < counted) and (Carte.couleur[indice].nom != Carte.valeur[j].nom):
+                max = counted
+                indice = j
+            elif (compte == max):
+                if (i.cartes[j].points > i.cartes[indice].points):
+                    indice = j
+
+        t = return_values_nbCartesEg(max, indice)   # How many times/which card
+        return t'''
+        return maxCardsEg
+
+    def choseToTake(self, off):
+        print("The queue ICI: ")
+        queueQ.printCQueue()
+        print(" +++ ")
+        if queueQ.dequeue() == 1 and off == 1:
+            print("The offer : ", off, " is token.")
+        else: 
+            queueQ.enqueue(1)
+            if queueQ.dequeue() == 2 and off == 2:
+                print("The offer : ", off, " is token.")
+            else:
+                queueQ.enqueue(2)
+                if queueQ.dequeue() == 3 and off == 3:
+                    print("The offer : ", off, " is token.")
+                else:
+                    queueQ.enqueue(3)
+                    if queueQ.dequeue() == 4 and off == 4:
+                        print("The offer : ", off, " is not permitted.")
+                    else :
+                        queueQ.enqueue(4)
+                        if queueQ.dequeue() == 5 and off == 5:
+                            print("The player : ", self.identifiant, " win.")
+                            #points.append()       # ***
+                            #players.terminate()   # ***
+
 
 
 # Definition of the "Carte" object
@@ -120,42 +255,42 @@ class ShuffleCards(Deck):
 
 # Heap definition for each player
 def giveCards(identity):
-    if (identity == 1):
+    if (identity == 0):
         for i in range(5):	
-            j.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
-    if (identity == 2):
+            j.ajouterCarte(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+    if (identity == 1):
         for i in range(5,10):	
-            j.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
-    if (identity == 3):
+            j.ajouterCarte(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+    if (identity == 2):
         for i in range(10,15):	
-            j.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
-    if (identity == 4):
+            j.ajouterCarte(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+    if (identity == 3):
         for i in range(15,20):	
-            j.ajouterCarte(Carte(deckShuffledSplitValues[2], deckShuffledSplitSuites[2]))
+            j.ajouterCarte(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
 
 
 
 # Show the player's cards
 def showCards(identity):
-    if (identity == 1):
+    if (identity == 0):
         print("Player ", identity, " cards")
         print("___________________________________________________________________")
         for i in range(5):	
             print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
         print(" ")
-    if (identity == 2):
+    if (identity == 1):
         print("Player ", identity, " cards")
         print("___________________________________________________________________")
         for i in range(5,10):	
             print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
         print(" ")
-    if (identity == 3):
+    if (identity == 2):
         print("Player ", identity, " cards")
         print("___________________________________________________________________")
         for i in range(10,15):	
             print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
         print(" ")
-    if (identity == 4):
+    if (identity == 3):
         print("Player ", identity, " cards")
         print("___________________________________________________________________")
         for i in range(15,20):	
@@ -199,22 +334,22 @@ def jeu(identifiant):
 
 
 def takeInput(valueInput):
-    if(valueInput == 1): # player 1
+    if(valueInput == 0): # player 1
         # Show player j1's cards
         showCards(valueInput)
         # Hide the other cards ***
 
-    if(valueInput == 2): # player 2
+    if(valueInput == 1): # player 2
         # Show player j2's cards
         showCards(valueInput)
         # Hide the other cards ***
 
-    if(valueInput == 3): # player 3
+    if(valueInput == 2): # player 3
         # Show player j3's cards
         showCards(valueInput)
         # Hide the other cards ***
 
-    if(valueInput == 4): # player 4
+    if(valueInput == 3): # player 4
         # Show player j4's cards
         showCards(valueInput)
         # Hide the other cards ***
@@ -226,21 +361,33 @@ offreMadeM = [multiprocessing.Lock() for i in range(nOffreMade)]
 
 
 
+class return_values_nbCartesEg: # For double retourn
+    def __init__(self, a, b):
+        self.a=a
+        self.b=b
+
+
+
 def wait(joueurI):
     print ("Player ",joueurI, " is waiting")
-    time.sleep(5)
+    #the normal program executes without blocking. here just counting up
+    time.sleep(2)
     print ("Player ",joueurI, " is not waiting anymore")
 
-def madeOffer(joueurI, offreInputMade):
+def madeOffer(joueurI):
     print ("Player ",joueurI, " is making an offer")
-    time.sleep(3)
-    print(offreInputMade)
+    time.sleep(5)
+    off = j.maxCardsEg()    # make the offer
+    queueQ.enqueue(off)          # put the offer in the queue
+    print("The queue : ")
+    queueQ.printCQueue()
     print ("Player ",joueurI, " is not making an offer anymore")
 
-def takeOffer(joueurI, offreInputTake):
+def takeOffer(joueurI):
     print ("Player ",joueurI, " is taking an offer")
     time.sleep(3)
-    print(offreInputTake)
+    off = j.maxCardsEg()    # make the offer
+    j.choseToTake(off) # take the offer
     print ("Player ",joueurI, " is not taking an offer anymore")
 
 
@@ -249,8 +396,8 @@ def takeOffer(joueurI, offreInputTake):
 def play(i):
     while True:
         wait(i)
-        offreInputMade = i
-        offreInputTake = (i + 1) % nOffreMade
+        offreInputMade = i  #
+        offreInputTake = (i + 1) % nOffreMade   #
         '''# Who want to start
         print("Want to make an offer?(y or n)")
         try:
@@ -262,14 +409,13 @@ def play(i):
         if random.randint(0,1) == 0:
             offreMadeM[offreInputMade].acquire()
             # Show players' cards
-            takeInput(i)
-            Joueur.read()
-            print("Offre board : ", offre)
-            madeOffer(i, offreInputMade)
+            takeInput(i)    
+            # *** print("Offre board : ", offre)
+            madeOffer(i)    #
             offreMadeM[offreInputMade].release()
         else :
             offreMadeM[offreInputTake].acquire()
-            takeOffer(i, offreInputTake)
+            takeOffer(i)    #
             offreMadeM[offreInputTake].release()
 
 
@@ -282,20 +428,20 @@ if __name__ == '__main__':
     objDeck = Deck() 
     
     deckOrigin = objDeck.mycardset 
-    # print('\n Player 1 Cards: \n', deckOrigin) 
+    # print('\n Cards: \n', deckOrigin) 
     
     objShuffleCards = ShuffleCards() 
     
     deckShuffled = objShuffleCards.shuffle() 
-    # print('\n Player 2 Cards: \n', deckShuffled) 
+    # print('\n Cards Shuffled : \n', deckShuffled) 
     
     # ***********************************
     
 
 
-    for i in range(19):     # To have access to the two parts separately
-        deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
-        deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
+    # for i in range(19):     # To have access to the two parts separately
+    deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
+    deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
     
 
     nb_players = 4
@@ -308,23 +454,16 @@ if __name__ == '__main__':
     # on définit le processus principale
     players = [multiprocessing.Process(target=play, args = (i, ))for i in range (nb_players)]
     
-    for p in players:
-        # Card assignment
-        giveCards(j)
-        p.start()
-    for p in players:
-        p.join()
-    
     
     
 
     # Creation of a list managed by the manager, to add points
     points = manager.list()
 
-    # TEST
+    '''# TEST
     for i in range(19):     # Just to see the shuffled Deck
         print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
-
+    '''
 
     # Creation of a list managed by the manager to add the current offer
     offre = manager.list()
@@ -333,7 +472,7 @@ if __name__ == '__main__':
     # Main process
     print("Starting main process:", multiprocessing.current_process().name)
  
-    queue = Queue()
+    
     data_ready = multiprocessing.Event()
  
     '''# Who want to start
@@ -343,37 +482,13 @@ if __name__ == '__main__':
     # Show players' cards
     takeInput(int(valueInput))'''
 
-
-    '''# Process initialization
-    p1 = Process(target=jeu, args=(j1, points, offre))
-    p2 = Process(target=jeu, args=(j2, points, offre))
-    p3 = Process(target=jeu, args=(j3, points, offre))
-    p4 = Process(target=jeu, args=(j4, points, offre))
-
     # Start + order of process
-    p1.start()
-    p1.join()
-
-    p2.start()
-    p2.join()
-
-    p3.start()
-    p3.join()
-
-    p4.start()
-    p4.join()'''
-
-    '''j1.start()
-    j2.start()
-    j3.start()
-    j4.start()
-
-
-    j3.join()
-    j2.join()
-    j1.join()
-    j4.join()'''
-
+    for p in players:
+        # Card assignment
+        giveCards(j)
+        p.start()
+    for p in players:
+        p.join()
 
     # TEST
     print(points)
