@@ -27,3 +27,10 @@ DECK : https://thecleverprogrammer.com/2020/10/04/card-game-with-python/
 
 
 Pour moi : https://github.com/robotane/CardIoPlay
+
+
+#
+
+https://stackoverflow.com/questions/2408560/non-blocking-console-input
+
+QUEUE : https://www.programiz.com/dsa/circular-queue
