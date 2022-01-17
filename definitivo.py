@@ -8,14 +8,48 @@ from random import *
 import random
 
 # import threading
+from threading import Thread,Timer
 import queue
 from queue import Queue
 
-# import sysv_ipc
+import sysv_ipc
 import time
 
 
+import pygame
+from pygame.locals import *
+from pygame import mixer
+import sys 
 
+# GUI ********************************************************************************************
+white = (255, 255, 255) 
+black= (0, 0,0) 
+
+# fenetre resolution
+X=1380	# width
+Y=868	# height
+
+
+
+pygame.init() 	# Initialisation fenêtre de jeu
+### mixer.init()	# Initialisation musique
+
+font = pygame.font.Font('freesansbold.ttf', 50)	# Pour le message alla fin
+
+smallfont = pygame.font.SysFont('Corbel',35)	## defining a font
+
+
+fenetre = pygame.display.set_mode((X, Y), RESIZABLE)
+
+# fills the screen with a color
+fenetre.fill((60,25,60))
+
+
+
+# son = pygame.mixer.Sound("son.wav")
+######## mixer.music.load("musique.mp3")
+######## mixer.music.play(loops=-1)
+# *************************************************************************************************
 '''def worker(queue, data_ready):
     print("Starting thread:", threading.current_thread().name)    
     data_ready.wait()
@@ -23,6 +57,13 @@ import time
     print("got value:", value)
     print("Ending thread:", threading.current_thread().name)'''
  
+
+
+class return_values_nbCartesEg: # For double retourn
+    def __init__(self, a, b):
+        self.a=a
+        self.b=b
+
 
 
 # Game block
@@ -93,10 +134,11 @@ class KeyboardThread(threading.Thread):
         super(KeyboardThread, self).__init__(name=name)
         self.start()
 
-    def run(self):
-        while True:
-            self.input_cbk(input()) #waits to get input + Return
+    #def run(self):
+        #while True:
+            #self.input_cbk(input()) #waits to get input + Return
 
+                
 
 # FOR INPUT 
 def my_callback(inp):
@@ -120,13 +162,19 @@ kthread = KeyboardThread(my_callback)
 class Joueur(multiprocessing.Process):
     def __init__(self, identifiant, l):
         multiprocessing.Process.__init__(self)
+        self.exit = multiprocessing.Event()
         self.identifiant=identifiant
         self.main= l
     
     def run(self):
         print ("Process : " + self.name + " START")
+        while not self.exit.is_set():
+            pass
         # *** ACTION ***
         # jeu(self.identifiant)
+
+    def shutdown(self):
+        self.exit.set()
 
     def __str__(self):
         return "Player %s cards : %s" % (self.identifiant, self.main)
@@ -150,6 +198,24 @@ class Joueur(multiprocessing.Process):
         cardsEg.append(ct)
 
         maxCardsEg = max(cardsEg)
+        minCardsEg = min(cardsEg)
+
+        if minCardsEg == cv:
+            typeExchange = "Velo"
+        else: 
+            if minCardsEg == ca:
+                typeExchange = "Autobus"
+            else:
+                if minCardsEg == vv:
+                    typeExchange = "Voiture"
+                else: 
+                    if minCardsEg == ct:
+                        typeExchange = "Tracteur"
+                    
+
+        if maxCardsEg == minCardsEg:
+            if random.randint(0,1) == 0:
+                minCardsEg = maxCardsEg
         '''max = 0
         indice = -1
         for j in range(len(cardsEgSplit)):
@@ -168,7 +234,7 @@ class Joueur(multiprocessing.Process):
 
         t = return_values_nbCartesEg(max, indice)   # How many times/which card
         return t'''
-        return maxCardsEg
+        return minCardsEg
 
     def choseToTake(self, off):
         print("The queue ICI: ")
@@ -194,6 +260,18 @@ class Joueur(multiprocessing.Process):
                             print("The player : ", self.identifiant, " win.")
                             #points.append()       # ***
                             #players.terminate()   # ***
+
+
+
+def entreeClavier() : 
+    a=1
+    while a == 1:
+        for event in pygame.event.get():   
+            if event.type == QUIT :
+                a = 0							# Pour arreter le while 	
+                pygame.quit()
+                sys.exit()
+
 
 
 
@@ -361,22 +439,15 @@ offreMadeM = [multiprocessing.Lock() for i in range(nOffreMade)]
 
 
 
-class return_values_nbCartesEg: # For double retourn
-    def __init__(self, a, b):
-        self.a=a
-        self.b=b
-
-
-
 def wait(joueurI):
     print ("Player ",joueurI, " is waiting")
     #the normal program executes without blocking. here just counting up
-    time.sleep(2)
+    time.sleep(5)
     print ("Player ",joueurI, " is not waiting anymore")
 
 def madeOffer(joueurI):
     print ("Player ",joueurI, " is making an offer")
-    time.sleep(5)
+    time.sleep(10)
     off = j.maxCardsEg()    # make the offer
     queueQ.enqueue(off)          # put the offer in the queue
     print("The queue : ")
@@ -385,7 +456,7 @@ def madeOffer(joueurI):
 
 def takeOffer(joueurI):
     print ("Player ",joueurI, " is taking an offer")
-    time.sleep(3)
+    time.sleep(7)
     off = j.maxCardsEg()    # make the offer
     j.choseToTake(off) # take the offer
     print ("Player ",joueurI, " is not taking an offer anymore")
@@ -420,6 +491,10 @@ def play(i):
 
 
 
+
+
+
+
 if __name__ == '__main__':
     manager = Manager()
 
@@ -436,7 +511,7 @@ if __name__ == '__main__':
     # print('\n Cards Shuffled : \n', deckShuffled) 
     
     # ***********************************
-    
+
 
 
     # for i in range(19):     # To have access to the two parts separately
@@ -482,6 +557,85 @@ if __name__ == '__main__':
     # Show players' cards
     takeInput(int(valueInput))'''
 
+
+
+
+
+    # GUI *********************************************************************************************
+    # Disposition cartes dans la fenêtre de jeu
+    # Cloche
+    uno = pygame.image.load("cloche.jpg").convert()
+    fenetre.blit(uno,(645,389))
+    pygame.display.update()
+
+
+
+    # TEXTE WITH PLAYER NAME
+    label = smallfont.render("PLAYER 1 : ", 1, white)
+    fenetre.blit(label, (300, 790))
+
+    label = smallfont.render("PLAYER 2", 1, white)
+    fenetre.blit(label, (1100, 780))
+
+    label = smallfont.render("PLAYER 3", 1, white)
+    fenetre.blit(label, (950, 50))
+
+    label = smallfont.render("PLAYER 4", 1, white)
+    fenetre.blit(label, (165, 60))
+
+
+
+    '''# TEXTE WITH OFFERS
+    label = smallfont.render("PLAYER 1", 1, white)
+    fenetre.blit(label, (300, 790))
+
+    label = smallfont.render("PLAYER 2", 1, white)
+    fenetre.blit(label, (1100, 780))
+
+    label = smallfont.render("PLAYER 3", 1, white)
+    fenetre.blit(label, (950, 50))
+
+    label = smallfont.render("PLAYER 4", 1, white)
+    fenetre.blit(label, (165, 60))'''
+
+
+
+    for i in range(25):
+        if i<5:											# Joueur 1
+            # randomInt = random.randint(1, 4)
+            # image= str(randomInt) + ".png"
+            image= str(0) + ".png"
+            uno = pygame.image.load(image).convert()
+            fenetre.blit(uno,(440+100*i,733))
+        elif i<10:										# Joueur 2
+            # randomInt = random.randint(1, 4)
+            image= str(0) + ".png"
+            uno = pygame.image.load(image).convert()
+            fenetre.blit(uno,(1110,109+130*(i-5)))
+        elif i<15:										# Joueur 3
+            # randomInt = random.randint(1, 4)
+            image= str(0) + ".png"
+            uno = pygame.image.load(image).convert()
+            fenetre.blit(uno,(440+100*(i-10),5))
+        elif i<20:										# Joueur 4
+            # randomInt = random.randint(1, 4)
+            image= str(0) + ".png"
+            uno = pygame.image.load(image).convert()
+            fenetre.blit(uno,(170,109+130*(i-15)))
+        else:											# OFFRE
+            image= str(0) + ".png"
+            uno = pygame.image.load(image).convert()
+            fenetre.blit(uno,(440+100*(i-20),553))
+    
+    # updates the frames of the game
+    pygame.display.update()
+    
+    # ************************************************************************************************
+
+    t3=Thread(target=entreeClavier,args=())
+    t3.start()
+    t3.join()
+
     # Start + order of process
     for p in players:
         # Card assignment
@@ -491,8 +645,8 @@ if __name__ == '__main__':
         p.join()
 
     # TEST
-    print(points)
-    print(offre) 
+    print("The points : ", points)
+    
     # Main process
     print("Ending process:", multiprocessing.current_process().name)
 
