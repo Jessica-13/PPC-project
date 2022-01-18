@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+from posixpath import split
 import string
 import threading
 
@@ -131,6 +132,10 @@ deckShuffled = objShuffleCards.shuffle()
 # for i in range(19):     # To have access to the two parts separately
 deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
 deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
+
+
+
+vectSplitOffre = []
 # # ************************************************************************************************************************************
 
 
@@ -145,9 +150,9 @@ deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
 
 class return_values_nbCartesEg: # For double retourn
     def __init__(self, a, b, c):
-        self.a=a
-        self.b=b
-        self.c=c
+        self.a = a
+        self.b = b
+        self.c = c
 
 
 
@@ -248,8 +253,10 @@ kthread = KeyboardThread(my_callback)'''
 
 
 # Method definition for dividing the variables (offre)
-def splitSplit():
-    i = 0
+def splitSplit(valeurWhoNeedSplit):
+    # vectSplitOffre[0], vectSplitOffre[1], vectSplitOffre[2] = valeurWhoNeedSplit.split()
+    vectSplitOffre = [i.split()[0] for i in valeurWhoNeedSplit]
+    return vectSplitOffre
 
 
 
@@ -292,7 +299,7 @@ class Joueur(multiprocessing.Process):
         cardsEg.append(vv)
         cardsEg.append(ct)
 
-        maxCardsEg = max(cardsEg)
+        maxCardsEg = max(cardsEg) # je sais pas si ça sert :P 
         minCardsEg = min(cardsEg)
 
         if minCardsEg == cv:
@@ -308,7 +315,7 @@ class Joueur(multiprocessing.Process):
                         typeExchange = "Tracteur"
                     
 
-        if maxCardsEg == minCardsEg:
+        if maxCardsEg == minCardsEg:     # je sais pas si ça sert :P 
             if random.randint(0,1) == 0:
                 minCardsEg = maxCardsEg
         '''max = 0
@@ -334,27 +341,32 @@ class Joueur(multiprocessing.Process):
 
         # ajouter l'affichage avec (1, 0, 2, 2) -> donc (1 velo, etc .... )
         # ajouter le control (si min = 0, alors on prend l'autre au dessus)
-        return id, minCardsEg, typeExchange
+        t = return_values_nbCartesEg(id, minCardsEg, typeExchange)   # How many times/which card
+        # splitSplit(t)
+        return t
 
     def choseToTake(self, off): ### AJOUTER L'ECHANGE 
         print("The queue ICI: ")
         queueQ.printCQueue()
         print(" +++ ")
-        # SPLIT 
-        # - value queue pris / value off
-        # - type queue prsis / value off 
-        if queueQ.dequeue() == 1 and off == 1: ##### FAIRE UN SPLIT et faire le if que sur la valeur # ajouter la condition par rapport à quel joueur à fait l'offre
-            print("The offer : ", off, " is token.")
+        offreTokenFromQueue = queueQ.dequeue()
+        vectSplitOffre = splitSplit(offreTokenFromQueue)
+        vectSplitSelfOffre = splitSplit(off)
+        # vectSplitOffre[0] / vectSplitSelfOffre[0] : identifier
+        # vectSplitOffre[1] / vectSplitSelfOffre[1] : value
+        # vectSplitOffre[2] / vectSplitSelfOffre[2] : type
+        if vectSplitOffre[0] != vectSplitSelfOffre[0] and vectSplitOffre[1] == vectSplitSelfOffre[1] and vectSplitOffre[1] == 1: 
+            print("The offer with 1 card : ", off, " is token.")
             # appelle à echange 
         else: 
             queueQ.enqueue(1)
-            if queueQ.dequeue() == 2 and off == 2: 
-                print("The offer : ", off, " is token.")
+            if vectSplitOffre[0] != vectSplitSelfOffre[0] and vectSplitOffre[1] == vectSplitSelfOffre[1] and vectSplitOffre[1] == 2: 
+                print("The offer with 2 cards : ", off, " is token.")
                 # appelle à echange 
             else:
                 queueQ.enqueue(2)
-                if queueQ.dequeue() == 3 and off == 3:
-                    print("The offer : ", off, " is token.")
+                if vectSplitOffre[0] != vectSplitSelfOffre[0] and vectSplitOffre[1] == vectSplitSelfOffre[1] and vectSplitOffre[1] == 3:
+                    print("The offer with 3 cards : ", off, " is token.")
                     # appelle à echange 
 
 
