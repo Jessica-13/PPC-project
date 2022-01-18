@@ -22,7 +22,7 @@ from pygame.locals import *
 from pygame import mixer
 import sys 
 
-# GUI ********************************************************************************************
+# GUI *********************************************************************************************************************************
 white = (255, 255, 255) 
 black= (0, 0,0) 
 
@@ -55,10 +55,9 @@ fenetre.blit(fond,(0,0))'''
 # son = pygame.mixer.Sound("son.wav")
 ######## mixer.music.load("musique.mp3")
 ######## mixer.music.play(loops=-1)
-# *************************************************************************************************
+# *************************************************************************************************************************************
 
-
-# # # Definition of the deck ***********************************************************************
+# # # Definition of the deck **********************************************************************************************************
 
 # Definition of the "Carte" object
 class Carte:
@@ -115,7 +114,7 @@ class ShuffleCards(Deck):
             cardpopped = self.mycardset.pop() 
             return (cardpopped) 
 
-            
+
 objCards = Cards() 
 objDeck = Deck() 
 
@@ -132,7 +131,7 @@ deckShuffled = objShuffleCards.shuffle()
 # for i in range(19):     # To have access to the two parts separately
 deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
 deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
-# # *************************************************************************************************
+# # ************************************************************************************************************************************
 
 
 '''def worker(queue, data_ready):
@@ -248,13 +247,19 @@ kthread = KeyboardThread(my_callback)'''
 
 
 
+# Method definition for dividing the variables (offre)
+def splitSplit():
+    i = 0
+
+
+
 # Definition of player 
 class Joueur(multiprocessing.Process):
     def __init__(self, identifiant, l):
         multiprocessing.Process.__init__(self)
-        self.exit = multiprocessing.Event() ### 
-        self.identifiant=identifiant
-        self.main= l
+        self.exit = multiprocessing.Event() ### pour terminer - à enlever 
+        self.identifiant = identifiant
+        self.main = l
     
     ''' def run(self):
         print ("Process : " + self.name + " START")
@@ -272,7 +277,7 @@ class Joueur(multiprocessing.Process):
     def ajouterCarte (self,carte):
         self.main.append(carte)
     
-    # Définition méthode pour déterminer le plus grand nombre de cartes identiques
+    # Definition method to determine the greatest number of identical cards
     def maxCardsEg(self, id):
         # To get the number of occurrences of each item in a list
         cardsEg = []
