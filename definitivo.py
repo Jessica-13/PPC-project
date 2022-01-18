@@ -280,17 +280,20 @@ class Joueur(multiprocessing.Process):
                             #points.append()       # ***
                             #players.terminate()   # ***
 
-    def exchange(off):
+
+    def exchange(typeExchange, off, listeCartes):
     # i = 0
-    if (off == 1):
+    # enlever les cartes en nombre min du joueur qui accepte
+    for a in range(off):
+        self.l.remove(typeExchange)
+    # rajouter les cartes de l'offre du joueur qui accepte
+    for a in range(off):
+        self.l.append()
+    # enlever les cartes en nombre min du joueur qui offre
+    for a in range(off):
         
-        elif (off == 2):
-
-            elif (off == 3):
-
-                elif (off == 4):
-
-                    elif (off == 5):
+    # rajouter les cartes de l'offre du joueur qui offre
+    for a in range(off):
 
 
 
@@ -332,7 +335,7 @@ class Cards:
 # Definition of the Deck
 class Deck(Cards): 
 	def __init__(self): 
-		Cards.__init__(self) 
+		Cards.__init__(self)
 		self.mycardset = []
 		
 		for i in range(5): 		# 4 players
