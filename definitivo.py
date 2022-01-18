@@ -27,8 +27,8 @@ white = (255, 255, 255)
 black= (0, 0,0) 
 
 # fenetre resolution
-X=1380	# width
-Y=868	# height
+X = 1380	# width
+Y = 868	# height
 
 
 
@@ -62,9 +62,10 @@ fenetre.fill(white)
 
 
 class return_values_nbCartesEg: # For double retourn
-    def __init__(self, a, b):
+    def __init__(self, a, b, c):
         self.a=a
         self.b=b
+        self.c=c
 
 
 
@@ -145,19 +146,19 @@ queueQ = CircularQueue(8)
                 sys.exit()'''
 
                 
-
+'''
 # FOR INPUT 
 def my_callback(inp):
     #evaluate the keyboard input
     print('You Entered:', inp)
     queueQ.enqueue(inp)
     print("The queue ICI : ")
-    queueQ.printCQueue()    #
+    queueQ.printCQueue()    #'''
 
 
 
 # FOR LOCK 
-processLook = multiprocessing.Lock()
+processLook = multiprocessing.Lock()    # à enlever 
 
 '''#start the Keyboard thread
 kthread = KeyboardThread(my_callback)'''
@@ -168,7 +169,7 @@ kthread = KeyboardThread(my_callback)'''
 class Joueur(multiprocessing.Process):
     def __init__(self, identifiant, l):
         multiprocessing.Process.__init__(self)
-        self.exit = multiprocessing.Event()
+        self.exit = multiprocessing.Event() ### 
         self.identifiant=identifiant
         self.main= l
     
@@ -189,7 +190,7 @@ class Joueur(multiprocessing.Process):
         self.main.append(carte)
     
     # Définition méthode pour déterminer le plus grand nombre de cartes identiques
-    def maxCardsEg(self):
+    def maxCardsEg(self, id):
         # To get the number of occurrences of each item in a list
         cardsEg = []
         
@@ -245,36 +246,28 @@ class Joueur(multiprocessing.Process):
 
         # ajouter l'affichage avec (1, 0, 2, 2) -> donc (1 velo, etc .... )
         # ajouter le control (si min = 0, alors on prend l'autre au dessus)
-        return minCardsEg, typeExchange
+        return id, minCardsEg, typeExchange
 
-    def choseToTake(self, off):
+    def choseToTake(self, off): ### AJOUTER L'ECHANGE 
         print("The queue ICI: ")
         queueQ.printCQueue()
         print(" +++ ")
-        if queueQ.dequeue() == 1 and off == 1:
+        # SPLIT 
+        # - value queue pris / value off
+        # - type queue prsis / value off 
+        if queueQ.dequeue() == 1 and off == 1: ##### FAIRE UN SPLIT et faire le if que sur la valeur 
             print("The offer : ", off, " is token.")
-            return True
+            # appelle à echange 
         else: 
             queueQ.enqueue(1)
             if queueQ.dequeue() == 2 and off == 2:
                 print("The offer : ", off, " is token.")
-                return True
+                # appelle à echange 
             else:
                 queueQ.enqueue(2)
                 if queueQ.dequeue() == 3 and off == 3:
                     print("The offer : ", off, " is token.")
-                    return True
-                else:
-                    queueQ.enqueue(3)
-                    if queueQ.dequeue() == 4 and off == 4:
-                        print("The offer : ", off, " is not permitted.")
-                        return True
-                    else :
-                        queueQ.enqueue(4)
-                        if queueQ.dequeue() == 5 and off == 5:
-                            print("The player : ", self.identifiant, " win.")
-                            #points.append()       # ***
-                            #players.terminate()   # ***
+                    # appelle à echange 
 
 
 
@@ -493,7 +486,7 @@ def wait(joueurI):
 def madeOffer(joueurI):
     print ("Player ",joueurI, " is making an offer")
     time.sleep(10)
-    off = j.maxCardsEg()    # make the offer
+    off = j.maxCardsEg(joueurI)    # make the offer
     queueQ.enqueue(off)          # put the offer in the queue
     print("The queue AVEC OFF EN PLUS : ", queueQ.printCQueue())
     print ("Player ",joueurI, " is not making an offer anymore")
@@ -501,10 +494,9 @@ def madeOffer(joueurI):
 def takeOffer(joueurI):
     print ("Player ",joueurI, " is taking an offer")
     time.sleep(7)
-    off = j.maxCardsEg()    # make the offer
-    if j.choseToTake(off):  # take the offer
-        # Exchange of cards ********** <-----------------------------------------------------------
-        exchange() 
+    off = j.maxCardsEg(joueurI)    # make the offer
+    j.choseToTake(off)  # take the offer
+    # Exchange of cards ********** <-----------------------------------------------------------
     print("Player ",joueurI, " is not taking an offer anymore")
 
 
@@ -534,6 +526,8 @@ def play(i):
         else :
             offreMadeM[offreInputTake].acquire()
             takeOffer(i)    #
+            # Show players' cards
+            takeInput(i) 
             offreMadeM[offreInputTake].release()
             
         '''pygame.event.pump()
