@@ -61,7 +61,7 @@ fenetre.fill(white)
  
 
 
-class return_values_nbCartesEg: # For double retourn
+class return_values_nbCartesEg: # For double return
     def __init__(self, a, b):
         self.a=a
         self.b=b
@@ -164,7 +164,7 @@ kthread = KeyboardThread(my_callback)'''
 
 
 
-# Definition of player 
+# Definition of player (classe)
 class Joueur(multiprocessing.Process):
     def __init__(self, identifiant, l):
         multiprocessing.Process.__init__(self)
@@ -193,11 +193,13 @@ class Joueur(multiprocessing.Process):
         # To get the number of occurrences of each item in a list
         cardsEg = []
         
+        # Attribue à cv, ca, vv, ct, le nombre de cartes dans la liste avec le nom correspondant
         cv = self.main.count("Velo")
         ca = self.main.count("Autobus")
         vv = self.main.count("Voiture")
         ct = self.main.count("Tracteur")
 
+        # cardsEg est la liste contenant le nombre de cartes de chaque nom (catégorie)
         cardsEg.append(cv)
         cardsEg.append(ca)
         cardsEg.append(vv)
@@ -243,33 +245,57 @@ class Joueur(multiprocessing.Process):
         return minCardsEg, typeExchange
 
     def choseToTake(self, off):
+        # afficher la queue des offres
         print("The queue ICI: ")
         queueQ.printCQueue()
         print(" +++ ")
+
+        # regarde s'il y a une offre à 1 carte
         if queueQ.dequeue() == 1 and off == 1:
             print("The offer : ", off, " is token.")
             return True
-        else: 
+        else:
             queueQ.enqueue(1)
+            # s'il y a une offre à 2 cartes
             if queueQ.dequeue() == 2 and off == 2:
                 print("The offer : ", off, " is token.")
                 return True
             else:
                 queueQ.enqueue(2)
+                # s'il y a une offre à 3 cartes
                 if queueQ.dequeue() == 3 and off == 3:
                     print("The offer : ", off, " is token.")
                     return True
                 else:
                     queueQ.enqueue(3)
+                    # s'il y a une offre à 4 cartes
                     if queueQ.dequeue() == 4 and off == 4:
                         print("The offer : ", off, " is not permitted.")
                         return True
                     else :
                         queueQ.enqueue(4)
+                        # s'il y a une offre à 5 cartes
                         if queueQ.dequeue() == 5 and off == 5:
                             print("The player : ", self.identifiant, " win.")
                             #points.append()       # ***
                             #players.terminate()   # ***
+
+    def exchange(off):
+    # i = 0
+    if (off == 1):
+        
+        elif (off == 2):
+
+            elif (off == 3):
+
+                elif (off == 4):
+
+                    elif (off == 5):
+
+
+
+
+    
 
 
 
@@ -472,10 +498,6 @@ def takeInput(valueInput):
 nOffreMade = 5
 offreMadeM = [multiprocessing.Lock() for i in range(nOffreMade)]
 
-
-
-def exchange(off):
-    i = 0 # MAKE <---------------------------------------------------------------------------
 
 
 
