@@ -343,12 +343,12 @@ class Joueur(multiprocessing.Process):
         # SPLIT 
         # - value queue pris / value off
         # - type queue prsis / value off 
-        if queueQ.dequeue() == 1 and off == 1: ##### FAIRE UN SPLIT et faire le if que sur la valeur 
+        if queueQ.dequeue() == 1 and off == 1: ##### FAIRE UN SPLIT et faire le if que sur la valeur # ajouter la condition par rapport à quel joueur à fait l'offre
             print("The offer : ", off, " is token.")
             # appelle à echange 
         else: 
             queueQ.enqueue(1)
-            if queueQ.dequeue() == 2 and off == 2:
+            if queueQ.dequeue() == 2 and off == 2: 
                 print("The offer : ", off, " is token.")
                 # appelle à echange 
             else:
@@ -506,7 +506,7 @@ offreMadeM = [multiprocessing.Lock() for i in range(nOffreMade)]
 
 
 def exchange(off):
-    i = 0 # à faire <---------------------------------------------------------------------------
+    i = 0 # à faire <------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -529,7 +529,7 @@ def takeOffer(joueurI):
     time.sleep(7)
     off = j.maxCardsEg(joueurI)    # make the offer
     j.choseToTake(off)  # take the offer
-    # Exchange of cards ********** <-----------------------------------------------------------
+    # Exchange of cards ********** <--------------------------------------------------------------------------------------------------------------------------------------
     print("Player ",joueurI, " is not taking an offer anymore")
 
 
