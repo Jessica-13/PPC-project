@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import string
 import threading
 
 import multiprocessing
@@ -42,7 +43,8 @@ smallfont = pygame.font.SysFont('Corbel',35)	## defining a font
 fenetre = pygame.display.set_mode((X, Y), RESIZABLE)
 
 # fills the screen with a color
-fenetre.fill((60,25,60))
+## fenetre.fill((60,25,60))
+fenetre.fill(white)
 
 
 
@@ -127,16 +129,20 @@ queueQ = CircularQueue(8)
 
 
 
-class KeyboardThread(threading.Thread):
+'''class KeyboardThread(threading.Thread):
 
     def __init__(self, input_cbk = None, name='keyboard-input-thread'):
         self.input_cbk = input_cbk
         super(KeyboardThread, self).__init__(name=name)
         self.start()
 
-    #def run(self):
-        #while True:
+    def run(self):
+        while True:
             #self.input_cbk(input()) #waits to get input + Return
+            keys = pygame.key.get_pressed()
+            if keys[K_ESCAPE]:
+                pygame.quit()
+                sys.exit()'''
 
                 
 
@@ -153,8 +159,8 @@ def my_callback(inp):
 # FOR LOCK 
 processLook = multiprocessing.Lock()
 
-#start the Keyboard thread
-kthread = KeyboardThread(my_callback)
+'''#start the Keyboard thread
+kthread = KeyboardThread(my_callback)'''
 
 
 
@@ -166,7 +172,7 @@ class Joueur(multiprocessing.Process):
         self.identifiant=identifiant
         self.main= l
     
-    def run(self):
+    ''' def run(self):
         print ("Process : " + self.name + " START")
         while not self.exit.is_set():
             pass
@@ -174,7 +180,7 @@ class Joueur(multiprocessing.Process):
         # jeu(self.identifiant)
 
     def shutdown(self):
-        self.exit.set()
+        self.exit.set()'''
 
     def __str__(self):
         return "Player %s cards : %s" % (self.identifiant, self.main)
@@ -234,7 +240,7 @@ class Joueur(multiprocessing.Process):
 
         t = return_values_nbCartesEg(max, indice)   # How many times/which card
         return t'''
-        return minCardsEg
+        return minCardsEg, typeExchange
 
     def choseToTake(self, off):
         print("The queue ICI: ")
@@ -242,18 +248,22 @@ class Joueur(multiprocessing.Process):
         print(" +++ ")
         if queueQ.dequeue() == 1 and off == 1:
             print("The offer : ", off, " is token.")
+            return True
         else: 
             queueQ.enqueue(1)
             if queueQ.dequeue() == 2 and off == 2:
                 print("The offer : ", off, " is token.")
+                return True
             else:
                 queueQ.enqueue(2)
                 if queueQ.dequeue() == 3 and off == 3:
                     print("The offer : ", off, " is token.")
+                    return True
                 else:
                     queueQ.enqueue(3)
                     if queueQ.dequeue() == 4 and off == 4:
                         print("The offer : ", off, " is not permitted.")
+                        return True
                     else :
                         queueQ.enqueue(4)
                         if queueQ.dequeue() == 5 and off == 5:
@@ -263,14 +273,14 @@ class Joueur(multiprocessing.Process):
 
 
 
-def entreeClavier() : 
+'''def entreeClavier() : 
     a=1
     while a == 1:
         for event in pygame.event.get():   
             if event.type == QUIT :
                 a = 0							# Pour arreter le while 	
                 pygame.quit()
-                sys.exit()
+                sys.exit()'''
 
 
 
@@ -350,31 +360,65 @@ def giveCards(identity):
 
 # Show the player's cards
 def showCards(identity):
+    for i in range(5):	
+        # Show player j1's cards
+        image= str(deckShuffledSplitValues[i]) + ".png"
+        uno = pygame.image.load(image).convert()
+        fenetre.blit(uno,(440+100*i,733))
+    for i in range(5,10):	
+        # Show player j2's cards
+        image= str(deckShuffledSplitValues[i]) + ".png"
+        uno = pygame.image.load(image).convert()
+        fenetre.blit(uno,(1110,109+130*(i-5)))
+    for i in range(10,15):	
+        # Show player j3's cards
+        image= str(deckShuffledSplitValues[i]) + ".png"
+        uno = pygame.image.load(image).convert()
+        fenetre.blit(uno,(440+100*(i-10),5))
+    for i in range(15,20):
+        # Show player j4's cards
+        image= str(deckShuffledSplitValues[i]) + ".png"
+        uno = pygame.image.load(image).convert()
+        fenetre.blit(uno,(170,109+130*(i-15)))
+        # updates the frames of the game
+    pygame.display.update()
+    #pygame.display.flip()	
+
+
+
     if (identity == 0):
         print("Player ", identity, " cards")
         print("___________________________________________________________________")
         for i in range(5):	
             print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
         print(" ")
+
     if (identity == 1):
         print("Player ", identity, " cards")
         print("___________________________________________________________________")
         for i in range(5,10):	
             print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
         print(" ")
+
     if (identity == 2):
         print("Player ", identity, " cards")
         print("___________________________________________________________________")
         for i in range(10,15):	
             print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
         print(" ")
+
     if (identity == 3):
         print("Player ", identity, " cards")
         print("___________________________________________________________________")
-        for i in range(15,20):	
+        for i in range(15,20):
             print("Val : ", deckShuffledSplitValues[i], " Famille : ", deckShuffledSplitSuites[i])
         print(" ")
 
+
+
+
+
+        
 
 '''
 def jeu(identifiant):
@@ -413,29 +457,25 @@ def jeu(identifiant):
 
 def takeInput(valueInput):
     if(valueInput == 0): # player 1
-        # Show player j1's cards
         showCards(valueInput)
-        # Hide the other cards ***
 
     if(valueInput == 1): # player 2
-        # Show player j2's cards
         showCards(valueInput)
-        # Hide the other cards ***
 
     if(valueInput == 2): # player 3
-        # Show player j3's cards
         showCards(valueInput)
-        # Hide the other cards ***
 
     if(valueInput == 3): # player 4
-        # Show player j4's cards
         showCards(valueInput)
-        # Hide the other cards ***
-
 
 
 nOffreMade = 5
 offreMadeM = [multiprocessing.Lock() for i in range(nOffreMade)]
+
+
+
+def exchange(off):
+    i = 0 # MAKE <---------------------------------------------------------------------------
 
 
 
@@ -450,22 +490,24 @@ def madeOffer(joueurI):
     time.sleep(10)
     off = j.maxCardsEg()    # make the offer
     queueQ.enqueue(off)          # put the offer in the queue
-    print("The queue : ")
-    queueQ.printCQueue()
+    print("The queue AVEC OFF EN PLUS : ", queueQ.printCQueue())
     print ("Player ",joueurI, " is not making an offer anymore")
 
 def takeOffer(joueurI):
     print ("Player ",joueurI, " is taking an offer")
     time.sleep(7)
     off = j.maxCardsEg()    # make the offer
-    j.choseToTake(off) # take the offer
-    print ("Player ",joueurI, " is not taking an offer anymore")
+    if j.choseToTake(off):  # take the offer
+        # Exchange of cards ********** <-----------------------------------------------------------
+        exchange() 
+    print("Player ",joueurI, " is not taking an offer anymore")
 
 
 
 
 def play(i):
-    while True:
+    done = True
+    while done:
         wait(i)
         offreInputMade = i  #
         offreInputTake = (i + 1) % nOffreMade   #
@@ -488,10 +530,13 @@ def play(i):
             offreMadeM[offreInputTake].acquire()
             takeOffer(i)    #
             offreMadeM[offreInputTake].release()
-
-
-
-
+            
+        '''pygame.event.pump()
+        keys = pygame.key.get_pressed()
+        if keys[K_ESCAPE]:
+            time.sleep(5)
+            done = True'''
+        
 
 
 
@@ -548,7 +593,7 @@ if __name__ == '__main__':
     print("Starting main process:", multiprocessing.current_process().name)
  
     
-    data_ready = multiprocessing.Event()
+    data_ready = multiprocessing.Event() # <- à verifier
  
     '''# Who want to start
     valueInput = input("Who want to start?")
@@ -571,32 +616,33 @@ if __name__ == '__main__':
 
 
     # TEXTE WITH PLAYER NAME
-    label = smallfont.render("PLAYER 1 : ", 1, white)
+    label = smallfont.render("PLAYER 1", 1, black)
     fenetre.blit(label, (300, 790))
 
-    label = smallfont.render("PLAYER 2", 1, white)
+    label = smallfont.render("PLAYER 2", 1, black)
     fenetre.blit(label, (1100, 780))
 
-    label = smallfont.render("PLAYER 3", 1, white)
+    label = smallfont.render("PLAYER 3", 1, black)
     fenetre.blit(label, (950, 50))
 
-    label = smallfont.render("PLAYER 4", 1, white)
+    label = smallfont.render("PLAYER 4", 1, black)
     fenetre.blit(label, (165, 60))
 
 
 
-    '''# TEXTE WITH OFFERS
-    label = smallfont.render("PLAYER 1", 1, white)
-    fenetre.blit(label, (300, 790))
+    dodo = 0    # TEST <- il faut y mettre l'offre
+    # TEXTE WITH OFFERS
+    label = smallfont.render("Offre : " + str(dodo), 1, black)
+    fenetre.blit(label, (300, 830))
 
-    label = smallfont.render("PLAYER 2", 1, white)
-    fenetre.blit(label, (1100, 780))
+    label = smallfont.render("Offre : " + str(dodo), 1, black)
+    fenetre.blit(label, (1100, 820))
 
-    label = smallfont.render("PLAYER 3", 1, white)
-    fenetre.blit(label, (950, 50))
+    label = smallfont.render("Offre : " + str(dodo), 1, black)
+    fenetre.blit(label, (950, 10))
 
-    label = smallfont.render("PLAYER 4", 1, white)
-    fenetre.blit(label, (165, 60))'''
+    label = smallfont.render("Offre : " + str(dodo), 1, black)
+    fenetre.blit(label, (165, 20))
 
 
 
@@ -622,19 +668,20 @@ if __name__ == '__main__':
             image= str(0) + ".png"
             uno = pygame.image.load(image).convert()
             fenetre.blit(uno,(170,109+130*(i-15)))
-        else:											# OFFRE
+        '''else:											# OFFRE
             image= str(0) + ".png"
             uno = pygame.image.load(image).convert()
-            fenetre.blit(uno,(440+100*(i-20),553))
+            fenetre.blit(uno,(440+100*(i-20),553))'''
     
     # updates the frames of the game
     pygame.display.update()
     
     # ************************************************************************************************
 
-    t3=Thread(target=entreeClavier,args=())
+    '''t3=Thread(target=entreeClavier,args=()) # VERIFIER 
     t3.start()
-    t3.join()
+    t3.join()'''
+
 
     # Start + order of process
     for p in players:

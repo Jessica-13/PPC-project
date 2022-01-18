@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-
+'''
 import threading
 
 class KeyboardThread(threading.Thread):
@@ -27,7 +27,7 @@ kthread = KeyboardThread(my_callback)
 while True:
     #the normal program executes without blocking. here just counting up
     showcounter += 1
-
+'''
 
 
 
@@ -65,7 +65,7 @@ finally:
 
 
 
-'''
+
 import pygame
 from pygame.locals import *
 
@@ -95,4 +95,3 @@ while not done:
     keys = pygame.key.get_pressed()
     if keys[K_ESCAPE]:
         done = True
-'''
