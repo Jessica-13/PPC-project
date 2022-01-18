@@ -1,32 +1,26 @@
 # Test kill avec signal
 
-import multiprocessing
+from multiprocessing import Process
 import os
 import signal
+import time
 
-def compteur(i):
-    while True:
-        pass
-        if ( == 3):
-            cloche = True
-            signal.signal(signal.SIGTERM, signal_handler, i)
+def processus(i):
+    time.sleep(3)
+    os.kill(os.getppid(), signal.SIGKILL)
 
 
-def signal_handler(signum, frame, i):
+def signal_handler(signum, frame):
     if signum == signal.SIGUSR1:
-        os.kill(childPID[i], signal.SIGUSR1)
-        # il faut que ça tue tous les processus child
+        os.kill(childPID, signal.SIGKILL)
+        print("Die")
+
 
 if __name__ == '__main__':
-    tourne = [multiprocessing.Process(target=compteur, args = (i, ))for i in range (5)]
+    p = Process(target=processus, args=(2,))
+
+    p.start()
     global childPID
-    global cloche
-    cloche = False
-
-    for p in tourne:
-        p.start()
-        childPID[i] = multiprocessing.process.pid()
-
-    for p in tourne:
-        p.join()
+    childPID = p.pid
+    p.join()
 
