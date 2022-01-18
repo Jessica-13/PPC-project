@@ -22,13 +22,13 @@ from pygame.locals import *
 from pygame import mixer
 import sys 
 
-# GUI ********************************************************************************************
+# GUI *********************************************************************************************************************************
 white = (255, 255, 255) 
 black= (0, 0,0) 
 
 # fenetre resolution
-X=1380	# width
-Y=868	# height
+X = 1380	# width
+Y = 868	# height
 
 
 
@@ -46,12 +46,94 @@ fenetre = pygame.display.set_mode((X, Y), RESIZABLE)
 ## fenetre.fill((60,25,60))
 fenetre.fill(white)
 
+''' changer le fond 
+fond = pygame.image.load("fondnoir.jpg").convert()
+fenetre.blit(fond,(0,0))'''
+
 
 
 # son = pygame.mixer.Sound("son.wav")
 ######## mixer.music.load("musique.mp3")
 ######## mixer.music.play(loops=-1)
-# *************************************************************************************************
+# *************************************************************************************************************************************
+
+# # # Definition of the deck **********************************************************************************************************
+
+# Definition of the "Carte" object
+class Carte:
+    def __init__(self, val, couleur):
+        self.couleur = couleur
+        self.valeur = val
+        
+    def __str__(self):
+        return "%s : %s" % (self.couleur, self.valeur)
+
+# # Definition of the "Carte" object for the Deck
+class Cards:
+	global suites, values 
+	suites = ['Velo', 'Autobus', 'Voiture', 'Tracteur']
+	values = ['3', '5', '7', '9'] 
+	
+	def __init__(self): 
+		pass
+
+# Definition of the Deck
+class Deck(Cards): 
+	def __init__(self): 
+		Cards.__init__(self) 
+		self.mycardset = []
+		
+		for i in range(5): 		# 4 players
+			for j in range(4): 	    # 5 cards for every family
+				self.mycardset.append(values[j] + " " + suites[j])
+	
+	def popCard(self): 
+		if len(self.mycardset) == 0: 
+			return "NO CARDS CAN BE POPPED FURTHER"
+		else: 
+			cardpopped = self.mycardset.pop() 
+			print("Card removed is", cardpopped) 
+
+
+# Shuffle the deck of cards
+class ShuffleCards(Deck): 
+    def __init__(self): 
+        Deck.__init__(self) 
+  
+    def shuffle(self): 
+        if len(self.mycardset) < 20: 
+            print("cannot shuffle the cards") 
+        else: 
+            shuffle(self.mycardset) 
+            return self.mycardset 
+  
+    def popCard(self): 
+        if len(self.mycardset) == 0: 
+            return "NO CARDS CAN BE POPPED FURTHER"
+        else: 
+            cardpopped = self.mycardset.pop() 
+            return (cardpopped) 
+
+
+objCards = Cards() 
+objDeck = Deck() 
+
+deckOrigin = objDeck.mycardset 
+# print('\n Cards: \n', deckOrigin) 
+
+objShuffleCards = ShuffleCards() 
+
+deckShuffled = objShuffleCards.shuffle() 
+# print('\n Cards Shuffled : \n', deckShuffled) 
+
+# ***********************************
+
+# for i in range(19):     # To have access to the two parts separately
+deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
+deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
+# # ************************************************************************************************************************************
+
+
 '''def worker(queue, data_ready):
     print("Starting thread:", threading.current_thread().name)    
     data_ready.wait()
@@ -61,10 +143,11 @@ fenetre.fill(white)
  
 
 
-class return_values_nbCartesEg: # For double return
-    def __init__(self, a, b):
+class return_values_nbCartesEg: # For double retourn
+    def __init__(self, a, b, c):
         self.a=a
         self.b=b
+        self.c=c
 
 
 
@@ -145,32 +228,38 @@ queueQ = CircularQueue(8)
                 sys.exit()'''
 
                 
-
+'''
 # FOR INPUT 
 def my_callback(inp):
     #evaluate the keyboard input
     print('You Entered:', inp)
     queueQ.enqueue(inp)
     print("The queue ICI : ")
-    queueQ.printCQueue()    #
+    queueQ.printCQueue()    #'''
 
 
 
 # FOR LOCK 
-processLook = multiprocessing.Lock()
+processLook = multiprocessing.Lock()    # à enlever 
 
 '''#start the Keyboard thread
 kthread = KeyboardThread(my_callback)'''
 
 
 
-# Definition of player (classe)
+# Method definition for dividing the variables (offre)
+def splitSplit():
+    i = 0
+
+
+
+# Definition of player 
 class Joueur(multiprocessing.Process):
     def __init__(self, identifiant, l):
         multiprocessing.Process.__init__(self)
-        self.exit = multiprocessing.Event()
-        self.identifiant=identifiant
-        self.main= l
+        self.exit = multiprocessing.Event() ### pour terminer - à enlever 
+        self.identifiant = identifiant
+        self.main = l
     
     ''' def run(self):
         print ("Process : " + self.name + " START")
@@ -188,8 +277,8 @@ class Joueur(multiprocessing.Process):
     def ajouterCarte (self,carte):
         self.main.append(carte)
     
-    # Définition méthode pour déterminer le plus grand nombre de cartes identiques
-    def maxCardsEg(self):
+    # Definition method to determine the greatest number of identical cards
+    def maxCardsEg(self, id):
         # To get the number of occurrences of each item in a list
         cardsEg = []
         
@@ -242,43 +331,34 @@ class Joueur(multiprocessing.Process):
 
         t = return_values_nbCartesEg(max, indice)   # How many times/which card
         return t'''
-        return minCardsEg, typeExchange
 
-    def choseToTake(self, off):
-        # afficher la queue des offres
+
+
+        # ajouter l'affichage avec (1, 0, 2, 2) -> donc (1 velo, etc .... )
+        # ajouter le control (si min = 0, alors on prend l'autre au dessus)
+        return id, minCardsEg, typeExchange
+
+    def choseToTake(self, off): ### AJOUTER L'ECHANGE 
         print("The queue ICI: ")
         queueQ.printCQueue()
         print(" +++ ")
-
-        # regarde s'il y a une offre à 1 carte
-        if queueQ.dequeue() == 1 and off == 1:
+        # SPLIT 
+        # - value queue pris / value off
+        # - type queue prsis / value off 
+        if queueQ.dequeue() == 1 and off == 1: ##### FAIRE UN SPLIT et faire le if que sur la valeur # ajouter la condition par rapport à quel joueur à fait l'offre
             print("The offer : ", off, " is token.")
-            return True
-        else:
+            # appelle à echange 
+        else: 
             queueQ.enqueue(1)
-            # s'il y a une offre à 2 cartes
-            if queueQ.dequeue() == 2 and off == 2:
+            if queueQ.dequeue() == 2 and off == 2: 
                 print("The offer : ", off, " is token.")
-                return True
+                # appelle à echange 
             else:
                 queueQ.enqueue(2)
                 # s'il y a une offre à 3 cartes
                 if queueQ.dequeue() == 3 and off == 3:
                     print("The offer : ", off, " is token.")
-                    return True
-                else:
-                    queueQ.enqueue(3)
-                    # s'il y a une offre à 4 cartes
-                    if queueQ.dequeue() == 4 and off == 4:
-                        print("The offer : ", off, " is not permitted.")
-                        return True
-                    else :
-                        queueQ.enqueue(4)
-                        # s'il y a une offre à 5 cartes
-                        if queueQ.dequeue() == 5 and off == 5:
-                            print("The player : ", self.identifiant, " win.")
-                            #points.append()       # ***
-                            #players.terminate()   # ***
+                    # appelle à echange 
 
 
     def exchange(typeExchange, off, listeCartes):
@@ -411,7 +491,7 @@ def showCards(identity):
         fenetre.blit(uno,(170,109+130*(i-15)))
         # updates the frames of the game
     pygame.display.update()
-    #pygame.display.flip()	
+    # pygame.display.flip()	
 
 
 
@@ -513,7 +593,7 @@ def wait(joueurI):
 def madeOffer(joueurI):
     print ("Player ",joueurI, " is making an offer")
     time.sleep(10)
-    off = j.maxCardsEg()    # make the offer
+    off = j.maxCardsEg(joueurI)    # make the offer
     queueQ.enqueue(off)          # put the offer in the queue
     print("The queue AVEC OFF EN PLUS : ", queueQ.printCQueue())
     print ("Player ",joueurI, " is not making an offer anymore")
@@ -521,10 +601,9 @@ def madeOffer(joueurI):
 def takeOffer(joueurI):
     print ("Player ",joueurI, " is taking an offer")
     time.sleep(7)
-    off = j.maxCardsEg()    # make the offer
-    if j.choseToTake(off):  # take the offer
-        # Exchange of cards ********** <-----------------------------------------------------------
-        exchange() 
+    off = j.maxCardsEg(joueurI)    # make the offer
+    j.choseToTake(off)  # take the offer
+    # Exchange of cards ********** <--------------------------------------------------------------------------------------------------------------------------------------
     print("Player ",joueurI, " is not taking an offer anymore")
 
 
@@ -554,6 +633,8 @@ def play(i):
         else :
             offreMadeM[offreInputTake].acquire()
             takeOffer(i)    #
+            # Show players' cards
+            takeInput(i) 
             offreMadeM[offreInputTake].release()
             
         '''pygame.event.pump()
@@ -561,7 +642,10 @@ def play(i):
         if keys[K_ESCAPE]:
             time.sleep(5)
             done = True'''
-        
+
+
+
+
 
 
 
@@ -569,7 +653,7 @@ if __name__ == '__main__':
     manager = Manager()
 
 
-    objCards = Cards() 
+    '''objCards = Cards() 
     objDeck = Deck() 
     
     deckOrigin = objDeck.mycardset 
@@ -586,7 +670,7 @@ if __name__ == '__main__':
 
     # for i in range(19):     # To have access to the two parts separately
     deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
-    deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
+    deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]'''
     
 
     nb_players = 4
@@ -636,7 +720,8 @@ if __name__ == '__main__':
     # Cloche
     uno = pygame.image.load("cloche.jpg").convert()
     fenetre.blit(uno,(645,389))
-    pygame.display.update()
+    # pygame.display.update()
+    # pygame.display.flip()
 
 
 
@@ -700,6 +785,7 @@ if __name__ == '__main__':
     
     # updates the frames of the game
     pygame.display.update()
+    # pygame.display.flip()
     
     # ************************************************************************************************
 
@@ -715,6 +801,12 @@ if __name__ == '__main__':
         p.start()
     for p in players:
         p.join()
+
+
+
+    time.sleep(30)  # time after end processus
+    
+
 
     # TEST
     print("The points : ", points)
