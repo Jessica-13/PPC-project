@@ -240,6 +240,11 @@ class Joueur(multiprocessing.Process):
 
         t = return_values_nbCartesEg(max, indice)   # How many times/which card
         return t'''
+
+
+
+        # ajouter l'affichage avec (1, 0, 2, 2) -> donc (1 velo, etc .... )
+        # ajouter le control (si min = 0, alors on prend l'autre au dessus)
         return minCardsEg, typeExchange
 
     def choseToTake(self, off):
@@ -475,7 +480,7 @@ offreMadeM = [multiprocessing.Lock() for i in range(nOffreMade)]
 
 
 def exchange(off):
-    i = 0 # MAKE <---------------------------------------------------------------------------
+    i = 0 # à faire <---------------------------------------------------------------------------
 
 
 
