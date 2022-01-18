@@ -46,12 +46,95 @@ fenetre = pygame.display.set_mode((X, Y), RESIZABLE)
 ## fenetre.fill((60,25,60))
 fenetre.fill(white)
 
+''' changer le fond 
+fond = pygame.image.load("fondnoir.jpg").convert()
+fenetre.blit(fond,(0,0))'''
+
 
 
 # son = pygame.mixer.Sound("son.wav")
 ######## mixer.music.load("musique.mp3")
 ######## mixer.music.play(loops=-1)
 # *************************************************************************************************
+
+
+# # # Definition of the deck ***********************************************************************
+
+# Definition of the "Carte" object
+class Carte:
+    def __init__(self, val, couleur):
+        self.couleur = couleur
+        self.valeur = val
+        
+    def __str__(self):
+        return "%s : %s" % (self.couleur, self.valeur)
+
+# # Definition of the "Carte" object for the Deck
+class Cards:
+	global suites, values 
+	suites = ['Velo', 'Autobus', 'Voiture', 'Tracteur']
+	values = ['3', '5', '7', '9'] 
+	
+	def __init__(self): 
+		pass
+
+# Definition of the Deck
+class Deck(Cards): 
+	def __init__(self): 
+		Cards.__init__(self) 
+		self.mycardset = []
+		
+		for i in range(5): 		# 4 players
+			for j in range(4): 	    # 5 cards for every family
+				self.mycardset.append(values[j] + " " + suites[j])
+	
+	def popCard(self): 
+		if len(self.mycardset) == 0: 
+			return "NO CARDS CAN BE POPPED FURTHER"
+		else: 
+			cardpopped = self.mycardset.pop() 
+			print("Card removed is", cardpopped) 
+
+
+# Shuffle the deck of cards
+class ShuffleCards(Deck): 
+    def __init__(self): 
+        Deck.__init__(self) 
+  
+    def shuffle(self): 
+        if len(self.mycardset) < 20: 
+            print("cannot shuffle the cards") 
+        else: 
+            shuffle(self.mycardset) 
+            return self.mycardset 
+  
+    def popCard(self): 
+        if len(self.mycardset) == 0: 
+            return "NO CARDS CAN BE POPPED FURTHER"
+        else: 
+            cardpopped = self.mycardset.pop() 
+            return (cardpopped) 
+
+            
+objCards = Cards() 
+objDeck = Deck() 
+
+deckOrigin = objDeck.mycardset 
+# print('\n Cards: \n', deckOrigin) 
+
+objShuffleCards = ShuffleCards() 
+
+deckShuffled = objShuffleCards.shuffle() 
+# print('\n Cards Shuffled : \n', deckShuffled) 
+
+# ***********************************
+
+# for i in range(19):     # To have access to the two parts separately
+deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
+deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
+# # *************************************************************************************************
+
+
 '''def worker(queue, data_ready):
     print("Starting thread:", threading.current_thread().name)    
     data_ready.wait()
@@ -283,61 +366,6 @@ class Joueur(multiprocessing.Process):
 
 
 
-# Definition of the "Carte" object
-class Carte:
-    def __init__(self, val, couleur):
-        self.couleur = couleur
-        self.valeur = val
-        
-    def __str__(self):
-        return "%s : %s" % (self.couleur, self.valeur)
-
-# # Definition of the "Carte" object for the Deck
-class Cards:
-	global suites, values 
-	suites = ['Velo', 'Autobus', 'Voiture', 'Tracteur']
-	values = ['3', '5', '7', '9'] 
-	
-	def __init__(self): 
-		pass
-
-# Definition of the Deck
-class Deck(Cards): 
-	def __init__(self): 
-		Cards.__init__(self) 
-		self.mycardset = []
-		
-		for i in range(5): 		# 4 players
-			for j in range(4): 	    # 5 cards for every family
-				self.mycardset.append(values[j] + " " + suites[j])
-	
-	def popCard(self): 
-		if len(self.mycardset) == 0: 
-			return "NO CARDS CAN BE POPPED FURTHER"
-		else: 
-			cardpopped = self.mycardset.pop() 
-			print("Card removed is", cardpopped) 
-
-
-# Shuffle the deck of cards
-class ShuffleCards(Deck): 
-    def __init__(self): 
-        Deck.__init__(self) 
-  
-    def shuffle(self): 
-        if len(self.mycardset) < 20: 
-            print("cannot shuffle the cards") 
-        else: 
-            shuffle(self.mycardset) 
-            return self.mycardset 
-  
-    def popCard(self): 
-        if len(self.mycardset) == 0: 
-            return "NO CARDS CAN BE POPPED FURTHER"
-        else: 
-            cardpopped = self.mycardset.pop() 
-            return (cardpopped) 
-
 
 # Heap definition for each player
 def giveCards(identity):
@@ -380,7 +408,7 @@ def showCards(identity):
         fenetre.blit(uno,(170,109+130*(i-15)))
         # updates the frames of the game
     pygame.display.update()
-    #pygame.display.flip()	
+    # pygame.display.flip()	
 
 
 
@@ -535,7 +563,10 @@ def play(i):
         if keys[K_ESCAPE]:
             time.sleep(5)
             done = True'''
-        
+
+
+
+
 
 
 
@@ -543,7 +574,7 @@ if __name__ == '__main__':
     manager = Manager()
 
 
-    objCards = Cards() 
+    '''objCards = Cards() 
     objDeck = Deck() 
     
     deckOrigin = objDeck.mycardset 
@@ -560,7 +591,7 @@ if __name__ == '__main__':
 
     # for i in range(19):     # To have access to the two parts separately
     deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
-    deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
+    deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]'''
     
 
     nb_players = 4
@@ -610,7 +641,8 @@ if __name__ == '__main__':
     # Cloche
     uno = pygame.image.load("cloche.jpg").convert()
     fenetre.blit(uno,(645,389))
-    pygame.display.update()
+    # pygame.display.update()
+    # pygame.display.flip()
 
 
 
@@ -674,6 +706,7 @@ if __name__ == '__main__':
     
     # updates the frames of the game
     pygame.display.update()
+    # pygame.display.flip()
     
     # ************************************************************************************************
 
@@ -689,6 +722,12 @@ if __name__ == '__main__':
         p.start()
     for p in players:
         p.join()
+
+
+
+    time.sleep(30)  # time after end processus
+    
+
 
     # TEST
     print("The points : ", points)
