@@ -4,19 +4,22 @@ import sysv_ipc
 from multiprocessing import Process
 import multiprocessing
 
+class Joueur(multiprocessing.Process):
+    def __init__(self, nom, age):
+        multiprocessing.Process.__init__(self)
+        self.nom = nom
+        self.age = age
 
-# fonction processus
-def f(a, b):
-    keyJoueur = 128
-    mq = sysv_ipc.MessageQueue(keyJoueur, sysv_ipc.IPC_CREAT)
+    # fonction processus
+    def f(a, b):
+        
+        keyJoueur = 128
+        mq = sysv_ipc.MessageQueue(keyJoueur, sysv_ipc.IPC_CREAT)
+        r = a+b
+        message = str(r).encode()
+        mq.send(message)
 
-    r = a+b
-    print(r)
-
-    message = str(r).encode()
-    mq.send(message)
-
-    mq.remove()
+        mq.remove()
 
 if __name__ == '__main__':
     keyMain = 128
@@ -25,7 +28,7 @@ if __name__ == '__main__':
     a = 1
     b = 3
 
-    p = Process(target=f, args=(a, b))
+    p = Process(target=Joueur.f, args=(a, b))
     p.start()
     message, t = mq.receive()
     value = message.decode()

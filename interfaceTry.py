@@ -21,8 +21,7 @@ import queue
 
 import time
 
-import signal
-import os
+import sysv_ipc
 
 
 # GUI *********************************************************************************************
@@ -217,9 +216,15 @@ class Joueur(multiprocessing.Process):
         maxCardsEg = max(cardsEg) # je sais pas si ça sert :P 
         minCardsEg = min(cardsEg)
 
+        # Message Queue
+        keyJoueur = 128
+        mq = sysv_ipc.MessageQueue(keyJoueur, sysv_ipc.IPC_CREAT)
+
         if (maxCardsEg == 5 or minCardsEg == 5):
-            # envoyer au main: le nombre de points, nom de cartes, identifiant du joueur qui a gagné
-            os.kill(os.getppid(), signal.SIGKILL)
+            resultat = [self.l[0].couleur, self.l[0].valeur, self.identifiant]
+            message = resultat.encode()
+            mq.send(message)
+
 
         if minCardsEg == cv:
             typeExchange = "Velo"
@@ -436,18 +441,6 @@ def play(i):
 
 
 
-# méthode handler qui va recevoir le signal envoyé par le processus du joueur qui gagne
-def signal_handler(signum, frame):
-    if signum == signal.SIGUSR1:
-        for i in range(1, 5):
-            os.kill(childPID[i], signal.SIGKILL)
-            print("Die")
-
-
-
-
-
-
 
 if __name__ == '__main__':
     manager = Manager()     #####
@@ -470,21 +463,26 @@ if __name__ == '__main__':
     # Main process
     print("Starting main process:", multiprocessing.current_process().name)
 
-    # tableau des adresses des processus
-    global childPID
+    # Création d'une liste de pid pour pouvoir arrêter les processus une fois le jeu fini
     childPID = []
-    # pour que le numéro du joueur corresponde à sa case d'indice du tableau
-    childPID[0] = None
+
+    # Pour recevoir les messages queues
+    keyMain = 128
+    mq = sysv_ipc.MessageQueue(keyMain, sysv_ipc.IPC_CREAT)
 
 
     # Start + order of process
-    a = 1
+    a = 0
     for p in players:
         # Card assignment
         giveCards(j)
         p.start()
         childPID[a] = p.pid
         a += 1
+    # Si on reçoit un message, on arrête les processus
+    message, t = mq.receive()
+    value = message.decode()
+
     '''for p in players:
         p.join()'''
     # voir pour la fin 
