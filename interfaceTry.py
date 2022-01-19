@@ -25,7 +25,6 @@ import time
 import sysv_ipc
 import signal
 import os
-import signal
 
 
 # GUI *********************************************************************************************
