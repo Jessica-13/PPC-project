@@ -22,6 +22,9 @@ import queue
 import time
 
 import sysv_ipc
+import signal
+import os
+import signal
 
 
 # GUI *********************************************************************************************
@@ -495,7 +498,8 @@ if __name__ == '__main__':
     # Si on reçoit un message, on arrête les processus
     message, t = mq.receive()
     value = message.decode()
-
+    for a in range(5):
+        os.kill(childPID[a], signal.SIGKILL)
     '''for p in players:
         p.join()'''
     # voir pour la fin 
