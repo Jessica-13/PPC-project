@@ -6,6 +6,7 @@
 
 
 
+from distutils import ccompiler
 from random import *
 import multiprocessing
 import queue
@@ -189,7 +190,7 @@ deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
 # vectSplitOffre = []
 # Initializing a queue
 queue = []
-for gg in range(11): # To solve the empty list problem
+for gg in range(6): # To solve the empty list problem
     queue.append(0)
 
 # # ************************************************************************************************************************************
@@ -214,26 +215,47 @@ class Joueur(multiprocessing.Process):
     def __str__(self):
         return "Player %s cards : %s" % (self.identifiant, self.main)
 
-    def ajouterCarte (self,carte):
-        self.main.append(carte)
+    '''
+    # Heap definition for each player
+    def ajouterCarte (self):
+        #self.main.append(carte)
+        if (self.identifiant == 0):
+            for i in range(5):	
+                self.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+        if (self.identifiant == 1):
+            for i in range(5,10):	
+                self.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+        if (self.identifiant == 2):
+            for i in range(10,15):	
+                self.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+        if (self.identifiant == 3):
+            for i in range(15,20):	
+                self.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+    '''
+
     
     # Definition method to determine the greatest number of identical cards
     def maxCardsEg(self, id):
         # To get the number of occurrences of each item in a list
         cardsEg = []
-        
+
         cv = self.main.count("Velo")
         ca = self.main.count("Autobus")
         vv = self.main.count("Voiture")
         ct = self.main.count("Tracteur")
+
+        # deckShuffledSplitValues[i]
 
         cardsEg.append(cv)
         cardsEg.append(ca)
         cardsEg.append(vv)
         cardsEg.append(ct)
 
+        print("LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL : ", cardsEg)
+
         maxCardsEg = max(cardsEg) # To see if anyone has won
-        
+        minCardsEg = min(cardsEg)
+
         # Message Queue
         keyJoueur = 128
         mq = sysv_ipc.MessageQueue(keyJoueur, sysv_ipc.IPC_CREAT)
@@ -244,12 +266,12 @@ class Joueur(multiprocessing.Process):
             message = resultat.encode()
             mq.send(message)
 
-
-        if cv < ca and cv != 0:
+        typeExchange = ""
+        if cv < ca and cv < vv and cv < ct and cv != 0:
             minCardsEg = cv
             typeExchange = "Velo"
         else:
-            if ca < vv and ca != 0:
+            if ca < vv and ca < ct and ca != 0:
                 minCardsEg = ca
                 typeExchange = "Autobus"
             else:
@@ -260,6 +282,10 @@ class Joueur(multiprocessing.Process):
                     if ct != 0:
                         minCardsEg = ct
                         typeExchange = "Tracteur"
+                    else:
+                        id = 0
+                        minCardsEg = 0
+                        typeExchange = 0
         
         
 
@@ -273,9 +299,14 @@ class Joueur(multiprocessing.Process):
         print(queue)
         print(" +++ ")
         idRet, minCardsEg, typeExchange = j.maxCardsEg(id)       # find the offers
+        '''
         aa = queue.pop(0)   # id
         bb = queue.pop(1)   # value
         cc = queue.pop(2)   # type
+        '''
+        cc = queue.pop(0)
+        bb = queue.pop(0)
+        aa = queue.pop(0)
         if idRet != aa and minCardsEg == bb: # we take it if ok 
             print("The offer : is token.")
             if (id == 0):
@@ -310,25 +341,8 @@ class Joueur(multiprocessing.Process):
 
 
 
-# Heap definition for each player
-def giveCards(identity):
-    if (identity == 0):
-        for i in range(5):	
-            j.ajouterCarte(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
-    if (identity == 1):
-        for i in range(5,10):	
-            j.ajouterCarte(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
-    if (identity == 2):
-        for i in range(10,15):	
-            j.ajouterCarte(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
-    if (identity == 3):
-        for i in range(15,20):	
-            j.ajouterCarte(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
-
-
-
 def reDraw(canva):
-    time.sleep(5)
+    time.sleep(2)
     for i in range(20):
         if deckShuffledSplitValues[i] == "3":
             canva.itemconfig(imageCart[i], image = img[1])
@@ -406,21 +420,22 @@ offreMadeM = [multiprocessing.Lock() for i in range(nOffreMade)]
 def wait(joueurI):
     print ("Player ",joueurI, " is waiting")
     #the normal program executes without blocking. here just counting up
-    time.sleep(5)
+    time.sleep(2)
     print ("Player ",joueurI, " is not waiting anymore")
 
 def madeOffer(joueurI):
     print ("Player ",joueurI, " is making an offer")
-    time.sleep(10)
+    time.sleep(3)
     idRet, minCardsEg, typeExchange = j.maxCardsEg(joueurI)    # make the offer
     queue.append(idRet)
     queue.append(minCardsEg)
     queue.append(typeExchange)
+    print("ICCCCCCIIIICICICICICICIC : ", idRet, minCardsEg, typeExchange)
     print ("Player ",joueurI, " is not making an offer anymore")
 
 def takeOffer(joueurI):
     print ("Player ",joueurI, " is taking an offer")
-    time.sleep(7)
+    time.sleep(2)
     j.choseToTake(joueurI)  # take the offer
     print("Player ",joueurI, " is not taking an offer anymore")
 
@@ -465,7 +480,25 @@ if __name__ == '__main__':
     nb_players = 4
     for i in range(nb_players):
         # Player creation
-        j = Joueur(i,[])
+        j = Joueur(i, [])
+        # Heap definition for each player
+        #self.main.append(carte)
+        if (i == 0):
+            for i in range(5):	
+                j.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+        if (i == 1):
+            for i in range(5,10):	
+                j.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+        if (i == 2):
+            for i in range(10,15):	
+                j.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+        if (i == 3):
+            for i in range(15,20):	
+                j.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+
+
+
+
 
     # on définit le processus principale
     players = [multiprocessing.Process(target=play, args = (i, ))for i in range (nb_players)]
@@ -491,7 +524,7 @@ if __name__ == '__main__':
     a = 0
     for p in players:
         # Card assignment
-        giveCards(j)
+        # j.ajouterCarte()
         p.start()
         childPID[a] = p.pid
         a += 1
