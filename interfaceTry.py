@@ -237,11 +237,11 @@ class Joueur(multiprocessing.Process):
     def maxCardsEg(self, id):
         # To get the number of occurrences of each item in a list
         cardsEg = []
-
-        cv = self.main.count("Velo")
-        ca = self.main.count("Autobus")
-        vv = self.main.count("Voiture")
-        ct = self.main.count("Tracteur")
+        
+        cv = self.main.count(Carte('3', 'Velo'))
+        ca = self.main.count(Carte('5', 'Autobus'))
+        vv = self.main.count(Carte('7', 'Voiture'))
+        ct = self.main.count(Carte('9', 'Tracteur'))
 
         # deckShuffledSplitValues[i]
 
@@ -250,7 +250,7 @@ class Joueur(multiprocessing.Process):
         cardsEg.append(vv)
         cardsEg.append(ct)
 
-        print("LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL : ", cardsEg)
+        print("COUCOU : ", cardsEg)
 
         maxCardsEg = max(cardsEg) # To see if anyone has won
         minCardsEg = min(cardsEg)
