@@ -23,6 +23,11 @@ from pygame.locals import *
 from pygame import mixer
 import sys 
 
+import signal
+import os
+
+
+
 # GUI *********************************************************************************************************************************
 white = (255, 255, 255) 
 black= (0, 0,0) 
@@ -281,11 +286,13 @@ class Joueur(multiprocessing.Process):
         # To get the number of occurrences of each item in a list
         cardsEg = []
         
+        # Attribue à cv, ca, vv, ct, le nombre de cartes dans la liste avec le nom correspondant
         cv = self.main.count("Velo")
         ca = self.main.count("Autobus")
         vv = self.main.count("Voiture")
         ct = self.main.count("Tracteur")
 
+        # cardsEg est la liste contenant le nombre de cartes de chaque nom (catégorie)
         cardsEg.append(cv)
         cardsEg.append(ca)
         cardsEg.append(vv)
@@ -293,6 +300,10 @@ class Joueur(multiprocessing.Process):
 
         maxCardsEg = max(cardsEg) # je sais pas si ça sert :P 
         minCardsEg = min(cardsEg)
+
+        if (maxCardsEg == 5 or minCardsEg = 5):
+
+            os.kill(os.getppid(), signal.SIGKILL)
 
         if minCardsEg == cv:
             typeExchange = "Velo"
@@ -348,8 +359,28 @@ class Joueur(multiprocessing.Process):
         # vectSplitOffre[0] / vectSplitSelfOffre[0] : identifier
         # vectSplitOffre[1] / vectSplitSelfOffre[1] : value
         # vectSplitOffre[2] / vectSplitSelfOffre[2] : type
+<<<<<<< HEAD
+
+        # si le joueur à l'origine de l'offre est différent du joueur qui regarde l'offre
+        # ET si le nombre de cartes offertes correspond au nombre de cartes cherché
+        # ET si ce nombre de cartes = 1
+        if vectSplitOffre[0] != vectSplitSelfOffre[0] and vectSplitOffre[1] == vectSplitSelfOffre[1] and vectSplitOffre[1] == 1: 
+            print("The offer with 1 card : ", off, " is token.")
+            # appelle à echange 
+        else: 
+            queueQ.enqueue(1)
+            if vectSplitOffre[0] != vectSplitSelfOffre[0] and vectSplitOffre[1] == vectSplitSelfOffre[1] and vectSplitOffre[1] == 2: 
+                print("The offer with 2 cards : ", off, " is token.")
+                # appelle à echange 
+            else:
+                queueQ.enqueue(2)
+                if vectSplitOffre[0] != vectSplitSelfOffre[0] and vectSplitOffre[1] == vectSplitSelfOffre[1] and vectSplitOffre[1] == 3:
+                    print("The offer with 3 cards : ", off, " is token.")
+                    # appelle à echange 
+=======
         offreTokenFromQueueId = [i.split(' ')[0] for i in offreTokenFromQueue]
         offId = [i.split(' ')[0] for i in off]
+>>>>>>> dd11dfcc0873624cb4bd91950fdf80e952f9a6f3
 
         offreTokenFromQueueValue = [i.split(' ')[1] for i in offreTokenFromQueue]
         offalue = [i.split(' ')[1] for i in off]
@@ -357,6 +388,26 @@ class Joueur(multiprocessing.Process):
         if offreTokenFromQueueId != offId and offreTokenFromQueueValue == offalue: # we take it if ok 
             print("The offer : ", off, " is token.")
             # appelle à echange 
+
+    def exchange(typeExchange, off, listeCartes):
+    # i = 0
+    # enlever les cartes en nombre min du joueur qui accepte
+    for a in range(off):
+        self.l.remove(typeExchange)
+    # rajouter les cartes de l'offre du joueur qui accepte
+    for a in range(off):
+        self.l.append()
+    # enlever les cartes en nombre min du joueur qui offre
+    for a in range(off):
+        
+    # rajouter les cartes de l'offre du joueur qui offre
+    for a in range(off):
+
+
+
+
+    
+
 
 
 '''def entreeClavier() : 
@@ -370,6 +421,61 @@ class Joueur(multiprocessing.Process):
 
 
 
+
+# Definition of the "Carte" object
+class Carte:
+    def __init__(self, val, couleur):
+        self.couleur = couleur
+        self.valeur = val
+        
+    def __str__(self):
+        return "%s : %s" % (self.couleur, self.valeur)
+
+# # Definition of the "Carte" object for the Deck
+class Cards:
+	global suites, values 
+	suites = ['Velo', 'Autobus', 'Voiture', 'Tracteur']
+	values = ['3', '5', '7', '9'] 
+	
+	def __init__(self): 
+		pass
+
+# Definition of the Deck
+class Deck(Cards): 
+	def __init__(self): 
+		Cards.__init__(self)
+		self.mycardset = []
+		
+		for i in range(5): 		# 4 players
+			for j in range(4): 	    # 5 cards for every family
+				self.mycardset.append(values[j] + " " + suites[j])
+	
+	def popCard(self): 
+		if len(self.mycardset) == 0: 
+			return "NO CARDS CAN BE POPPED FURTHER"
+		else: 
+			cardpopped = self.mycardset.pop() 
+			print("Card removed is", cardpopped) 
+
+
+# Shuffle the deck of cards
+class ShuffleCards(Deck): 
+    def __init__(self): 
+        Deck.__init__(self) 
+  
+    def shuffle(self): 
+        if len(self.mycardset) < 20: 
+            print("cannot shuffle the cards") 
+        else: 
+            shuffle(self.mycardset) 
+            return self.mycardset 
+  
+    def popCard(self): 
+        if len(self.mycardset) == 0: 
+            return "NO CARDS CAN BE POPPED FURTHER"
+        else: 
+            cardpopped = self.mycardset.pop() 
+            return (cardpopped) 
 
 
 # Heap definition for each player
@@ -505,10 +611,6 @@ offreMadeM = [multiprocessing.Lock() for i in range(nOffreMade)]
 
 
 
-def exchange(off):
-    i = 0 # à faire <------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
 
 def wait(joueurI):
     print ("Player ",joueurI, " is waiting")
@@ -577,6 +679,19 @@ def play(i):
 
 
 
+# méthode handler qui va recevoir le signal envoyé par le processus du joueur qui gagne
+def signal_handler(signum, frame):
+    if signum == signal.SIGUSR1:
+        for i in range(1, 5):
+            os.kill(childPID[i], signal.SIGKILL)
+            print("Die")
+
+
+
+
+
+
+
 if __name__ == '__main__':
     manager = Manager()
 
@@ -638,7 +753,6 @@ if __name__ == '__main__':
 
     # Show players' cards
     takeInput(int(valueInput))'''
-
 
 
 
@@ -716,18 +830,28 @@ if __name__ == '__main__':
     t3.start()
     t3.join()'''
 
+    # tableau des adresses des processus
+    global childPID
+    childPID = []
+    childPID[0] = None
+
 
     # Start + order of process
+    a = 1
     for p in players:
         # Card assignment
         giveCards(j)
         p.start()
+        childPID[a] = p.pid
+        a += 1 # pour que le numéro du joueur corresponde à sa case d'indice du tableau
     for p in players:
         p.join()
 
 
 
     time.sleep(30)  # time after end processus
+    
+    # Affichage des résultats
     
 
 

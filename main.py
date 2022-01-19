@@ -157,27 +157,29 @@ def priorités(i) :
 
     ## quand il y a 5 cartes identiques
     if x.a == 5:
-        points[i] = tas[i][x.b].valeur
+        points[i] = 5*tas[i][x.b].valeur
         famille = tas[i][x.b].couleur
         cloche = True
-        ### vérifier si d'autres joueurs ont gagné aussi
         ### + arrêter le jeu
-        print("Le joueur ", i, " a gagné avec ", points[i], " points. Bravo !")
+        
 
     ## déterminer les cartes restantes identiques
     maxOffre = 0
     indiceOffre = -1
-    for m in range (cartes[]) :
-        if (i.cartes[m].nom != i.cartes[x.b].nom) :
-            compte = i.cartes[].count(i.cartes[m])
-        if ( compte > maxOffre):
+    for m in range (5) :
+        if (tas[i][m].couleur != tas[i][x.b].couleur): # si le nom de la carte est différent des cartes majoritaires
+            compte = tas[i].count(tas[i][m]) # on compte le nombre de cartes identiques
+        if (compte > maxOffre): # nombre maximal à offrir et indice de la carte à offrir
             maxOffre = compte
             indiceOffre = m
-        if (compte == maxOffre)&&(i.cartes[m].points < i.cartes[indiceOffre].points):
+        if (compte == maxOffre)&&(tas[i][m].valeur < tas[i][indiceOffre].valeur): # si même nombre de cartes, on prend celui avec le plus grand nombre de points
             indiceOffre = m
 
     ## créer liste des cartes à offrir
-
+    offre=[]
+    for a in range(maxOffre):
+        offre[a].append(tas[i][indiceOffre])
+    return offre[]
 
 
     # À FAIRE :
@@ -185,8 +187,6 @@ def priorités(i) :
     ### au même moment (c’est-à-dire plusieurs joueurs qui ont déjà 5 cartes
     ### égales au début du jeu / deux joueurs qui échangent leurs cartes et ils
     #### complètent leur famille)
-    ## partie pour déterminer les cartes restantes identiques
-    ## création et remplissage liste avec les cartes à donner
 
 
 
@@ -297,7 +297,7 @@ if __name__ == "__main__":
 
 
     # test nbJoueurs
-    while ( nbJoueurs  < 2)     # pas assez pour jouer
+    while ( nbJoueurs  < 2):     # pas assez pour jouer
         nbJoueurs = input("Entrez le nombre de joueurs: ")
         if nbJoueurs == 0 : 
             print("Valeur pas bonne car on peut pas jouer s’il n’y a pas de joueurs.")
@@ -342,7 +342,7 @@ if __name__ == "__main__":
 
     # Initialiser les joueurs : -> appel en Multiprocessus à player 
 
-    players=[multiprocessing.Process(target=player, args = (i,))for i in range (nbJoueurs)] # On définit le processus principale
+    joueurs=[multiprocessing.Process(target=joueur, args = (i,))for i in range (nbJoueurs)] # On définit le processus principale
 
     # Initialisation des tas de cartes de chaque joueur : 
     for j in range(5): # pour qu'on n'ait pas besoin de faire tas[i-1] à chaque fois dans le code

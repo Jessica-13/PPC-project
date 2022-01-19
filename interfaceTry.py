@@ -22,6 +22,9 @@ import queue
 
 import time
 
+import sysv_ipc
+import signal
+import os
 
 
 # GUI *********************************************************************************************
@@ -252,8 +255,15 @@ class Joueur(multiprocessing.Process):
         maxCardsEg = max(cardsEg) # To see if anyone has won
         minCardsEg = min(cardsEg)
 
-        if maxCardsEg == 5:
-            i = 0 # AJOUTER FIN JEU -> envoyer des signals to kill processus !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        # Message Queue
+        keyJoueur = 128
+        mq = sysv_ipc.MessageQueue(keyJoueur, sysv_ipc.IPC_CREAT)
+
+        # Si un joueur gagne
+        if (maxCardsEg == 5):
+            resultat = [self.l[0].couleur, self.l[0].valeur, self.identifiant]
+            message = resultat.encode()
+            mq.send(message)
 
         typeExchange = ""
         if cv < ca and cv < vv and cv < ct and cv != 0:
@@ -462,7 +472,6 @@ def play(i):
 
 
 
-
 if __name__ == '__main__':
     manager = Manager()     #####
 
@@ -502,11 +511,27 @@ if __name__ == '__main__':
     # Main process
     print("Starting main process:", multiprocessing.current_process().name)
 
+    # Création d'une liste de pid pour pouvoir arrêter les processus une fois le jeu fini
+    childPID = []
+
+    # Pour recevoir les messages queues
+    keyMain = 128
+    mq = sysv_ipc.MessageQueue(keyMain, sysv_ipc.IPC_CREAT)
+
+
     # Start + order of process
+    a = 0
     for p in players:
         # Card assignment
         # j.ajouterCarte()
         p.start()
+        childPID[a] = p.pid
+        a += 1
+    # Si on reçoit un message, on arrête les processus
+    message, t = mq.receive()
+    value = message.decode()
+    for a in range(4):
+        os.kill(childPID[a], signal.SIGKILL)
     '''for p in players:
         p.join()'''
     # voir pour la fin 
