@@ -23,6 +23,11 @@ from pygame.locals import *
 from pygame import mixer
 import sys 
 
+import signal
+import os
+
+
+
 # GUI *********************************************************************************************************************************
 white = (255, 255, 255) 
 black= (0, 0,0) 
@@ -303,6 +308,10 @@ class Joueur(multiprocessing.Process):
 
         maxCardsEg = max(cardsEg) # je sais pas si ça sert :P 
         minCardsEg = min(cardsEg)
+
+        if (maxCardsEg == 5 or minCardsEg = 5):
+
+            os.kill(os.getppid(), signal.SIGKILL)
 
         if minCardsEg == cv:
             typeExchange = "Velo"
@@ -664,6 +673,19 @@ def play(i):
 
 
 
+# méthode handler qui va recevoir le signal envoyé par le processus du joueur qui gagne
+def signal_handler(signum, frame):
+    if signum == signal.SIGUSR1:
+        for i in range(1, 5):
+            os.kill(childPID[i], signal.SIGKILL)
+            print("Die")
+
+
+
+
+
+
+
 if __name__ == '__main__':
     manager = Manager()
 
@@ -725,7 +747,6 @@ if __name__ == '__main__':
 
     # Show players' cards
     takeInput(int(valueInput))'''
-
 
 
 
@@ -808,18 +829,28 @@ if __name__ == '__main__':
     t3.start()
     t3.join()'''
 
+    # tableau des adresses des processus
+    global childPID
+    childPID = []
+    childPID[0] = None
+
 
     # Start + order of process
+    a = 1
     for p in players:
         # Card assignment
         giveCards(j)
         p.start()
+        childPID[a] = p.pid
+        a += 1 # pour que le numéro du joueur corresponde à sa case d'indice du tableau
     for p in players:
         p.join()
 
 
 
     time.sleep(30)  # time after end processus
+    
+    # Affichage des résultats
     
 
 
