@@ -498,7 +498,7 @@ if __name__ == '__main__':
     # Si on reçoit un message, on arrête les processus
     message, t = mq.receive()
     value = message.decode()
-    for a in range(5):
+    for a in range(4):
         os.kill(childPID[a], signal.SIGKILL)
     '''for p in players:
         p.join()'''
