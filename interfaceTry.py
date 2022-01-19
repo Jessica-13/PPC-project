@@ -228,25 +228,28 @@ class Joueur(multiprocessing.Process):
         cardsEg.append(vv)
         cardsEg.append(ct)
 
-        maxCardsEg = max(cardsEg) # je sais pas si ça sert :P 
-        minCardsEg = min(cardsEg)
+        maxCardsEg = max(cardsEg) # To see if anyone has won
+        if maxCardsEg == 5:
+            i = 0 # AJOUTER FIN JEU -> envoyer des signals to kill processus !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-        if minCardsEg == cv:
+
+        if cv < ca and cv != 0:
+            minCardsEg = cv
             typeExchange = "Velo"
-        else: 
-            if minCardsEg == ca:
+        else:
+            if ca < vv and ca != 0:
+                minCardsEg = ca
                 typeExchange = "Autobus"
             else:
-                if minCardsEg == vv:
+                if vv < ct and vv != 0:
+                    minCardsEg = vv
                     typeExchange = "Voiture"
-                else: 
-                    if minCardsEg == ct:
+                else:
+                    if ct != 0:
+                        minCardsEg = ct
                         typeExchange = "Tracteur"
-                    
-
-        if maxCardsEg == minCardsEg:     # je sais pas si ça sert :P 
-            if random.randint(0,1) == 0:
-                minCardsEg = maxCardsEg
+        
+        
 
         # ajouter l'affichage avec (1, 0, 2, 2) -> donc (1 velo, etc .... )
         # ajouter le control (si min = 0, alors on prend l'autre au dessus)
