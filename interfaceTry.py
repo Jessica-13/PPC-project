@@ -73,7 +73,6 @@ img0 = ImageTk.PhotoImage(Image.open("0.png"))
 # img = str(deckShuffledSplitValues[i]) + ".png"
 for i in range(5):	
     # Show player j1's cards
-    # canva.create_image(440+100*i, 733, image = img0)
     canva.create_image(430+100*i, 770, image = img0)
 for i in range(5,10):	
     # Show player j2's cards
@@ -300,8 +299,8 @@ def giveCards(identity):
 
 
 
-def reDraw(identity):
-    '''for i in range(5):	
+def reDraw():
+    for i in range(5):	
         # Show player j1's cards
         img = ImageTk.PhotoImage(Image.open(str(deckShuffledSplitValues[i]) + ".png"))
         canva.create_image(440+100*i, 733, image = img)
@@ -319,9 +318,9 @@ def reDraw(identity):
         # Show player j4's cards
         img = ImageTk.PhotoImage(Image.open(str(deckShuffledSplitValues[i]) + ".png"))
         img = str(deckShuffledSplitValues[i]) + ".png"
-        canva.create_image(170, 109+130*(i-15), image = img)'''
+        canva.create_image(170, 109+130*(i-15), image = img)
 
-    
+def showTerminal(identity):    
     if (identity == 0):
         print("Player ", identity, " cards")
         print("___________________________________________________________________")
@@ -352,20 +351,24 @@ def reDraw(identity):
 
 
 
-
+'''
 def takeInput(valueInput):
     if(valueInput == 0): # player 1
+        root.update()
         reDraw(valueInput)
 
     if(valueInput == 1): # player 2
+        root.update()
         reDraw(valueInput)
 
     if(valueInput == 2): # player 3
+        root.update()
         reDraw(valueInput)
 
     if(valueInput == 3): # player 4
+        root.update()
         reDraw(valueInput)
-
+'''
 
 
 nOffreMade = 5
@@ -407,7 +410,7 @@ def play(i):
         if random.randint(0,1) == 0:
             offreMadeM[offreInputMade].acquire()
             # Show players' cards
-            takeInput(i)    
+            showTerminal(i)   
             # *** print("Offre board : ", offre)
             madeOffer(i)    #
             offreMadeM[offreInputMade].release()
@@ -415,7 +418,7 @@ def play(i):
             offreMadeM[offreInputTake].acquire()
             takeOffer(i)    #
             # Show players' cards
-            takeInput(i) 
+            showTerminal(i) 
             offreMadeM[offreInputTake].release()
 
 # on affiche enfin la fenêtre principal et on attend les événements (souris, clic, clavier)
@@ -465,8 +468,8 @@ if __name__ == '__main__':
     # time.sleep(30)  # time after end processus
     
     while True: 
-        
         root.update()
+        reDraw()
 
     # TEST
     print("The points : ", points)

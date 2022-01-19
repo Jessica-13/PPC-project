@@ -686,23 +686,18 @@ if __name__ == '__main__':
 
     for i in range(25):
         if i<5:											# Joueur 1
-            # randomInt = random.randint(1, 4)
-            # image= str(randomInt) + ".png"
             image= str(0) + ".png"
             uno = pygame.image.load(image).convert()
             fenetre.blit(uno,(440+100*i,733))
         elif i<10:										# Joueur 2
-            # randomInt = random.randint(1, 4)
             image= str(0) + ".png"
             uno = pygame.image.load(image).convert()
             fenetre.blit(uno,(1110,109+130*(i-5)))
         elif i<15:										# Joueur 3
-            # randomInt = random.randint(1, 4)
             image= str(0) + ".png"
             uno = pygame.image.load(image).convert()
             fenetre.blit(uno,(440+100*(i-10),5))
         elif i<20:										# Joueur 4
-            # randomInt = random.randint(1, 4)
             image= str(0) + ".png"
             uno = pygame.image.load(image).convert()
             fenetre.blit(uno,(170,109+130*(i-15)))
