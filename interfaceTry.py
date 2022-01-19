@@ -53,7 +53,7 @@ root.configure(bg = 'white')
 # Canva
 X = 1380	# width
 Y = 868     # height
-canva = Canvas(root, width = X, height = Y)
+canva = Canvas(root, width = X, height = Y, background="white")
 
 
 imgCloche = ImageTk.PhotoImage(Image.open("cloche.jpg"))
@@ -69,26 +69,42 @@ canva.create_text(180, 60, text = "PLAYER 4", font = ("freesansbold.ttf", 20))
 
 
 
+img = []
+img.append(PhotoImage(file = "0.png"))
+img.append(PhotoImage(file = "3.png"))
+img.append(PhotoImage(file = "5.png"))
+img.append(PhotoImage(file = "7.png"))
+img.append(PhotoImage(file = "9.png"))
+
+imageCart = []
+# set first image on canvas
+# img0 = canva.create_image(0, 0, image = img[0])
+
+
+
 # Show the player's cards
-img0 = ImageTk.PhotoImage(Image.open("0.png"))
+# img0 = ImageTk.PhotoImage(Image.open("0.png"))
 # img = str(deckShuffledSplitValues[i]) + ".png"
 for i in range(5):	
     # Show player j1's cards
-    canva.create_image(430+100*i, 770, image = img0)
+    imageCart.append(canva.create_image(430+100*i, 770, image = img[0]))
+    # canva.create_image(430+100*i, 770, image = img0)
 for i in range(5,10):	
     # Show player j2's cards
-    canva.create_image(1110, 160+130*(i-5), image = img0)
+    imageCart.append(canva.create_image(1110, 160+130*(i-5), image = img[0]))
+    # canva.create_image(1110, 160+130*(i-5), image = img0)
 for i in range(10,15):	
     # Show player j3's cards
-    canva.create_image(430+100*(i-10), 90, image = img0)
+    imageCart.append(canva.create_image(430+100*(i-10), 90, image = img[0]))
+    # canva.create_image(430+100*(i-10), 90, image = img0)
 for i in range(15,20):
     # Show player j4's cards
-    canva.create_image(170, 160+130*(i-15), image = img0)
+    imageCart.append(canva.create_image(170, 160+130*(i-15), image = img[0]))
+    # canva.create_image(170, 160+130*(i-15), image = img0)
 canva.place(x = 0, y = 0)
 
 
 # GUI *********************************************************************************************
-
 
 # # # Definition of the deck **********************************************************************************************************
 
@@ -213,35 +229,36 @@ class Joueur(multiprocessing.Process):
         cardsEg.append(vv)
         cardsEg.append(ct)
 
-        maxCardsEg = max(cardsEg) # je sais pas si ça sert :P 
-        minCardsEg = min(cardsEg)
-
+        maxCardsEg = max(cardsEg) # To see if anyone has won
+        
         # Message Queue
         keyJoueur = 128
         mq = sysv_ipc.MessageQueue(keyJoueur, sysv_ipc.IPC_CREAT)
 
-        if (maxCardsEg == 5 or minCardsEg == 5):
+        # Si un joueur gagne
+        if (maxCardsEg == 5):
             resultat = [self.l[0].couleur, self.l[0].valeur, self.identifiant]
             message = resultat.encode()
             mq.send(message)
 
 
-        if minCardsEg == cv:
+        if cv < ca and cv != 0:
+            minCardsEg = cv
             typeExchange = "Velo"
-        else: 
-            if minCardsEg == ca:
+        else:
+            if ca < vv and ca != 0:
+                minCardsEg = ca
                 typeExchange = "Autobus"
             else:
-                if minCardsEg == vv:
+                if vv < ct and vv != 0:
+                    minCardsEg = vv
                     typeExchange = "Voiture"
-                else: 
-                    if minCardsEg == ct:
+                else:
+                    if ct != 0:
+                        minCardsEg = ct
                         typeExchange = "Tracteur"
-                    
-
-        if maxCardsEg == minCardsEg:     # je sais pas si ça sert :P 
-            if random.randint(0,1) == 0:
-                minCardsEg = maxCardsEg
+        
+        
 
         # ajouter l'affichage avec (1, 0, 2, 2) -> donc (1 velo, etc .... )
         # ajouter le control (si min = 0, alors on prend l'autre au dessus)
@@ -258,8 +275,6 @@ class Joueur(multiprocessing.Process):
         cc = queue.pop(2)   # type
         if idRet != aa and minCardsEg == bb: # we take it if ok 
             print("The offer : is token.")
-            # appelle à echange !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            # idRet, minCardsEg, typeExchange / aa, bb, cc
             if (id == 0):
                 for i in range(5):
                     if deckShuffledSplitValues[i] == typeExchange: 
@@ -309,27 +324,25 @@ def giveCards(identity):
 
 
 
+def reDraw(canva):
+    time.sleep(5)
+    for i in range(20):
+        if deckShuffledSplitValues[i] == "3":
+            canva.itemconfig(imageCart[i], image = img[1])
+        else:
+            if deckShuffledSplitValues[i] == "5":
+                canva.itemconfig(imageCart[i], image = img[2])
+            else:
+                if deckShuffledSplitValues[i] == "7":
+                    canva.itemconfig(imageCart[i], image = img[3])
+                else:
+                    if deckShuffledSplitValues[i] == "9":
+                        canva.itemconfig(imageCart[i], image = img[4])
+                    else:
+                        canva.itemconfig(imageCart[i], image = img[0])
+    root.update()
 
-def reDraw():
-    for i in range(5):	
-        # Show player j1's cards
-        img = ImageTk.PhotoImage(Image.open(str(deckShuffledSplitValues[i]) + ".png"))
-        canva.create_image(440+100*i, 733, image = img)
-    for i in range(5,10):	
-        # Show player j2's cards
-        img = ImageTk.PhotoImage(Image.open(str(deckShuffledSplitValues[i]) + ".png"))
-        img = str(deckShuffledSplitValues[i]) + ".png"
-        canva.create_image(1110, 109+130*(i-5), image = img)
-    for i in range(10,15):	
-        # Show player j3's cards
-        img = ImageTk.PhotoImage(Image.open(str(deckShuffledSplitValues[i]) + ".png"))
-        img = str(deckShuffledSplitValues[i]) + ".png"
-        canva.create_image(440+100*(i-10), 5, image = img)
-    for i in range(15,20):
-        # Show player j4's cards
-        img = ImageTk.PhotoImage(Image.open(str(deckShuffledSplitValues[i]) + ".png"))
-        img = str(deckShuffledSplitValues[i]) + ".png"
-        canva.create_image(170, 109+130*(i-15), image = img)
+
 
 def showTerminal(identity):    
     if (identity == 0):
@@ -494,7 +507,7 @@ if __name__ == '__main__':
     
     while True: 
         root.update()
-        reDraw()
+        reDraw(canva)
 
     # TEST
     print("The points : ", points)
