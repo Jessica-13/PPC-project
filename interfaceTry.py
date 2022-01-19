@@ -512,7 +512,7 @@ if __name__ == '__main__':
     print("Starting main process:", multiprocessing.current_process().name)
 
     # Création d'une liste de pid pour pouvoir arrêter les processus une fois le jeu fini
-    childPID = []
+    childPID = [4]
 
     # Pour recevoir les messages queues
     keyMain = 128
@@ -526,12 +526,12 @@ if __name__ == '__main__':
         # j.ajouterCarte()
         p.start()
         childPID[a] = p.pid
-        a += 1
+        a = a+1
     # Si on reçoit un message, on arrête les processus
     message, t = mq.receive()
     value = message.decode()
-    for a in range(4):
-        os.kill(childPID[a], signal.SIGKILL)
+    for b in range(4):
+        os.kill(childPID[b], signal.SIGKILL)
     '''for p in players:
         p.join()'''
     # voir pour la fin 
