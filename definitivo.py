@@ -302,8 +302,7 @@ class Joueur(multiprocessing.Process):
         minCardsEg = min(cardsEg)
 
         if (maxCardsEg == 5 or minCardsEg = 5):
-
-            os.kill(os.getppid(), signal.SIGKILL)
+            os.kill(os.getppid(), signal.SIGINT)
 
         if minCardsEg == cv:
             typeExchange = "Velo"
@@ -359,7 +358,6 @@ class Joueur(multiprocessing.Process):
         # vectSplitOffre[0] / vectSplitSelfOffre[0] : identifier
         # vectSplitOffre[1] / vectSplitSelfOffre[1] : value
         # vectSplitOffre[2] / vectSplitSelfOffre[2] : type
-<<<<<<< HEAD
 
         # si le joueur à l'origine de l'offre est différent du joueur qui regarde l'offre
         # ET si le nombre de cartes offertes correspond au nombre de cartes cherché
@@ -377,10 +375,9 @@ class Joueur(multiprocessing.Process):
                 if vectSplitOffre[0] != vectSplitSelfOffre[0] and vectSplitOffre[1] == vectSplitSelfOffre[1] and vectSplitOffre[1] == 3:
                     print("The offer with 3 cards : ", off, " is token.")
                     # appelle à echange 
-=======
+                    
         offreTokenFromQueueId = [i.split(' ')[0] for i in offreTokenFromQueue]
         offId = [i.split(' ')[0] for i in off]
->>>>>>> dd11dfcc0873624cb4bd91950fdf80e952f9a6f3
 
         offreTokenFromQueueValue = [i.split(' ')[1] for i in offreTokenFromQueue]
         offalue = [i.split(' ')[1] for i in off]
