@@ -27,22 +27,13 @@ import sys
 import sysv_ipc
 
 
-getPID = os.getpid()
+# getPID = os.getpid()
 
 
 def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
 
-
-
-    
-    lookingFor = max(cards,key = cards.count)  # Cards that player is looking for
-    offCard = [c for c in cards if c != lookingFor] # Cards other than those the player needs
-    offerCounter = [] #liste des offres en attente
-    
-
-
-
-    # TO GET PID
+   
+   # TO GET PID
     def askForPid(pidReciever): # 
         if pidReciever == pid1:
             return mq1
@@ -57,14 +48,12 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
             sys.exit(1)
 
 
-
     # when get SIGUSR1
-    def handlerPlayer(sig, frame):
-        if sig==signal.SIGUSR2:
-            print("Je meurs")
+    def handlerPlayer(sig, frame):  # ?
+        if sig == signal.SIGUSR2:
+            print("DIED")
             sys.exit(1)
     
-    signal.signal(signal.SIGUSR2, handlerPlayer)
 
 
     # Definition of the offer    
@@ -78,11 +67,11 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
                 offType = min(offCard, key = offCard.count)
 
             r = offCard.count(offType)
-            print([getPID, " ", r , " ", offType])
+            print([os.getpid(), " ", r , " ", offType])  # OFFRE
             
             # UPDATE SHARED MEMORY
             lock.acquire()
-            request.append([getPID, r])
+            request.append([os.getpid(), r])
             lock.release()
             
             R = r
@@ -91,8 +80,13 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
             offerCounter.append(r)
 
 
-    R = 0
 
+    signal.signal(signal.SIGUSR2, handlerPlayer)
+    lookingFor = max(cards,key = cards.count)  # Cards that player is looking for
+    offCard = [c for c in cards if c != lookingFor] # Cards other than those the player needs
+    offerCounter = [] # Liste des offres en attente
+    
+    R = 0
 
 
 
@@ -111,9 +105,9 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
 
 
 
-    #chacun regarde s'il est le premier sur le liste d'attente, et stocke cette valeur
+    # Each player checks if it is first on the waiting list, and stores this value
     lock.acquire()
-    askIfPriorityToTake = request[0][0] == getPID
+    askIfPriorityToTake = request[0][0] == os.getpid()
     lock.release()
     time.sleep(1)
 
@@ -133,13 +127,14 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
             lock.acquire()
             notExchange = True  # To check if the exchange is made
             N = 0
+
             # LOOK INTO THE SHARED MEMORY
             for i in range (1,len(request)):  
                 if request[0][1] == request[i][1] and notExchange: # If the offer is compatible with the number of cards the player needs
-                    N = i
+                    N = i   # Player reference 
 
                     # SEND MESSAGE TO LET OTHERS KNOW
-                    message = str(1) + ';' + str(offerCounter[-2]) + ';' + str(getPID)
+                    message = str(1) + ';' + str(offerCounter[-2]) + ';' + str(os.getpid())
                     message = message.encode()
                     mq = askForPid(request[i][0])
                     mq.send(message)
@@ -148,7 +143,7 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
                     # IF GET A MESSAGE FROM OTHERS
                     try:
                         # GET CARDS 
-                        mq = askForPid(getPID)
+                        mq = askForPid(os.getpid())
                         m,t = mq.receive()  # get the message
                         typeGetFromOffer = m.decode()   # decode de message
                         print("PLAYER GETS : ", typeGetFromOffer)
@@ -158,22 +153,21 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
                             if cards[i] == offerCounter[-2]: 
                                 cards[i] = typeGetFromOffer
 
-                        print("NEW HEAD OF CARDS : ",cards)
+                        print("NEW HEAD OF CARDS : ", cards)
 
                         # TEST IF WIN
                         if (cards == [lookingFor]*5):
                             
                             lockValue.acquire()
-                            askForPid[0] = getPID
+                            winner[0] = os.getpid()
                             lockValue.release()
-                            os.kill(getPID, signal.SIGUSR1)
+                            os.kill(os.getpid(), signal.SIGUSR1)
 
                         # UPDATE CARTES FOR EXCHANGE
                         offCard = [x for x in cards if x != lookingFor]
 
                         # UPDATE OFFRE COUNTER
                         offerCounter.clear()
-                        
                         notExchange = False                  
 
                     except sysv_ipc.ExistentialError:
@@ -211,13 +205,13 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
                 print("MEX : PASS THE TURN.")
                 message = str(2)
                 message = message.encode()
-                mq = askForPid(request[1][0])
+                mq = askForPid(request[3][0])
                 mq.send(message)
             elif N == 3:
                 print("MEX : PASS THE TURN.")
                 message = str(2)
                 message = message.encode()
-                mq = askForPid(request[3][0])
+                mq = askForPid(request[1][0])
                 mq.send(message)
             else:
                 print("ERROR.") 
@@ -245,9 +239,9 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
         
 
         # END OF TURN
-        if N == 0:
-            request.pop(0)
-            makeOffer(offCard,request, lock)
+            if N == 0:
+                request.pop(0)
+                makeOffer(offCard,request, lock)
 
         
 
@@ -257,18 +251,18 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
             print("The player need to take some cards")
             # IF GET A MESSAGE FROM OTHERS
             try:
-                mq = askForPid(getPID)
+                mq = askForPid(os.getpid())
                 m,t = mq.receive()  # get the message
                 mes = m.decode() # decode de message
                 mexDecod = [str(s) for s in mes.split(";")]
                 lookIntoMex = mexDecod[0]
-                lookIntoMex = int(lookIntoMex)
+                lookIntoMex = int(str(lookIntoMex)) ### ???
 
 
                 if lookIntoMex == 1:   
                     typeGetFromOffer = mexDecod[1]
                     pidGOT = mexDecod[2]
-                    pidGOT = int(pidGOT)
+                    pidGOT = int(str(pidGOT))
                     print("PLAYER GETS : " ,typeGetFromOffer)
 
                 if lookIntoMex == 2:
@@ -299,9 +293,25 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
                 if (cards == [lookingFor]*5):
 
                     lockValue.acquire()
-                    winner[0] = getPID
+                    winner[0] = os.getpid()
                     lockValue.release()
-                    os.kill(getPID, signal.SIGUSR1)
+                    
+                    # POINTS
+                    if lookingFor == "Velo":
+                        nPoints = 3
+                    else:
+                        if lookingFor == "Autobus":
+                            nPoints = 5
+                        else:
+                            if lookingFor == "Voiture":
+                                nPoints = 7
+                            else:
+                                if lookingFor == "Avion":
+                                    nPoints = 9
+                                else:
+                                    print("ERROR with points.")
+                    print("FAMILY ", lookingFor, "has been completed. The player get ", nPoints, " points.")
+                    os.kill(os.getpid(), signal.SIGUSR1)
 
                 # UPDATE CARTES FOR EXCHANGE
                 offCard = [x for x in cards if x != lookingFor]

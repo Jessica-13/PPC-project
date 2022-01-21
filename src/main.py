@@ -54,8 +54,9 @@ class Carte:
         self.couleur = couleur
         self.valeur = val
         
-    def __str__(self):
-        return "%s : %s" % (self.couleur, self.valeur)
+    def __repr__(self):
+        return "<Type : %s - Points :%s>" % (self.couleur, self.valeur)
+
 
 # # Definition of the "Carte" object for the Deck
 class Cards:
@@ -119,16 +120,16 @@ deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
 
 nbPlayer = 4
 
-# Definition of player 
+'''# Definition of player 
 class Joueur(multiprocessing.Process):
     def __init__(self, identifiant, l):
         multiprocessing.Process.__init__(self)
         self.exit = multiprocessing.Event() ### pour terminer - à enlever 
         self.identifiant = identifiant
         self.liste = l
-
-    def __str__(self):
-        return "Player %s cards : %s" % (self.identifiant, self.liste)
+    
+    def __repr__(self):
+        return "<Player : %s - Cards :%s>" % (self.identifiant, self.liste)'''
 
     
     # def maxCardsEg(self, id):
@@ -147,14 +148,6 @@ class return_values_nbCartesEg: # For double retourn
 
 
 if __name__ == '__main__':
-
-
-
-
-
-
-
-
 
     signal.signal(signal.SIGUSR1, handlerGame)      # signal follow handlerGame roules
 
@@ -176,42 +169,56 @@ if __name__ == '__main__':
     mq4 = sysv_ipc.MessageQueue(key4,sysv_ipc.IPC_CREAT)
 
     
+    '''# Player creation ?
+    j1 = Joueur(1, [])
+    j2 = Joueur(2, [])
+    j3 = Joueur(3, [])
+    j4 = Joueur(4, [])'''
+
+    # cards for exchange
+    playerCardsForExchange1, playerCardsForExchange2, playerCardsForExchange3, playerCardsForExchange4 = list(), list(), list(), list()
+    for a in range(5):
+        playerCardsForExchange1.append(deckShuffledSplitSuites[a])
+    for a in range(5,10):
+        playerCardsForExchange2.append(deckShuffledSplitSuites[a])
+    for a in range(10,15):
+        playerCardsForExchange3.append(deckShuffledSplitSuites[a])
+    for a in range(15,20):
+        playerCardsForExchange4.append(deckShuffledSplitSuites[a])
+
+
+    '''# Heap definition for each player
+    for a in range(5):
+        j1.liste.append(Carte(str(deckShuffledSplitValues[a]), str(deckShuffledSplitSuites[a])))
+    for a in range(5,10):	
+        j2.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))
+    for a in range(10,15):	
+        j3.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))
+    for a in range(15,20):	
+        j4.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))'''
+
+
+
 
     with Manager() as manager:
         request = manager.list() # SHARED MEMORY
         lock = Lock()
         lockValue = Lock() # LOCK FOR VALUE
         winner = Array('i', 1) # ?
-
-        
-        # Player creation
-        j1 = Joueur(1, [])
-        j2 = Joueur(2, [])
-        j3 = Joueur(3, [])
-        j4 = Joueur(4, [])
-
+   
 
         print("******************** START GAME ********************")
-        print(j1)
-        print(j2)
-        print(j3)
-        print(j4)
+        '''print(j1.identifiant, print(j1.liste))
+        print(j2.identifiant, print(j2.liste))
+        print(j3.identifiant, print(j3.liste))
+        print(j4.identifiant, print(j4.liste))'''
+    
+        print("PLAYER 1 CARDS : ", playerCardsForExchange1)
+        print("PLAYER 2 CARDS : ", playerCardsForExchange2)
+        print("PLAYER 3 CARDS : ", playerCardsForExchange3)
+        print("PLAYER 4 CARDS : ", playerCardsForExchange4)
        
         print()
-
-        # cards for exchange
-
-        playerCardsForExchange1, playerCardsForExchange2, playerCardsForExchange3, playerCardsForExchange4 = list(itertools.repeat(0, 5)), list(itertools.repeat(0, 5)), list(itertools.repeat(0, 5)), list(itertools.repeat(0, 5))
-        
-        for a in range(5):
-            playerCardsForExchange1.append(deckShuffledSplitSuites[a])
-        for a in range(5,10):
-            playerCardsForExchange2.append(deckShuffledSplitSuites[a])
-        for a in range(10,15):
-            playerCardsForExchange3.append(deckShuffledSplitSuites[a])
-        for a in range(15,20):
-            playerCardsForExchange4.append(deckShuffledSplitSuites[a])
-
 
 
         # PLAYERS' PROCESS
@@ -230,12 +237,19 @@ if __name__ == '__main__':
         p3.join()
         p4.join()
 
+
+        # The bell ring
+        #################
+
+        # THE WINNER IS :
         if winner[0] == p1.pid:
             print("PLAYER 1 WIN !!!")
         elif winner[0] == p2.pid:
             print("PLAYER 2 WIN !!!")
         elif winner[0] == p3.pid:
             print("PLAYER 3 WIN !!!")
+        elif winner[0] == p4.pid:
+            print("PLAYER 4 WIN !!!")
         else:
             print("The game ends in a draw :P ")
 
