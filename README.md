@@ -20,8 +20,11 @@ Le but d'un joueur est d'avoir 5 cartes de transports identiques pour terminer l
 
 Lorsqu'un des joueurs a réussi à avoir 5 cartes identiques, il sonne la cloche et gagne.
 
+Quand on sonne la cloche, les processus player sont tués par des signaux.
+
 Le gagnant est affiché, ainsi que ses cartes et son nombre de points.
 
+![271979946_896968850976905_609944567705730011_n](https://user-images.githubusercontent.com/92338357/150606506-f9cedc31-a779-4bd7-9a6c-383b2333c526.png)
 
 ### Constitution du dossier
 
