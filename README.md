@@ -1,36 +1,48 @@
 # PPC-project
 ## Cambiecolo
+### Informations générales
 
-
-multiprocessing — Parallélisme par processus : https://docs.python.org/fr/3/library/multiprocessing.html
-
-
-https://chiheb-nexus.github.io/Multithreading-vs-multiprocessing/
-
-
-https://allen-downey.developpez.com/livres/python/pensez-python/?page=heritage
-
-
-https://forum.ubuntu-fr.org/viewtopic.php?id=845221
+Nous avons créé le jeu Cambiecolo en utilisant python.
+Sur une table, il existe 4 joueurs possédant chacun 5 cartes distribuées au hasard (avec des types de transports plus ou moins différents selon la distribution).
+Nous avons fait une interface de la table pour que ce soit plus visuel.
 
 
 
-Mélangez un jeu de cartes : https://fr.acervolima.com/melangez-un-jeu-de-cartes-avec-oops-en-python/
 
 
-Tutoriel : Interface graphique Pygame pour Python : https://pub.phyks.me/sdz/sdz/interface-graphique-pygame-pour-python.html
+Chacun voit seulement son paquet de cartes et peut faire une offre.
+Dans notre code, les joueurs ont tous accès à une liste des offres, où ils ne voient pas quelles cartes sont offertes, mais n'ont accès qu'au nombre de cartes offertes et à l'adresse IP du joueur qui fait l'offre (pour ne pas prendre sa propre offre).
 
-multitimer 0.3  : https://pypi.org/project/multitimer/
-
-
-DECK : https://thecleverprogrammer.com/2020/10/04/card-game-with-python/
+Ils font le choix de prendre ou de laisser l'offre, basé sur ce nombre de cartes offertes.
 
 
-Pour moi : https://github.com/robotane/CardIoPlay
+Ils doivent au final avoir 5 cartes de transports identiques.
+
+Lorsqu'un des joueurs a réussi à avoir 5 cartes identiques, il sonne la cloche et gagne.
+Le gagnant est affiché, ainsi que ses cartes et son nombre de points.
 
 
-#
+### Constitution du dossier
 
-https://stackoverflow.com/questions/2408560/non-blocking-console-input
+Fichiers python:
 
-QUEUE : https://www.programiz.com/dsa/circular-queue
+main.py contenant le code principal
+
+player.py contenant le processus des joueurs
+
+
+Fichiers images:
+
+nécessaires à l'interface
+
+
+### Démarrage:
+
+Exécuter le fichier main.py
+
+
+
+### Auteurs
+Jessica SPERA
+Chanbin LEE
+
