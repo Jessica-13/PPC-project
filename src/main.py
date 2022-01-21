@@ -259,28 +259,6 @@ if __name__ == '__main__':
     key4 = 400
     mq4 = sysv_ipc.MessageQueue(key4,sysv_ipc.IPC_CREAT)
 
-    
-    '''# Player creation ?
-    j1 = Joueur(1, [])
-    j2 = Joueur(2, [])
-    j3 = Joueur(3, [])
-    j4 = Joueur(4, [])'''
-
-
-
-    '''# Heap definition for each player
-    for a in range(5):
-        j1.liste.append(Carte(str(deckShuffledSplitValues[a]), str(deckShuffledSplitSuites[a])))
-    for a in range(5,10):	
-        j2.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))
-    for a in range(10,15):	
-        j3.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))
-    for a in range(15,20):	
-        j4.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))'''
-
-
-
-
     with Manager() as manager:
         request = manager.list() # SHARED MEMORY
         lock = Lock()
