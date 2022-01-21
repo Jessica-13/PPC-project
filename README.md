@@ -8,7 +8,7 @@ Sur une table, il existe 4 joueurs possédant chacun 5 cartes distribuées au ha
 
 Nous avons fait une interface de la table pour que ce soit plus visuel.
 
-
+![retourner](https://user-images.githubusercontent.com/92338357/150610469-ad441484-16b9-48f4-ae06-7c5fae6c927f.png)
 
 ![Capture d’écran du 2022-01-21 20-53-45](https://user-images.githubusercontent.com/92338357/150604408-b775c281-a496-4dfe-8041-1701798af424.png)
 
