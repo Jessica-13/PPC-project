@@ -32,14 +32,14 @@ Le gagnant est affiché, ainsi que ses cartes et son nombre de points.
 
 ### Constitution du dossier
 
-Fichiers python:
+- Fichiers python:
 
-main.py contenant le code principal
+src/main.py contenant le code principal
 
-player.py contenant le processus des joueurs
+src/player.py contenant le processus des joueurs
 
 
-Fichiers images:
+- Fichiers images:
 
 nécessaires à l'interface
 
@@ -48,18 +48,44 @@ nécessaires à l'interface
 
 Il faut avoir installé pygame et Tkinter. Pour ce faire:
 
-python3 -m pip install pygame
+`python3 -m pip install pygame`
 
-sudo apt-get install python3-tk
+`sudo apt-get install python3-tk`
 
-sudo apt-get install python3-pil python3-pil.imagetk
+`sudo apt-get install python3-pil python3-pil.imagetk`
 
-Exécuter le fichier main.py
+- Exécuter le fichier main.py
 
+<hr />
 
+## Requirements
+
+Tested on
+```
+Python 3.8.10
+
+```
+
+<hr />
+
+## Credits
+
+<p align="center">
+  <img src="http://www.insa-lyon.fr/sites/www.insa-lyon.fr/files/logo-coul.jpg" width="350" alt="accessibility text">
+</p>
+
+<strong>INSA Lyon</strong>, Lyon Institute of Applied Sciences <br/> 
+Department of Telecommunications, Services and Uses, 3TC, Group 1
+
+Project related to the PPC module (Programmation Parallele et Concurrente) - Python.
+
+### Professeur Référent
+
+Le Mouël Frédéric
 
 ### Auteurs
-Jessica SPERA
 
-Chanbin LEE
+Jessica SPERA <br/>
+
+Chanbin LEE <br/>
 
