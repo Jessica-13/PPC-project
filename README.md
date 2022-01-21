@@ -12,9 +12,11 @@ Nous avons fait une interface de la table pour que ce soit plus visuel.
 
 Chacun voit seulement son paquet de cartes et peut faire une offre.
 
-Dans notre code, les joueurs ont tous accès à une liste des offres, où ils ne voient pas quelles cartes sont offertes, mais n'ont accès qu'au nombre de cartes offertes et à l'adresse IP du joueur qui fait l'offre (pour ne pas prendre sa propre offre).
+Dans notre code, les joueurs font tous une offre en même temps, puis se passent des messages pour regarder quelles offres sont disponibles tour à tour.
 
-Ils font le choix de prendre ou de laisser une offre, basé sur ce nombre de cartes offertes.
+Chacun a accès à la liste des offres à son tour. Ils ne voient pas quelles cartes sont offertes, mais n'ont accès qu'au nombre de cartes offertes et à l'adresse IP du joueur qui fait l'offre (pour ne pas prendre sa propre offre).
+
+Ils font donc le choix de prendre ou de laisser une offre, basé sur le nombre de cartes dont il a besoin, l'adresse de la personne qui a fait l'offre, et le nombre de cartes offertes.
 
 Le but d'un joueur est d'avoir 5 cartes de transports identiques pour terminer le jeu.
 
