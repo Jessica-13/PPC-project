@@ -22,9 +22,6 @@ import queue
 
 import time
 
-import sysv_ipc
-import signal
-import os
 
 
 # GUI *********************************************************************************************
@@ -209,27 +206,27 @@ class Joueur(multiprocessing.Process):
         multiprocessing.Process.__init__(self)
         self.exit = multiprocessing.Event() ### pour terminer - à enlever 
         self.identifiant = identifiant
-        self.main = l
+        self.liste = l
 
     def __str__(self):
-        return "Player %s cards : %s" % (self.identifiant, self.main)
+        return "Player %s cards : %s" % (self.identifiant, self.liste)
 
     '''
     # Heap definition for each player
     def ajouterCarte (self):
-        #self.main.append(carte)
+        #self.liste.append(carte)
         if (self.identifiant == 0):
             for i in range(5):	
-                self.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+                self.liste.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
         if (self.identifiant == 1):
             for i in range(5,10):	
-                self.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+                self.liste.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
         if (self.identifiant == 2):
             for i in range(10,15):	
-                self.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+                self.liste.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
         if (self.identifiant == 3):
             for i in range(15,20):	
-                self.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+                self.liste.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
     '''
 
     
@@ -238,10 +235,10 @@ class Joueur(multiprocessing.Process):
         # To get the number of occurrences of each item in a list
         cardsEg = []
         
-        cv = self.main.count(Carte('3', 'Velo'))
-        ca = self.main.count(Carte('5', 'Autobus'))
-        vv = self.main.count(Carte('7', 'Voiture'))
-        ct = self.main.count(Carte('9', 'Tracteur'))
+        cv = self.liste.count(Carte('3', 'Velo'))
+        ca = self.liste.count(Carte('5', 'Autobus'))
+        vv = self.liste.count(Carte('7', 'Voiture'))
+        ct = self.liste.count(Carte('9', 'Tracteur'))
 
         # deckShuffledSplitValues[i]
 
@@ -255,15 +252,8 @@ class Joueur(multiprocessing.Process):
         maxCardsEg = max(cardsEg) # To see if anyone has won
         minCardsEg = min(cardsEg)
 
-        # Message Queue
-        keyJoueur = 128
-        mq = sysv_ipc.MessageQueue(keyJoueur, sysv_ipc.IPC_CREAT)
-
-        # Si un joueur gagne
-        if (maxCardsEg == 5):
-            resultat = [self.l[0].couleur, self.l[0].valeur, self.identifiant]
-            message = resultat.encode()
-            mq.send(message)
+        if maxCardsEg == 5:
+            i = 0 # AJOUTER FIN JEU -> envoyer des signals to kill processus !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         typeExchange = ""
         if cv < ca and cv < vv and cv < ct and cv != 0:
@@ -304,7 +294,7 @@ class Joueur(multiprocessing.Process):
         cc = queue.pop(2)   # type
         '''
         cc = queue.pop(0)
-        bb = queue.pop(0)
+        bb = queue.pop(0)   # pop(0) enlève l'élément à l'indice 0 et le retourne
         aa = queue.pop(0)
         if idRet != aa and minCardsEg == bb: # we take it if ok 
             print("The offer : is token.")
@@ -333,9 +323,9 @@ class Joueur(multiprocessing.Process):
                         deckShuffledSplitSuites[i] = cc
                         #showCards(id)
         else: 
-            queue.append(aa)
-            queue.append(bb)
-            queue.append(cc)
+            queue.append(aa)    # queue[0]= aa , si on fait queue.append(aa) la queue s'élargit
+            queue.append(bb)    # queue[1] = bb
+            queue.append(cc)    # queue[2] = cc
 
 
 
@@ -472,6 +462,7 @@ def play(i):
 
 
 
+
 if __name__ == '__main__':
     manager = Manager()     #####
 
@@ -481,19 +472,19 @@ if __name__ == '__main__':
         # Player creation
         j = Joueur(i, [])
         # Heap definition for each player
-        #self.main.append(carte)
+        #self.liste.append(carte)
         if (i == 0):
-            for i in range(5):	
-                j.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+            for a in range(5):	
+                j.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))
         if (i == 1):
-            for i in range(5,10):	
-                j.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+            for a in range(5,10):	
+                j.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))
         if (i == 2):
-            for i in range(10,15):	
-                j.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+            for a in range(10,15):	
+                j.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))
         if (i == 3):
-            for i in range(15,20):	
-                j.main.append(Carte(deckShuffledSplitValues[i], deckShuffledSplitSuites[i]))
+            for a in range(15,20):	
+                j.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))
 
 
 
@@ -511,27 +502,11 @@ if __name__ == '__main__':
     # Main process
     print("Starting main process:", multiprocessing.current_process().name)
 
-    # Création d'une liste de pid pour pouvoir arrêter les processus une fois le jeu fini
-    childPID = []
-
-    # Pour recevoir les messages queues
-    keyMain = 128
-    mq = sysv_ipc.MessageQueue(keyMain, sysv_ipc.IPC_CREAT)
-
-
     # Start + order of process
-    a = 0
     for p in players:
         # Card assignment
         # j.ajouterCarte()
         p.start()
-        childPID[a] = p.pid
-        a += 1
-    # Si on reçoit un message, on arrête les processus
-    message, t = mq.receive()
-    value = message.decode()
-    for a in range(4):
-        os.kill(childPID[a], signal.SIGKILL)
     '''for p in players:
         p.join()'''
     # voir pour la fin 
