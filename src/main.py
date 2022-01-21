@@ -4,22 +4,13 @@
 # sudo apt-get install python3-tk
 # sudo apt-get install python3-pil python3-pil.imagetk
 
-
-
 from distutils import ccompiler
 from random import *
-import multiprocessing
-import queue
 
 from posixpath import split
 
-import multiprocessing
 from multiprocessing import Process, Manager, Lock, Array
 from random import *
-import random
-
-import queue
-
 import time
 
 import signal
@@ -28,8 +19,12 @@ import sysv_ipc
 
 from player import player
 
-import itertools
-
+# GUI *********************************************************************************************
+from tkinter import *
+from turtle import color         # import de tkinter
+from PIL import ImageTk, Image
+import os
+# GUI *********************************************************************************************
 
 def handlerGame(sig, frame): # if SIGUSR1
     if sig == signal.SIGUSR1: 
@@ -41,11 +36,6 @@ def handlerGame(sig, frame): # if SIGUSR1
         print("KILL p3")
         os.kill(p4.pid, signal.SIGUSR2)
         print("KILL p4")
-
-
-
-
-
 
 # # # Definition of the deck **********************************************************************************************************
 # Definition of the "Carte" object
@@ -116,32 +106,84 @@ deckShuffled = objShuffleCards.shuffle()
 
 deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
 deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
+
+
+# cards for exchange
+playerCardsForExchange1, playerCardsForExchange2, playerCardsForExchange3, playerCardsForExchange4 = list(), list(), list(), list()
+for a in range(5):
+    playerCardsForExchange1.append(deckShuffledSplitSuites[a])
+for a in range(5,10):
+    playerCardsForExchange2.append(deckShuffledSplitSuites[a])
+for a in range(10,15):
+    playerCardsForExchange3.append(deckShuffledSplitSuites[a])
+for a in range(15,20):
+    playerCardsForExchange4.append(deckShuffledSplitSuites[a])
+
 # # # ********************************************************************************************
 
 nbPlayer = 4
 
-'''# Definition of player 
-class Joueur(multiprocessing.Process):
-    def __init__(self, identifiant, l):
-        multiprocessing.Process.__init__(self)
-        self.exit = multiprocessing.Event() ### pour terminer - à enlever 
-        self.identifiant = identifiant
-        self.liste = l
-    
-    def __repr__(self):
-        return "<Player : %s - Cards :%s>" % (self.identifiant, self.liste)'''
+def reDraw(canva):
+    root.update()
+    while True:
+        for i in range(5):
+            if playerCardsForExchange1[i] == "Velo":
+                canva.itemconfig(imageCart[i], image = img[1])
+            else:
+                if playerCardsForExchange1[i] == "Autobus":
+                    canva.itemconfig(imageCart[i], image = img[2])
+                else:
+                    if playerCardsForExchange1[i] == "Voiture":
+                        canva.itemconfig(imageCart[i], image = img[3])
+                    else:
+                        if playerCardsForExchange1[i] == "Tracteur":
+                            canva.itemconfig(imageCart[i], image = img[4])
+                        else:
+                            canva.itemconfig(imageCart[i], image = img[0])
+        for i in range(5,10):
+            if playerCardsForExchange2[i-5] == "Velo":
+                canva.itemconfig(imageCart[i], image = img[1])
+            else:
+                if playerCardsForExchange2[i-5] == "Autobus":
+                    canva.itemconfig(imageCart[i], image = img[2])
+                else:
+                    if playerCardsForExchange2[i-5] == "Voiture":
+                        canva.itemconfig(imageCart[i], image = img[3])
+                    else:
+                        if playerCardsForExchange2[i-5] == "Tracteur":
+                            canva.itemconfig(imageCart[i], image = img[4])
+                        else:
+                            canva.itemconfig(imageCart[i], image = img[0])
+        for i in range(10,15):
+            if playerCardsForExchange3[i-10] == "Velo":
+                canva.itemconfig(imageCart[i], image = img[1])
+            else:
+                if playerCardsForExchange3[i-10] == "Autobus":
+                    canva.itemconfig(imageCart[i], image = img[2])
+                else:
+                    if playerCardsForExchange3[i-10] == "Voiture":
+                        canva.itemconfig(imageCart[i], image = img[3])
+                    else:
+                        if playerCardsForExchange3[i-10] == "Tracteur":
+                            canva.itemconfig(imageCart[i], image = img[4])
+                        else:
+                            canva.itemconfig(imageCart[i], image = img[0])
+        for i in range(15,20):
+            if playerCardsForExchange4[i-15] == "Velo":
+                canva.itemconfig(imageCart[i], image = img[1])
+            else:
+                if playerCardsForExchange4[i-15] == "Autobus":
+                    canva.itemconfig(imageCart[i], image = img[2])
+                else:
+                    if playerCardsForExchange4[i-15] == "Voiture":
+                        canva.itemconfig(imageCart[i], image = img[3])
+                    else:
+                        if playerCardsForExchange4[i-15] == "Tracteur":
+                            canva.itemconfig(imageCart[i], image = img[4])
+                        else:
+                            canva.itemconfig(imageCart[i], image = img[0])
+        root.update()
 
-    
-    # def maxCardsEg(self, id):
-    # def choseToTake(self, id):
-
-
-
-class return_values_nbCartesEg: # For double retourn
-    def __init__(self, a, b, c):
-        self.a = a
-        self.b = b
-        self.c = c
 
 
 
@@ -149,6 +191,55 @@ class return_values_nbCartesEg: # For double retourn
 
 if __name__ == '__main__':
 
+# GUI *********************************************************************************************
+    root = Tk() # creation of the window
+
+    # Window resolution
+    root.resizable(width = True, height = True)
+    root.geometry("1380x868")
+    # Set title
+    root.title("Cambiecolo")
+
+    root.configure(bg = 'white')
+
+    # Canva
+    X = 1380	# width
+    Y = 868     # height
+    canva = Canvas(root, width = X, height = Y, background="white")
+
+
+    # Put the bell
+    imgCloche = ImageTk.PhotoImage(Image.open("cloche.jpg"))
+    canva.create_image(645, 389, image = imgCloche)
+
+
+    # TEXTE WITH PLAYER NAME
+    canva.create_text(300, 790, text = "PLAYER 1", font = ("freesansbold.ttf", 20))
+    canva.create_text(1100, 780, text = "PLAYER 2", font = ("freesansbold.ttf", 20))
+    canva.create_text(950, 50, text = "PLAYER 3", font = ("freesansbold.ttf", 20))
+    canva.create_text(180, 60, text = "PLAYER 4", font = ("freesansbold.ttf", 20))
+
+
+    img = []
+    img.append(PhotoImage(file = "0.png"))
+    img.append(PhotoImage(file = "3.png"))
+    img.append(PhotoImage(file = "5.png"))
+    img.append(PhotoImage(file = "7.png"))
+    img.append(PhotoImage(file = "9.png"))
+
+    imageCart = []
+    for i in range(5):	
+        imageCart.append(canva.create_image(430+100*i, 770, image = img[0]))
+    for i in range(5,10):	
+        imageCart.append(canva.create_image(1110, 160+130*(i-5), image = img[0]))
+    for i in range(10,15):	
+        imageCart.append(canva.create_image(430+100*(i-10), 90, image = img[0]))
+    for i in range(15,20):
+        imageCart.append(canva.create_image(170, 160+130*(i-15), image = img[0]))
+    canva.place(x = 0, y = 0)
+
+# GUI *********************************************************************************************
+   
     signal.signal(signal.SIGUSR1, handlerGame)      # signal follow handlerGame roules
 
     
@@ -175,16 +266,6 @@ if __name__ == '__main__':
     j3 = Joueur(3, [])
     j4 = Joueur(4, [])'''
 
-    # cards for exchange
-    playerCardsForExchange1, playerCardsForExchange2, playerCardsForExchange3, playerCardsForExchange4 = list(), list(), list(), list()
-    for a in range(5):
-        playerCardsForExchange1.append(deckShuffledSplitSuites[a])
-    for a in range(5,10):
-        playerCardsForExchange2.append(deckShuffledSplitSuites[a])
-    for a in range(10,15):
-        playerCardsForExchange3.append(deckShuffledSplitSuites[a])
-    for a in range(15,20):
-        playerCardsForExchange4.append(deckShuffledSplitSuites[a])
 
 
     '''# Heap definition for each player
@@ -208,11 +289,7 @@ if __name__ == '__main__':
    
 
         print("******************** START GAME ********************")
-        '''print(j1.identifiant, print(j1.liste))
-        print(j2.identifiant, print(j2.liste))
-        print(j3.identifiant, print(j3.liste))
-        print(j4.identifiant, print(j4.liste))'''
-    
+
         print("PLAYER 1 CARDS : ", playerCardsForExchange1)
         print("PLAYER 2 CARDS : ", playerCardsForExchange2)
         print("PLAYER 3 CARDS : ", playerCardsForExchange3)
@@ -227,6 +304,10 @@ if __name__ == '__main__':
         p3 = Process(target = player, args=(playerCardsForExchange3,request,lock,mq1,mq2,mq3,mq4,lockValue,winner))
         p4 = Process(target = player, args=(playerCardsForExchange4,request,lock,mq1,mq2,mq3,mq4,lockValue,winner))
 
+        p5 = Process(target = reDraw, args=(canva, ))   # GUI
+
+        p5.start()
+
         p1.start()
         p2.start()
         p3.start()
@@ -239,7 +320,12 @@ if __name__ == '__main__':
 
 
         # The bell ring
-        #################
+        # Put the bell
+        imgCloche = ImageTk.PhotoImage(Image.open("clocheSonne.jpg"))
+        canva.create_image(645, 389, image = imgCloche)
+        root.update()
+
+        time.sleep(5)
 
         # THE WINNER IS :
         if winner[0] == p1.pid:
@@ -257,3 +343,6 @@ if __name__ == '__main__':
         mq2.remove()
         mq3.remove()
         mq4.remove()
+
+        p5.join()
+        

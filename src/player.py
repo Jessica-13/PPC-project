@@ -8,17 +8,12 @@
 
 from distutils import ccompiler
 from random import *
-import multiprocessing
-import queue
 
 from posixpath import split
 
-import multiprocessing
 from multiprocessing import Process, Manager, Lock
 from random import *
 import random
-
-import queue
 
 import time
 import signal
@@ -27,13 +22,10 @@ import sys
 import sysv_ipc
 
 
-# getPID = os.getpid()
-
-
 def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
 
    
-   # TO GET PID
+   # TO GET MESSAGE QUEUE=F(PID)
     def askForPid(pidReciever): # 
         if pidReciever == pid1:
             return mq1
@@ -74,7 +66,6 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
             request.append([os.getpid(), r])
             lock.release()
             
-            R = r
             # UPDATE REQUEST IN PROGRESS
             offerCounter.append(offType)
             offerCounter.append(r)
@@ -85,14 +76,10 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
     lookingFor = max(cards,key = cards.count)  # Cards that player is looking for
     offCard = [c for c in cards if c != lookingFor] # Cards other than those the player needs
     offerCounter = [] # Liste des offres en attente
-    
-    R = 0
-
 
 
     makeOffer(offCard, request, lock)
-    time.sleep(2)   # Juste for the game 
-
+    time.sleep(2)   # Just for the game 
 
 
     # PID ACCESS
@@ -111,18 +98,17 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
     lock.release()
     time.sleep(1)
 
-    # PRINT OFFRE COUNTER
-    print()
-    print("*** The exchanges have begun ***")
-    print('OFFERS :', request)
-
-
-
-
+    
     # GAME FOR SELECTED PLAYER -> WHO MADE THE OFFER
     while (cards != [lookingFor]*5): # STOP only when family is completed
         # I the selected player is the one that have the priority to start making an offer
         if askIfPriorityToTake: # Lead the exchange
+
+            # PRINT OFFRE COUNTER
+            print()
+            print("*** The exchanges have begun ***")
+            print('OFFERS :', request)
+
             print("The player want to give some cards")
             lock.acquire()
             notExchange = True  # To check if the exchange is made
@@ -252,23 +238,23 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
             # IF GET A MESSAGE FROM OTHERS
             try:
                 mq = askForPid(os.getpid())
-                m,t = mq.receive()  # get the message
-                mes = m.decode() # decode de message
+                m,t = mq.receive()      # get the message
+                mes = m.decode()        # decode de message
                 mexDecod = [str(s) for s in mes.split(";")]
                 lookIntoMex = mexDecod[0]
-                lookIntoMex = int(str(lookIntoMex)) ### ???
+                lookIntoMex = int(lookIntoMex) ###
 
 
                 if lookIntoMex == 1:   
                     typeGetFromOffer = mexDecod[1]
                     pidGOT = mexDecod[2]
-                    pidGOT = int(str(pidGOT))
-                    print("PLAYER GETS : " ,typeGetFromOffer)
+                    pidGOT = int(pidGOT)
+                    print("PLAYER GETS : " , typeGetFromOffer)
 
                 if lookIntoMex == 2:
                     print("No exchange")
                 
-                if lookIntoMex == 3:
+                if lookIntoMex == 3:    ###
                     print("No exchange")
 
             except sysv_ipc.ExistentialError:
@@ -320,7 +306,20 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
                 offerCounter.clear()
 
 
-                makeOffer(offCard,request, lock)
-                time.sleep(2)   # JUST FOR THE GAME
+                makeOffer(offCard, request, lock)
+        time.sleep(2)   # JUST FOR THE GAME
+
+
+        # +++ +++ +++ +++ +++ +++ +++ 
+        # FOR RESTART
+        if askIfPriorityToTake:
+            print('RESTART OFFERS :', request)
+
+        lock.acquire()
+        print("RESTART PRIORITY")
+        askIfPriorityToTake = request[0][0] == os.getpid()
+        lock.release()
+
+        # time.sleep(2)   # Just for the game
     
     
