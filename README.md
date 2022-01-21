@@ -8,6 +8,8 @@ Sur une table, il existe 4 joueurs possédant chacun 5 cartes distribuées au ha
 
 Nous avons fait une interface de la table pour que ce soit plus visuel.
 
+
+
 ![Capture d’écran du 2022-01-21 20-53-45](https://user-images.githubusercontent.com/92338357/150604408-b775c281-a496-4dfe-8041-1701798af424.png)
 
 Chacun voit seulement son paquet de cartes et peut faire une offre.
@@ -43,6 +45,14 @@ nécessaires à l'interface
 
 
 ### Démarrage:
+
+Il faut avoir installé pygame et Tkinter. Pour ce faire:
+
+python3 -m pip install pygame
+
+sudo apt-get install python3-tk
+
+sudo apt-get install python3-pil python3-pil.imagetk
 
 Exécuter le fichier main.py
 
