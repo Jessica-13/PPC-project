@@ -23,12 +23,123 @@ import queue
 import time
 
 import signal
+import os
+import sysv_ipc
+
+from player import player
+
+
+
+def handlerGame(sig, frame): # if SIGUSR1
+    if sig == signal.SIGUSR1: 
+        os.kill(p1.pid, signal.SIGUSR2) # SIGUSR1 signal send to p1
+        print("KILL p1")
+        os.kill(p2.pid, signal.SIGUSR2)
+        print("KILL p2")
+        os.kill(p3.pid, signal.SIGUSR2)
+        print("KILL p3")
+        os.kill(p4.pid, signal.SIGUSR2)
+        print("KILL p4")
 
 
 
 
 
 
+# # # Definition of the deck **********************************************************************************************************
+# Definition of the "Carte" object
+class Carte:
+    def __init__(self, val, couleur):
+        self.couleur = couleur
+        self.valeur = val
+        
+    def __str__(self):
+        return "%s : %s" % (self.couleur, self.valeur)
+
+# # Definition of the "Carte" object for the Deck
+class Cards:
+	global suites, values 
+	suites = ['Velo', 'Autobus', 'Voiture', 'Tracteur']
+	values = ['3', '5', '7', '9'] 
+	
+	def __init__(self): 
+		pass
+
+# Definition of the Deck
+class Deck(Cards): 
+	def __init__(self): 
+		Cards.__init__(self) 
+		self.mycardset = []
+		
+		for i in range(5): 		# 4 players
+			for j in range(4): 	    # 5 cards for every family
+				self.mycardset.append(values[j] + " " + suites[j])
+	
+	def popCard(self): # à enlever 
+		if len(self.mycardset) == 0: 
+			return "NO CARDS CAN BE POPPED FURTHER"
+		else: # à enlever
+			cardpopped = self.mycardset.pop() 
+			print("Card removed is", cardpopped) 
+
+
+# Shuffle the deck of cards
+class ShuffleCards(Deck): 
+    def __init__(self): 
+        Deck.__init__(self) 
+  
+    def shuffle(self): 
+        if len(self.mycardset) < 20: 
+            print("cannot shuffle the cards") 
+        else: 
+            shuffle(self.mycardset) 
+            return self.mycardset 
+  
+    def popCard(self): # à enlever
+        if len(self.mycardset) == 0: 
+            return "NO CARDS CAN BE POPPED FURTHER"
+        else: # à enlever
+            cardpopped = self.mycardset.pop() 
+            return (cardpopped) 
+
+
+objCards = Cards() # ?
+objDeck = Deck() # ?
+
+deckOrigin = objDeck.mycardset 
+
+objShuffleCards = ShuffleCards() 
+
+deckShuffled = objShuffleCards.shuffle() 
+
+deckShuffledSplitValues = [i.split(' ')[0] for i in deckShuffled]
+deckShuffledSplitSuites = [i.split(' ')[1] for i in deckShuffled]
+# # # ********************************************************************************************
+
+nbPlayer = 4
+
+# Definition of player 
+class Joueur(multiprocessing.Process):
+    def __init__(self, identifiant, l):
+        multiprocessing.Process.__init__(self)
+        self.exit = multiprocessing.Event() ### pour terminer - à enlever 
+        self.identifiant = identifiant
+        self.liste = l
+
+    def __str__(self):
+        return "Player %s cards : %s" % (self.identifiant, self.liste)
+
+    
+    # def maxCardsEg(self, id):
+    # def choseToTake(self, id):
+
+
+
+class return_values_nbCartesEg: # For double retourn
+    def __init__(self, a, b, c):
+        self.a = a
+        self.b = b
+        self.c = c
 
 
 
@@ -44,83 +155,93 @@ if __name__ == '__main__':
 
 
 
-    signal.signal(signal.SIGUSR1, handlerGame) #on modifie le signal SIGUSR1 selon la méthode handler        
-    #reciiver process1
-    key1=100
-    mq1=sysv_ipc.MessageQueue(key1,sysv_ipc.IPC_CREAT)
-    #reciever process2
-    key2=200
-    mq2=sysv_ipc.MessageQueue(key2,sysv_ipc.IPC_CREAT)
-    #reviever processs 3
-    key3=300
-    mq3=sysv_ipc.MessageQueue(key3,sysv_ipc.IPC_CREAT)
+    signal.signal(signal.SIGUSR1, handlerGame)      # signal follow handlerGame roules
 
-    #round= multiprocessing.Value(0)
+    
+    # messages from p1
+    key1 = 100
+    mq1 = sysv_ipc.MessageQueue(key1,sysv_ipc.IPC_CREAT)
 
-    #création et distribution des cartes
-    Transports=["vélo", "voiture", "trottinette", "train"]
-    n=3 #le nombre de joueurs
-    cartes= [] #cartes qu'on va distribuer par la suite aux joueurs
-    for i in range (0,n):
-        a=Transports[i]
-        cartes.append(a)
-    cartes= cartes*5        #m'assurer que ce truc là marche ??
-    random.shuffle(cartes)  #pas nécessaire mais stylé
-    C1, C2, C3 = list(itertools.repeat(0, 5)), list(itertools.repeat(0, 5)), list(itertools.repeat(0, 5))
-    C=[C1,C2,C3]
-    for i in range (0,3):
-        while 0 in C[i]:  
-            o=random.choice(cartes)
-            C[i].append(o)
-            C[i].remove(0)
-            cartes.remove(o)
+    # messages from p2
+    key2 = 200
+    mq2 = sysv_ipc.MessageQueue(key2,sysv_ipc.IPC_CREAT)
+
+    # messages from p3
+    key3 = 300
+    mq3 = sysv_ipc.MessageQueue(key3,sysv_ipc.IPC_CREAT)
+
+    # messages from p4
+    key4 = 400
+    mq4 = sysv_ipc.MessageQueue(key4,sysv_ipc.IPC_CREAT)
+
+    
 
     with Manager() as manager:
-        request = manager.list() #création de la mémoire partagée
+        request = manager.list() # SHARED MEMORY
         lock = Lock()
-        lockV= Lock() #lock pour la Value
-        whoWin= Array('i', 1)
-        color1="red"
-        color2="blue"
-        color3="green"
+        lockValue = Lock() # LOCK FOR VALUE
+        winner = Array('i', 1) # ?
+
+        
+        # Player creation
+        j1 = Joueur(1, [])
+        j2 = Joueur(2, [])
+        j3 = Joueur(3, [])
+        j4 = Joueur(4, [])
+
 
         print("******************** START GAME ********************")
-        print('Le joueur 1 a comme liste de carte', C1)
-        print('Le joueur 1 a comme liste de carte', C2)
-        print('Le joueur 1 a comme liste de carte', C3)
+        print(j1)
+        print(j2)
+        print(j3)
+        print(j4)
        
         print()
 
+        # cards for exchange
 
-        #on lance les 3 processes
-        p1=Process(target=player, args=(C1,request,lock,color1,mq1,mq2,mq3,lockV,whoWin))
-        p2=Process(target=player, args=(C2,request,lock,color2,mq1,mq2,mq3,lockV,whoWin))
-        p3=Process(target=player, args=(C3,request,lock,color3,mq1,mq2,mq3,lockV,whoWin))
+        playerCardsForExchange1 = []
+        playerCardsForExchange2 = []
+        playerCardsForExchange3 = []
+        playerCardsForExchange4 = []
+        
+        for a in range(5):
+            playerCardsForExchange1[a].append(deckShuffledSplitSuites[a])
+        for a in range(5,10):
+            playerCardsForExchange2[a-5].append(deckShuffledSplitSuites[a])
+        for a in range(10,15):
+            playerCardsForExchange3[a-10].append(deckShuffledSplitSuites[a])
+        for a in range(15,20):
+            playerCardsForExchange4[a-15].append(deckShuffledSplitSuites[a])
+
+
+
+        # PLAYERS' PROCESS
+        p1 = Process(target = player, args=(playerCardsForExchange1,request,lock,mq1,mq2,mq3,mq4,lockValue,winner))
+        p2 = Process(target = player, args=(playerCardsForExchange2,request,lock,mq1,mq2,mq3,mq4,lockValue,winner))
+        p3 = Process(target = player, args=(playerCardsForExchange3,request,lock,mq1,mq2,mq3,mq4,lockValue,winner))
+        p4 = Process(target = player, args=(playerCardsForExchange4,request,lock,mq1,mq2,mq3,mq4,lockValue,winner))
+
         p1.start()
         p2.start()
         p3.start()
-
-        '''key1=p1.pid
-        key2=p2.pid
-        key3=p3.pid
-        print(key1)
-        mq1=sysv_ipc.MessageQueue(key1,sysv_ipc.IPC_CREAT)
-        mq2=sysv_ipc.MessageQueue(key2,sysv_ipc.IPC_CREAT)
-        mq3=sysv_ipc.MessageQueue(key3,sysv_ipc.IPC_CREAT)'''
+        p4.start()
 
         p1.join()
         p2.join()
         p3.join()
+        p4.join()
 
-        if whoWin[0]==p1.pid:
-            print("Le joueur 1 a gagné")
-        elif whoWin[0]==p2.pid:
-            print("Le joueur 2 a gagné")
-        elif whoWin[0]==p3.pid:
-            print("Le joueur 3 a gagné")
+        if winner[0] == p1.pid:
+            print("PLAYER 1 WIN !!!")
+        elif winner[0] == p2.pid:
+            print("PLAYER 2 WIN !!!")
+        elif winner[0] == p3.pid:
+            print("PLAYER 3 WIN !!!")
         else:
-            print("La partie s'est terminée mais personne n'a gagné")
+            print("The game ends in a draw :P ")
 
         mq1.remove()
         mq2.remove()
         mq3.remove()
+        mq4.remove()

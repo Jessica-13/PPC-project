@@ -293,8 +293,8 @@ class Joueur(multiprocessing.Process):
         bb = queue.pop(1)   # value
         cc = queue.pop(2)   # type
         '''
-        cc = queue.pop(0)
-        bb = queue.pop(0)   # pop(0) enlève l'élément à l'indice 0 et le retourne
+        cc = queue.pop(0)   # pop(0) enlève l'élément à l'indice 0 et le retourne
+        bb = queue.pop(0)
         aa = queue.pop(0)
         if idRet != aa and minCardsEg == bb: # we take it if ok 
             print("The offer : is token.")
@@ -323,9 +323,9 @@ class Joueur(multiprocessing.Process):
                         deckShuffledSplitSuites[i] = cc
                         #showCards(id)
         else: 
-            queue.append(aa)    # queue[0]= aa , si on fait queue.append(aa) la queue s'élargit
-            queue.append(bb)    # queue[1] = bb
-            queue.append(cc)    # queue[2] = cc
+            queue.append(aa) # queue[0]= aa , si on fait queue.append(aa) la queue s'élargit
+            queue.append(bb) # queue[1] = bb
+            queue.append(cc) # queue[2] = cc
 
 
 
@@ -468,23 +468,36 @@ if __name__ == '__main__':
 
     
     nb_players = 4
+    print(" ")
     for i in range(nb_players):
         # Player creation
         j = Joueur(i, [])
         # Heap definition for each player
         #self.liste.append(carte)
         if (i == 0):
-            for a in range(5):	
+            print("Cartes du Joueur 0: ")
+            for a in range(5):
                 j.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))
+                print(j.liste[a].couleur, j.liste[a].valeur)
+            print(" ")
         if (i == 1):
+            print("Cartes du Joueur 1: ")
             for a in range(5,10):	
                 j.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))
+                print(j.liste[a-5].couleur, j.liste[a-5].valeur)
+            print(" ")
         if (i == 2):
+            print("Cartes du Joueur 2: ")
             for a in range(10,15):	
                 j.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))
+                print(j.liste[a-10].couleur, j.liste[a-10].valeur)
+            print(" ")
         if (i == 3):
+            print("Cartes du Joueur 3: ")
             for a in range(15,20):	
                 j.liste.append(Carte(deckShuffledSplitValues[a], deckShuffledSplitSuites[a]))
+                print(j.liste[a-15].couleur, j.liste[a-15].valeur)
+            print(" ")
 
 
 
@@ -502,11 +515,26 @@ if __name__ == '__main__':
     # Main process
     print("Starting main process:", multiprocessing.current_process().name)
 
+    '''# Création d'une liste de pid pour pouvoir arrêter les processus une fois le jeu fini
+    childPID = [5]
+
+    # Pour recevoir les messages queues
+    keyMain = 128
+    mq = sysv_ipc.MessageQueue(keyMain, sysv_ipc.IPC_CREAT)
+'''
+
     # Start + order of process
     for p in players:
         # Card assignment
         # j.ajouterCarte()
         p.start()
+    ''' childPID[a] = p.pid
+        a = a+1
+    # Si on reçoit un message, on arrête les processus
+    message, t = mq.receive()
+    value = message.decode()
+    for b in range(4):
+        os.kill(childPID[b], signal.SIGKILL)'''
     '''for p in players:
         p.join()'''
     # voir pour la fin 
