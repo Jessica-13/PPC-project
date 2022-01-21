@@ -24,6 +24,64 @@ from tkinter import *
 from turtle import color         # import de tkinter
 from PIL import ImageTk, Image
 import os
+
+from pygame import mixer
+
+mixer.init()
+
+
+mixer.music.load("musique.mp3")
+mixer.music.play(loops=-1)
+
+
+
+# GUI *********************************************************************************************
+root = Tk() # creation of the window
+
+# Window resolution
+root.resizable(width = True, height = True)
+root.geometry("1380x868")
+# Set title
+root.title("Cambiecolo")
+
+root.configure(bg = 'white')
+
+# Canva
+X = 1380	# width
+Y = 868     # height
+canva = Canvas(root, width = X, height = Y, background="white")
+
+
+# Put the bell
+imgCloche = ImageTk.PhotoImage(Image.open("cloche.jpg"))
+canva.create_image(645, 389, image = imgCloche)
+
+
+# TEXTE WITH PLAYER NAME
+canva.create_text(300, 790, text = "PLAYER 1", font = ("freesansbold.ttf", 20))
+canva.create_text(1100, 780, text = "PLAYER 2", font = ("freesansbold.ttf", 20))
+canva.create_text(950, 50, text = "PLAYER 3", font = ("freesansbold.ttf", 20))
+canva.create_text(180, 60, text = "PLAYER 4", font = ("freesansbold.ttf", 20))
+
+
+img = []
+img.append(PhotoImage(file = "0.png"))
+img.append(PhotoImage(file = "3.png"))
+img.append(PhotoImage(file = "5.png"))
+img.append(PhotoImage(file = "7.png"))
+img.append(PhotoImage(file = "9.png"))
+
+imageCart = []
+for i in range(5):	
+    imageCart.append(canva.create_image(430+100*i, 770, image = img[0]))
+for i in range(5,10):	
+    imageCart.append(canva.create_image(1110, 160+130*(i-5), image = img[0]))
+for i in range(10,15):	
+    imageCart.append(canva.create_image(430+100*(i-10), 90, image = img[0]))
+for i in range(15,20):
+    imageCart.append(canva.create_image(170, 160+130*(i-15), image = img[0]))
+canva.place(x = 0, y = 0)
+
 # GUI *********************************************************************************************
 
 def handlerGame(sig, frame): # if SIGUSR1
@@ -66,13 +124,6 @@ class Deck(Cards):
 		for i in range(5): 		# 4 players
 			for j in range(4): 	    # 5 cards for every family
 				self.mycardset.append(values[j] + " " + suites[j])
-	
-	def popCard(self): # à enlever 
-		if len(self.mycardset) == 0: 
-			return "NO CARDS CAN BE POPPED FURTHER"
-		else: # à enlever
-			cardpopped = self.mycardset.pop() 
-			print("Card removed is", cardpopped) 
 
 
 # Shuffle the deck of cards
@@ -86,13 +137,6 @@ class ShuffleCards(Deck):
         else: 
             shuffle(self.mycardset) 
             return self.mycardset 
-  
-    def popCard(self): # à enlever
-        if len(self.mycardset) == 0: 
-            return "NO CARDS CAN BE POPPED FURTHER"
-        else: # à enlever
-            cardpopped = self.mycardset.pop() 
-            return (cardpopped) 
 
 
 objCards = Cards() # ?
@@ -191,55 +235,6 @@ def reDraw(canva):
 
 if __name__ == '__main__':
 
-# GUI *********************************************************************************************
-    root = Tk() # creation of the window
-
-    # Window resolution
-    root.resizable(width = True, height = True)
-    root.geometry("1380x868")
-    # Set title
-    root.title("Cambiecolo")
-
-    root.configure(bg = 'white')
-
-    # Canva
-    X = 1380	# width
-    Y = 868     # height
-    canva = Canvas(root, width = X, height = Y, background="white")
-
-
-    # Put the bell
-    imgCloche = ImageTk.PhotoImage(Image.open("cloche.jpg"))
-    canva.create_image(645, 389, image = imgCloche)
-
-
-    # TEXTE WITH PLAYER NAME
-    canva.create_text(300, 790, text = "PLAYER 1", font = ("freesansbold.ttf", 20))
-    canva.create_text(1100, 780, text = "PLAYER 2", font = ("freesansbold.ttf", 20))
-    canva.create_text(950, 50, text = "PLAYER 3", font = ("freesansbold.ttf", 20))
-    canva.create_text(180, 60, text = "PLAYER 4", font = ("freesansbold.ttf", 20))
-
-
-    img = []
-    img.append(PhotoImage(file = "0.png"))
-    img.append(PhotoImage(file = "3.png"))
-    img.append(PhotoImage(file = "5.png"))
-    img.append(PhotoImage(file = "7.png"))
-    img.append(PhotoImage(file = "9.png"))
-
-    imageCart = []
-    for i in range(5):	
-        imageCart.append(canva.create_image(430+100*i, 770, image = img[0]))
-    for i in range(5,10):	
-        imageCart.append(canva.create_image(1110, 160+130*(i-5), image = img[0]))
-    for i in range(10,15):	
-        imageCart.append(canva.create_image(430+100*(i-10), 90, image = img[0]))
-    for i in range(15,20):
-        imageCart.append(canva.create_image(170, 160+130*(i-15), image = img[0]))
-    canva.place(x = 0, y = 0)
-
-# GUI *********************************************************************************************
-   
     signal.signal(signal.SIGUSR1, handlerGame)      # signal follow handlerGame roules
 
     
