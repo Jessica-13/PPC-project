@@ -169,7 +169,7 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
                             os.kill(getPID, signal.SIGUSR1)
 
                         # UPDATE CARTES FOR EXCHANGE
-                        offCard = [x for x in cards if x != lookingFor] #les cartes dont on doit se débarasser
+                        offCard = [x for x in cards if x != lookingFor]
 
                         # UPDATE OFFRE COUNTER
                         offerCounter.clear()
@@ -205,19 +205,19 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
                 print("MEX : PASS THE TURN.")
                 message = str(2)
                 message = message.encode()
-                mq = askForPid(request[2][0]) #j'ai échangé des cartes avec le joueur ligne 1 donc je dis au joueur ligne 2 de passer au tour suivant
+                mq = askForPid(request[2][0])
                 mq.send(message)
             elif N == 2:
                 print("MEX : PASS THE TURN.")
                 message = str(2)
                 message = message.encode()
-                mq = askForPid(request[1][0]) #j'ai échangé des cartes avec le joueur ligne 2 donc je dis au joueur ligne 1 de passer au tour suivant
+                mq = askForPid(request[1][0])
                 mq.send(message)
             elif N == 3:
                 print("MEX : PASS THE TURN.")
                 message = str(2)
                 message = message.encode()
-                mq = askForPid(request[3][0]) #j'ai échangé des cartes avec le joueur ligne 2 donc je dis au joueur ligne 1 de passer au tour suivant
+                mq = askForPid(request[3][0])
                 mq.send(message)
             else:
                 print("ERROR.") 
@@ -247,7 +247,7 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
         # END OF TURN
         if N == 0:
             request.pop(0)
-            makeOffer(offering_cards,request, lock)
+            makeOffer(offCard,request, lock)
 
         
 
@@ -304,14 +304,13 @@ def player(cards, request, lock, mq1, mq2, mq3, mq4, lockValue, winner):
                     os.kill(getPID, signal.SIGUSR1)
 
                 # UPDATE CARTES FOR EXCHANGE
-                offering_cards = [x for x in cards if x != lookingFor]
-                print("offering_cards = ",offering_cards)
+                offCard = [x for x in cards if x != lookingFor]
 
                 # UPDATE OFFRE COUNTER
                 offerCounter.clear()
 
 
-                makeOffer(offering_cards,request, lock)
+                makeOffer(offCard,request, lock)
                 time.sleep(2)   # JUST FOR THE GAME
     
     

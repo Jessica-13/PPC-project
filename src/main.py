@@ -28,6 +28,7 @@ import sysv_ipc
 
 from player import player
 
+import itertools
 
 
 def handlerGame(sig, frame): # if SIGUSR1
@@ -200,19 +201,16 @@ if __name__ == '__main__':
 
         # cards for exchange
 
-        playerCardsForExchange1 = []
-        playerCardsForExchange2 = []
-        playerCardsForExchange3 = []
-        playerCardsForExchange4 = []
+        playerCardsForExchange1, playerCardsForExchange2, playerCardsForExchange3, playerCardsForExchange4 = list(itertools.repeat(0, 5)), list(itertools.repeat(0, 5)), list(itertools.repeat(0, 5)), list(itertools.repeat(0, 5))
         
         for a in range(5):
-            playerCardsForExchange1[a].append(deckShuffledSplitSuites[a])
+            playerCardsForExchange1.append(deckShuffledSplitSuites[a])
         for a in range(5,10):
-            playerCardsForExchange2[a-5].append(deckShuffledSplitSuites[a])
+            playerCardsForExchange2.append(deckShuffledSplitSuites[a])
         for a in range(10,15):
-            playerCardsForExchange3[a-10].append(deckShuffledSplitSuites[a])
+            playerCardsForExchange3.append(deckShuffledSplitSuites[a])
         for a in range(15,20):
-            playerCardsForExchange4[a-15].append(deckShuffledSplitSuites[a])
+            playerCardsForExchange4.append(deckShuffledSplitSuites[a])
 
 
 
